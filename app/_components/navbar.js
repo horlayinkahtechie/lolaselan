@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Cinzel_Decorative } from "next/font/google";
 
 const cinzelDecorative = Cinzel_Decorative({
-  weight: ["400", "700", "900"], // You can choose available weights
+  weight: ["400", "700", "900"],
   subsets: ["latin"],
   display: "swap",
 });
@@ -40,16 +40,18 @@ export default function Navbar() {
         scrolled ? "bg-[#7B2D26] shadow-md py-2" : "bg-transparent py-4"
       }`}
     >
-      <div className="container mx-auto px-4 md:px-6 p-5">
+      <div className="container mx-auto px-4 md:px-6">
         <div className="flex justify-between items-center">
-          {/* Logo with Cinzel Decorative font */}
+          {/* Logo */}
           <Link href="/" className="flex items-center">
-            <span className="text-2xl font-bold text-[#FFD8BE] cinzelDecorative.className">
+            <span
+              className={`text-2xl font-bold text-[#FFD8BE] ${cinzelDecorative.className}`}
+            >
               Lolaselan
             </span>
           </Link>
 
-          {/* Rest of your Navbar code remains the same... */}
+          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             {navLinks.map((link) => (
               <Link
@@ -66,11 +68,46 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center">
+          {/* Mobile Icons and Menu Button */}
+          <div className="flex items-center space-x-4 md:space-x-0">
+            {/* Mobile Cart and Profile (visible on mobile) */}
+            <div className="md:hidden flex items-center space-x-4">
+              <button className="p-2 text-[#FFE9D9] hover:text-[#FFB38A]">
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                  />
+                </svg>
+              </button>
+              <button className="p-2 text-[#FFE9D9] hover:text-[#FFB38A]">
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            {/* Mobile Menu Button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-[#FFE9D9] hover:text-[#FFB38A] focus:outline-none"
+              className="md:hidden text-[#FFE9D9] hover:text-[#FFB38A] focus:outline-none"
               aria-label="Toggle menu"
             >
               {isOpen ? (
@@ -103,74 +140,12 @@ export default function Navbar() {
                 </svg>
               )}
             </button>
-          </div>
 
-          {/* Shopping Cart and User Icon (Desktop) */}
-          <div className="hidden md:flex items-center space-x-4 ml-8">
-            <button className="p-2 text-[#FFE9D9] hover:text-[#FFB38A]">
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                />
-              </svg>
-            </button>
-            <button className="p-2 text-[#FFE9D9] hover:text-[#FFB38A]">
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Menu - Full Width */}
-        <div
-          className={`md:hidden fixed inset-0 bg-[#7B2D26] z-40 transition-all duration-300 ease-in-out ${
-            isOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
-          }`}
-          style={{
-            top: scrolled ? "64px" : "80px",
-            display: isOpen ? "block" : "none",
-          }}
-        >
-          <div className="container mx-auto px-4 py-6">
-            <div className="flex flex-col space-y-6">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  href={link.path}
-                  className={`text-2xl font-medium py-3 ${
-                    router.pathname === link.path
-                      ? "text-[#FFB38A]"
-                      : "text-[#FFE9D9] hover:text-[#FFB38A]"
-                  }`}
-                  onClick={() => setIsOpen(false)}
-                >
-                  {link.name}
-                </Link>
-              ))}
-            </div>
-            <div className="flex space-x-6 pt-8 mt-6 border-t border-[#9C3E2D]">
-              <button className="text-[#FFE9D9] hover:text-[#FFB38A]">
+            {/* Desktop Cart and Profile (hidden on mobile) */}
+            <div className="hidden md:flex items-center space-x-4 ml-8">
+              <button className="p-2 text-[#FFE9D9] hover:text-[#FFB38A]">
                 <svg
-                  className="w-6 h-6"
+                  className="w-5 h-5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -183,9 +158,9 @@ export default function Navbar() {
                   />
                 </svg>
               </button>
-              <button className="text-[#FFE9D9] hover:text-[#FFB38A]">
+              <button className="p-2 text-[#FFE9D9] hover:text-[#FFB38A]">
                 <svg
-                  className="w-6 h-6"
+                  className="w-5 h-5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -198,6 +173,40 @@ export default function Navbar() {
                   />
                 </svg>
               </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        <div className="md:hidden">
+          <div
+            className={`fixed inset-0 bg-[#7B2D26] z-40 transition-all duration-300 ease-in-out ${
+              isOpen
+                ? "translate-x-0 opacity-100"
+                : "translate-x-full opacity-0"
+            }`}
+            style={{
+              top: scrolled ? "64px" : "80px",
+              display: isOpen ? "block" : "none",
+            }}
+          >
+            <div className="container mx-auto px-4 py-6">
+              <div className="flex flex-col space-y-6">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.name}
+                    href={link.path}
+                    className={`text-2xl font-medium py-3 ${
+                      router.pathname === link.path
+                        ? "text-[#FFB38A]"
+                        : "text-[#FFE9D9] hover:text-[#FFB38A]"
+                    }`}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {link.name}
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
         </div>
