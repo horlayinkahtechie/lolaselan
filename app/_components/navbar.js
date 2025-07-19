@@ -2,6 +2,13 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Cinzel_Decorative } from "next/font/google";
+
+const cinzelDecorative = Cinzel_Decorative({
+  weight: ["400", "700", "900"], // You can choose available weights
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,19 +37,19 @@ export default function Navbar() {
   return (
     <header
       className={`fixed w-full z-50 transition-all duration-300 ${
-        scrolled ? "bg-white shadow-md py-2" : "bg-transparent py-4"
+        scrolled ? "bg-[#7B2D26] shadow-md py-2" : "bg-transparent py-4"
       }`}
     >
-      <div className="container mx-auto px-4 md:px-6">
+      <div className="container mx-auto px-4 md:px-6 p-5">
         <div className="flex justify-between items-center">
-          {/* Logo */}
+          {/* Logo with Cinzel Decorative font */}
           <Link href="/" className="flex items-center">
-            <span className="text-2xl font-playfair font-bold text-primary">
+            <span className="text-2xl font-bold text-[#FFD8BE] cinzelDecorative.className">
               Lolaselan
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
+          {/* Rest of your Navbar code remains the same... */}
           <nav className="hidden md:flex items-center space-x-8">
             {navLinks.map((link) => (
               <Link
@@ -50,8 +57,8 @@ export default function Navbar() {
                 href={link.path}
                 className={`text-lg font-medium transition-colors ${
                   router.pathname === link.path
-                    ? "text-primary border-b-2 border-primary"
-                    : "text-gray-700 hover:text-primary"
+                    ? "text-[#FFB38A] border-b-2 border-[#FFB38A]"
+                    : "text-[#FFE9D9] hover:text-[#FFB38A]"
                 }`}
               >
                 {link.name}
@@ -63,7 +70,7 @@ export default function Navbar() {
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-gray-700 hover:text-primary focus:outline-none"
+              className="text-[#FFE9D9] hover:text-[#FFB38A] focus:outline-none"
               aria-label="Toggle menu"
             >
               {isOpen ? (
@@ -100,7 +107,7 @@ export default function Navbar() {
 
           {/* Shopping Cart and User Icon (Desktop) */}
           <div className="hidden md:flex items-center space-x-4 ml-8">
-            <button className="p-2 text-gray-700 hover:text-primary">
+            <button className="p-2 text-[#FFE9D9] hover:text-[#FFB38A]">
               <svg
                 className="w-5 h-5"
                 fill="none"
@@ -115,7 +122,7 @@ export default function Navbar() {
                 />
               </svg>
             </button>
-            <button className="p-2 text-gray-700 hover:text-primary">
+            <button className="p-2 text-[#FFE9D9] hover:text-[#FFB38A]">
               <svg
                 className="w-5 h-5"
                 fill="none"
@@ -135,11 +142,11 @@ export default function Navbar() {
 
         {/* Mobile Menu - Full Width */}
         <div
-          className={`md:hidden fixed inset-0 bg-white z-40 transition-all duration-300 ease-in-out ${
+          className={`md:hidden fixed inset-0 bg-[#7B2D26] z-40 transition-all duration-300 ease-in-out ${
             isOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
           }`}
           style={{
-            top: scrolled ? "64px" : "80px", // Adjust based on header height
+            top: scrolled ? "64px" : "80px",
             display: isOpen ? "block" : "none",
           }}
         >
@@ -151,8 +158,8 @@ export default function Navbar() {
                   href={link.path}
                   className={`text-2xl font-medium py-3 ${
                     router.pathname === link.path
-                      ? "text-primary"
-                      : "text-gray-700 hover:text-primary"
+                      ? "text-[#FFB38A]"
+                      : "text-[#FFE9D9] hover:text-[#FFB38A]"
                   }`}
                   onClick={() => setIsOpen(false)}
                 >
@@ -160,8 +167,8 @@ export default function Navbar() {
                 </Link>
               ))}
             </div>
-            <div className="flex space-x-6 pt-8 mt-6 border-t border-gray-100">
-              <button className="text-gray-700 hover:text-primary">
+            <div className="flex space-x-6 pt-8 mt-6 border-t border-[#9C3E2D]">
+              <button className="text-[#FFE9D9] hover:text-[#FFB38A]">
                 <svg
                   className="w-6 h-6"
                   fill="none"
@@ -176,7 +183,7 @@ export default function Navbar() {
                   />
                 </svg>
               </button>
-              <button className="text-gray-700 hover:text-primary">
+              <button className="text-[#FFE9D9] hover:text-[#FFB38A]">
                 <svg
                   className="w-6 h-6"
                   fill="none"

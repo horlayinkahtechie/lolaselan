@@ -66,6 +66,7 @@
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
+
 /* Font faces - add this if you're not using Google Fonts via link */
 /* @font-face {
   font-family: 'Playfair Display';

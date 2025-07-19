@@ -1,4 +1,6 @@
-// components/NewArrivals.js
+"use client";
+import { useRef } from "react";
+import Link from "next/link";
 import {
   FiShoppingCart,
   FiHeart,
@@ -7,45 +9,78 @@ import {
   FiLayers,
   FiTag,
   FiArrowRight,
+  FiChevronLeft,
+  FiChevronRight,
 } from "react-icons/fi";
 
-const newArrivals = [
-  {
-    id: 1,
-    name: "Ankara Maxi Dress",
-    category: "Dresses",
-    price: "£89.99",
-    size: "S-XXL",
-    gender: "Women",
-    fabric: "African Wax",
-    isNew: true,
-    image: "/ankara-dress.jpg",
-  },
-  {
-    id: 2,
-    name: "Kente Print Shirt",
-    category: "Tops",
-    price: "£49.99",
-    size: "M-XXXL",
-    gender: "Unisex",
-    fabric: "Cotton Blend",
-    isNew: true,
-    image: "/kente-shirt.jpg",
-  },
-  {
-    id: 3,
-    name: "Adire Wrap Skirt",
-    category: "Bottoms",
-    price: "£59.99",
-    size: "S-XL",
-    gender: "Women",
-    fabric: "African Print",
-    isNew: true,
-    image: "/wrap-skirt.jpg",
-  },
-];
-
 export default function NewArrivals() {
+  const scrollContainerRef = useRef(null);
+  const newArrivals = [
+    {
+      id: 1,
+      name: "Ankara Maxi Dress",
+      category: "Dresses",
+      price: "£89.99",
+      size: "S-XXL",
+      gender: "Women",
+      fabric: "African Wax",
+      isNew: true,
+      image: "/ankara-dress.jpg",
+    },
+    {
+      id: 2,
+      name: "Kente Print Shirt",
+      category: "Tops",
+      price: "£49.99",
+      size: "M-XXXL",
+      gender: "Unisex",
+      fabric: "Cotton Blend",
+      isNew: true,
+      image: "/kente-shirt.jpg",
+    },
+    {
+      id: 3,
+      name: "Adire Wrap Skirt",
+      category: "Bottoms",
+      price: "£59.99",
+      size: "S-XL",
+      gender: "Women",
+      fabric: "African Print",
+      isNew: true,
+      image: "/wrap-skirt.jpg",
+    },
+    {
+      id: 4,
+      name: "Dashiki Tunic",
+      category: "Tops",
+      price: "£65.99",
+      size: "XS-XXL",
+      gender: "Men",
+      fabric: "Handwoven Cotton",
+      isNew: true,
+      image: "/dashiki.jpg",
+    },
+    {
+      id: 5,
+      name: "Buba and Sokoto Set",
+      category: "Sets",
+      price: "£99.99",
+      size: "M-XXL",
+      gender: "Unisex",
+      fabric: "Traditional Cotton",
+      isNew: true,
+      image: "/buba-set.jpg",
+    },
+  ];
+
+  const scroll = (direction) => {
+    if (scrollContainerRef.current) {
+      const { current: container } = scrollContainerRef;
+      const scrollAmount = direction === "left" ? -300 : 300;
+      container.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    }
+  };
+
   return (
     <section className="py-12 bg-gray-50">
       <div className="container mx-auto px-4">
@@ -54,69 +89,108 @@ export default function NewArrivals() {
           <h2 className="text-3xl font-playfair font-bold flex items-center">
             <FiZap className="mr-2 text-primary" /> New Arrivals
           </h2>
-          <a
+          <Link
             href="/collections/new"
             className="flex items-center text-primary hover:underline"
           >
             View All <FiArrowRight className="ml-1" />
-          </a>
+          </Link>
         </div>
 
-        {/* Products Grid - Responsive Layout */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {newArrivals.map((product) => (
-            <div
-              key={product.id}
-              className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300"
-            >
-              {/* Product Image */}
-              <div className="relative h-72 bg-gray-100 flex items-center justify-center">
-                {/* Replace with Next/Image */}
-                <span className="text-gray-400">{product.name} Image</span>
-                {product.isNew && (
-                  <div className="absolute top-2 left-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded-full">
-                    NEW
+        {/* Scrollable Products - Mobile & Desktop */}
+        <div className="relative">
+          {/* Navigation Arrows */}
+          <button
+            onClick={() => scroll("left")}
+            className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 p-2 bg-white rounded-full shadow-md hover:bg-gray-100"
+            aria-label="Scroll left"
+          >
+            <FiChevronLeft className="w-5 h-5" />
+          </button>
+
+          <button
+            onClick={() => scroll("right")}
+            className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 p-2 bg-white rounded-full shadow-md hover:bg-gray-100"
+            aria-label="Scroll right"
+          >
+            <FiChevronRight className="w-5 h-5" />
+          </button>
+
+          {/* Scroll Container */}
+          <div
+            ref={scrollContainerRef}
+            className="flex overflow-x-auto pb-6 -mx-4 px-4 scrollbar-hide snap-x snap-mandatory"
+            style={{
+              scrollPadding: "0 20%", // Creates peek effect
+              scrollSnapType: "x mandatory",
+            }}
+          >
+            {newArrivals.map((product) => (
+              <div
+                key={product.id}
+                className="flex-shrink-0 w-[80vw] md:w-[40vw] lg:w-[30vw] px-2 snap-start"
+              >
+                <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 h-full">
+                  {/* Product Image */}
+                  <div className="relative aspect-square bg-gray-100 flex items-center justify-center">
+                    <span className="text-gray-400">{product.name} Image</span>
+                    {product.isNew && (
+                      <div className="absolute top-2 left-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded-full">
+                        NEW
+                      </div>
+                    )}
+                    <button className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-gray-100">
+                      <FiHeart className="text-gray-600 hover:text-red-500" />
+                    </button>
                   </div>
-                )}
-                <button className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-gray-100">
-                  <FiHeart className="text-gray-600 hover:text-red-500" />
-                </button>
+
+                  {/* Product Details */}
+                  <div className="p-4">
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className="font-medium text-gray-900">
+                        {product.name}
+                      </h3>
+                      <span className="font-bold text-primary">
+                        {product.price}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-500 mb-3">
+                      {product.category}
+                    </p>
+
+                    {/* Product Meta */}
+                    <div className="flex flex-wrap gap-3 text-xs text-gray-500 mb-4">
+                      <span className="flex items-center">
+                        <FiLayers className="mr-1" /> {product.size}
+                      </span>
+                      <span className="flex items-center">
+                        <FiUsers className="mr-1" /> {product.gender}
+                      </span>
+                      <span className="flex items-center">
+                        <FiTag className="mr-1" /> {product.fabric}
+                      </span>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="grid grid-cols-2 gap-2">
+                      <button className="flex items-center justify-center bg-primary hover:bg-primary-dark text-white py-2 px-3 rounded text-sm transition-colors">
+                        <FiShoppingCart className="mr-2" /> Add
+                      </button>
+                      <button className="border border-primary text-primary hover:bg-primary hover:text-white py-2 px-3 rounded text-sm transition-colors">
+                        Buy Now
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
+            ))}
+          </div>
+        </div>
 
-              {/* Product Details */}
-              <div className="p-4">
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="font-medium text-gray-900">{product.name}</h3>
-                  <span className="font-bold text-primary">
-                    {product.price}
-                  </span>
-                </div>
-                <p className="text-sm text-gray-500 mb-3">{product.category}</p>
-
-                {/* Product Meta */}
-                <div className="flex flex-wrap gap-3 text-xs text-gray-500 mb-4">
-                  <span className="flex items-center">
-                    <FiLayers className="mr-1" /> {product.size}
-                  </span>
-                  <span className="flex items-center">
-                    <FiUsers className="mr-1" /> {product.gender}
-                  </span>
-                  <span className="flex items-center">
-                    <FiTag className="mr-1" /> {product.fabric}
-                  </span>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="grid grid-cols-2 gap-2">
-                  <button className="flex items-center justify-center bg-primary hover:bg-primary-dark text-white py-2 px-3 rounded text-sm transition-colors">
-                    <FiShoppingCart className="mr-2" /> Add
-                  </button>
-                  <button className="border border-primary text-primary hover:bg-primary hover:text-white hover:bg-black py-2 px-3 rounded text-sm transition-colors">
-                    Buy Now
-                  </button>
-                </div>
-              </div>
-            </div>
+        {/* Scroll indicators (mobile) */}
+        <div className="flex justify-center mt-4 md:hidden space-x-2">
+          {newArrivals.map((_, index) => (
+            <div key={index} className="w-2 h-2 rounded-full bg-gray-300" />
           ))}
         </div>
       </div>
