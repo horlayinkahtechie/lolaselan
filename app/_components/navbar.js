@@ -56,7 +56,7 @@ export default function Navbar() {
             <span
               className={`text-2xl font-bold text-[#FFD8BE] ${cinzelDecorative.className}`}
             >
-              Lolaselan
+              LolasÈlan
             </span>
           </Link>
 

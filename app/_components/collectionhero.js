@@ -32,7 +32,7 @@ export default function CollectionHero() {
         {/* Centered Text Content */}
         <div className="w-full flex flex-col items-center text-center animate-on-scroll">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-playfair text-[#FFD8BE] mb-4">
-            Check out our collection
+            Check out our collections
           </h1>
           <div className="flex flex-col sm:flex-row gap-4 mt-9">
             <button className="px-8 py-3 bg-[#FFB38A] hover:bg-[#FF9E6D] text-[#5C2018] rounded-full font-medium transition-all hover:scale-105 shadow-lg">
