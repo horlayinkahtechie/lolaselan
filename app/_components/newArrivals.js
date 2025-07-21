@@ -12,6 +12,7 @@ import {
   FiChevronLeft,
   FiChevronRight,
 } from "react-icons/fi";
+import Image from "next/image";
 
 export default function NewArrivals() {
   const scrollContainerRef = useRef(null);
@@ -25,7 +26,8 @@ export default function NewArrivals() {
       gender: "Women",
       fabric: "African Wax",
       isNew: true,
-      image: "/ankara-dress.jpg",
+      image:
+        "https://i.pinimg.com/736x/78/e2/cd/78e2cdc01f0a63dac69dfddec689984a.jpg",
     },
     {
       id: 2,
@@ -36,7 +38,8 @@ export default function NewArrivals() {
       gender: "Unisex",
       fabric: "Cotton Blend",
       isNew: true,
-      image: "/kente-shirt.jpg",
+      image:
+        "https://i.pinimg.com/1200x/4d/ac/53/4dac537396c816aab49bf1e4cab1b3ad.jpg",
     },
     {
       id: 3,
@@ -47,7 +50,8 @@ export default function NewArrivals() {
       gender: "Women",
       fabric: "African Print",
       isNew: true,
-      image: "/wrap-skirt.jpg",
+      image:
+        "https://i.pinimg.com/736x/8a/f5/dd/8af5ddfbab8aaf49b7910bd3cc174890.jpg",
     },
     {
       id: 4,
@@ -58,7 +62,8 @@ export default function NewArrivals() {
       gender: "Men",
       fabric: "Handwoven Cotton",
       isNew: true,
-      image: "/dashiki.jpg",
+      image:
+        "https://i.pinimg.com/1200x/c5/ae/bf/c5aebf46bf446dba75b41f919f1700fb.jpg",
     },
     {
       id: 5,
@@ -69,7 +74,8 @@ export default function NewArrivals() {
       gender: "Unisex",
       fabric: "Traditional Cotton",
       isNew: true,
-      image: "/buba-set.jpg",
+      image:
+        "https://i.pinimg.com/736x/5c/11/e5/5c11e5ce1c31bf811cc90393a9d11432.jpg",
     },
   ];
 
@@ -90,7 +96,7 @@ export default function NewArrivals() {
             <FiZap className="mr-2 text-primary" /> New Arrivals
           </h2>
           <Link
-            href="/collections/new"
+            href="/collections/new-arrivals"
             className="flex items-center text-primary hover:underline"
           >
             View All <FiArrowRight className="ml-1" />
@@ -133,7 +139,13 @@ export default function NewArrivals() {
                 <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 h-full">
                   {/* Product Image */}
                   <div className="relative aspect-square bg-gray-100 flex items-center justify-center">
-                    <span className="text-gray-400">{product.name} Image</span>
+                    <Image
+                      src={product.image}
+                      fill // This makes the image fill the container
+                      alt={product.title}
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
                     {product.isNew && (
                       <div className="absolute top-2 left-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded-full">
                         NEW
@@ -176,7 +188,7 @@ export default function NewArrivals() {
                       <button className="flex items-center justify-center bg-primary hover:bg-primary-dark text-white py-2 px-3 rounded text-sm transition-colors">
                         <FiShoppingCart className="mr-2" /> Add
                       </button>
-                      <button className="border border-primary text-primary hover:bg-primary hover:text-white py-2 px-3 rounded text-sm transition-colors">
+                      <button className="border border-primary text-primary hover:bg-black cursor-pointer hover:text-white py-2 px-3 rounded text-sm transition-colors">
                         Buy Now
                       </button>
                     </div>

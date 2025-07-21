@@ -165,7 +165,7 @@ export default function ContactSection() {
                 </p>
                 <button
                   onClick={() => setSubmitSuccess(false)}
-                  className="mt-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none"
+                  className="mt-6 inline-flex items-center px-4 py-2 border border-transparent text-sm bg-[#9C3E2D] cursor-pointer font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none"
                 >
                   Send another message
                 </button>
@@ -268,7 +268,7 @@ export default function ContactSection() {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className={`w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary ${
+                      className={`w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium bg-[#9C3E2D] cursor-pointer text-white hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary ${
                         isSubmitting ? "opacity-75 cursor-not-allowed" : ""
                       }`}
                     >

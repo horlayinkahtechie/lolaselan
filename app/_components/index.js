@@ -1,19 +1,19 @@
 import FeaturedCollections from "./collections";
 import ContactSection from "./contactus";
-import Footer from "./footer";
 import Hero from "./hero";
 import ProductScrollSection from "./newArrivals";
+import NewsletterModal from "./subscriptionModal";
 import Testimonials from "./testimonials";
 
 export default function Index() {
   return (
     <>
+      <NewsletterModal />
       <Hero />
       <FeaturedCollections />
       <Testimonials />
       <ProductScrollSection />
       <ContactSection />
-      <Footer />
     </>
   );
 }

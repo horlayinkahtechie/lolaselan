@@ -2,38 +2,45 @@
 import { useRef } from "react";
 import Link from "next/link";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import Image from "next/image";
 
 export default function FeaturedCollections() {
   const scrollContainerRef = useRef(null);
   const collections = [
     {
       title: "Ankara Dresses",
-      image: "/ankara-dresses.jpg",
+      image:
+        "https://i.pinimg.com/1200x/a2/48/73/a248732874518524f902016a42b8d219.jpg",
       link: "/collections/ankara-dresses",
     },
     {
       title: "Modern Wraps",
-      image: "/wraps.jpg",
+      image:
+        "https://i.pinimg.com/1200x/6b/b9/12/6bb912d209ca0e0593aee7383f875538.jpg",
       link: "/collections/wraps",
     },
     {
       title: "Kente Tops",
-      image: "/kente-tops.jpg",
+      image:
+        "https://i.pinimg.com/736x/f0/b4/ca/f0b4ca97b598c687550d6fe70052f1a6.jpg",
       link: "/collections/kente-tops",
     },
     {
       title: "Adire Skirts",
-      image: "/adire-skirts.jpg",
+      image:
+        "https://i.pinimg.com/1200x/c4/c9/7e/c4c97e79a86100fa678ee208f9914a8c.jpg",
       link: "/collections/adire-skirts",
     },
     {
       title: "Dashiki Shirts",
-      image: "/dashiki-shirts.jpg",
+      image:
+        "https://i.pinimg.com/736x/b7/8b/7e/b78b7e7d9c069e3bd056323f47460db9.jpg",
       link: "/collections/dashiki-shirts",
     },
     {
       title: "Buba & Sokoto Sets",
-      image: "/buba-sets.jpg",
+      image:
+        "https://i.pinimg.com/1200x/be/ba/78/beba78d0d610c4d9f7c47574ac78826f.jpg",
       link: "/collections/buba-sets",
     },
   ];
@@ -94,11 +101,15 @@ export default function FeaturedCollections() {
               >
                 <Link href={collection.link}>
                   <div className="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 h-full">
-                    <div className="aspect-[4/5] bg-gray-100 relative flex items-center justify-center">
-                      {/* Replace with actual Image component */}
-                      <span className="text-gray-400">Collection Image</span>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                      <h3 className="absolute bottom-6 left-6 text-2xl font-playfair text-white group-hover:text-primary transition-colors">
+                    <div className="aspect-[4/5] bg-gray-100 relative flex items-center justify-center overflow-hidden">
+                      <Image
+                        src={collection.image}
+                        fill // This makes the image fill the container
+                        alt={collection.title}
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      />
+                      <h3 className="absolute bottom-6 left-6 text-2xl font-playfair text-white group-hover:text-primary transition-colors z-10">
                         {collection.title}
                       </h3>
                     </div>

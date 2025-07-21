@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Cinzel_Decorative } from "next/font/google";
+import { FiMail } from "react-icons/fi";
+import NewsletterModal from "./subscriptionModal";
 
 const cinzelDecorative = Cinzel_Decorative({
   weight: ["400", "700", "900"],
@@ -13,7 +15,13 @@ const cinzelDecorative = Cinzel_Decorative({
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const router = useRouter();
+
+  const clickShowModal = () => {
+    setShowModal(true);
+    console.log("Modal opened");
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,20 +38,21 @@ export default function Navbar() {
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "Collections", path: "/collections" },
-    { name: "About", path: "/about" },
-    { name: "Contact", path: "/contact" },
+    { name: "Shop", path: "/collections/all" },
+    { name: "About", path: "/aboutus" },
+    { name: "Contact", path: "/contactus" },
   ];
 
   return (
     <header
       className={`fixed w-full z-50 transition-all duration-300 ${
-        scrolled ? "bg-[#7B2D26] shadow-md py-2" : "bg-transparent py-4"
+        scrolled ? "bg-[#7B2D26] shadow-md py-2" : "py-4"
       }`}
     >
-      <div className="container mx-auto px-4 md:px-6">
+      <div className="container mx-auto px-4 md:px-6 p-5">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <Link href="/" className="flex items-center">
+          <Link href="/" className="flex items-center cursor-pointer">
             <span
               className={`text-2xl font-bold text-[#FFD8BE] ${cinzelDecorative.className}`}
             >
@@ -57,7 +66,7 @@ export default function Navbar() {
               <Link
                 key={link.name}
                 href={link.path}
-                className={`text-lg font-medium transition-colors ${
+                className={`text-lg font-medium transition-colors cursor-pointer ${
                   router.pathname === link.path
                     ? "text-[#FFB38A] border-b-2 border-[#FFB38A]"
                     : "text-[#FFE9D9] hover:text-[#FFB38A]"
@@ -72,7 +81,7 @@ export default function Navbar() {
           <div className="flex items-center space-x-4 md:space-x-0">
             {/* Mobile Cart and Profile (visible on mobile) */}
             <div className="md:hidden flex items-center space-x-4">
-              <button className="p-2 text-[#FFE9D9] hover:text-[#FFB38A]">
+              <button className="p-2 text-[#FFE9D9] hover:text-[#FFB38A] cursor-pointer">
                 <svg
                   className="w-5 h-5"
                   fill="none"
@@ -87,7 +96,8 @@ export default function Navbar() {
                   />
                 </svg>
               </button>
-              <button className="p-2 text-[#FFE9D9] hover:text-[#FFB38A]">
+
+              <button className="p-2 text-[#FFE9D9] hover:text-[#FFB38A] cursor-pointer">
                 <svg
                   className="w-5 h-5"
                   fill="none"
@@ -101,6 +111,12 @@ export default function Navbar() {
                     d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                   />
                 </svg>
+              </button>
+              <button
+                className="p-2 text-[#FFE9D9] hover:text-[#FFB38A] cursor-pointer"
+                onClick={clickShowModal}
+              >
+                <FiMail className="w-5 h-5" />
               </button>
             </div>
 
@@ -143,7 +159,7 @@ export default function Navbar() {
 
             {/* Desktop Cart and Profile (hidden on mobile) */}
             <div className="hidden md:flex items-center space-x-4 ml-8">
-              <button className="p-2 text-[#FFE9D9] hover:text-[#FFB38A]">
+              <button className="p-2 text-[#FFE9D9] hover:text-[#FFB38A] cursor-pointer">
                 <svg
                   className="w-5 h-5"
                   fill="none"
@@ -158,7 +174,7 @@ export default function Navbar() {
                   />
                 </svg>
               </button>
-              <button className="p-2 text-[#FFE9D9] hover:text-[#FFB38A]">
+              <button className="p-2 text-[#FFE9D9] hover:text-[#FFB38A] cursor-pointer">
                 <svg
                   className="w-5 h-5"
                   fill="none"
@@ -172,6 +188,12 @@ export default function Navbar() {
                     d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                   />
                 </svg>
+              </button>
+              <button
+                className="p-2 text-[#FFE9D9] hover:text-[#FFB38A] cursor-pointer"
+                onClick={clickShowModal}
+              >
+                <FiMail className="w-5 h-5" />
               </button>
             </div>
           </div>
@@ -211,6 +233,13 @@ export default function Navbar() {
           </div>
         </div>
       </div>
+
+      {showModal && (
+        <NewsletterModal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+        />
+      )}
     </header>
   );
 }

@@ -14,7 +14,7 @@ export default function Footer() {
     {
       title: "Shop",
       links: [
-        { name: "New Arrivals", href: "/collections/new" },
+        { name: "New Arrivals", href: "/collections/new-arrivals" },
         { name: "Best Sellers", href: "/collections/bestsellers" },
         { name: "Dresses", href: "/collections/dresses" },
         { name: "Tops", href: "/collections/tops" },
@@ -24,9 +24,8 @@ export default function Footer() {
     {
       title: "About",
       links: [
-        { name: "Our Story", href: "/about" },
+        { name: "Our Story", href: "/aboutus" },
         { name: "Designers", href: "/designers" },
-        { name: "Sustainability", href: "/sustainability" },
         { name: "Blog", href: "/blog" },
         { name: "Careers", href: "/careers" },
       ],
@@ -34,7 +33,7 @@ export default function Footer() {
     {
       title: "Help",
       links: [
-        { name: "Contact Us", href: "/contact" },
+        { name: "Contact Us", href: "/contactus" },
         { name: "Shipping Info", href: "/shipping" },
         { name: "Returns & Exchanges", href: "/returns" },
         { name: "Size Guide", href: "/size-guide" },
@@ -66,7 +65,7 @@ export default function Footer() {
               />
               <button
                 type="submit"
-                className="bg-white text-black px-6 py-3 rounded font-medium transition-colors whitespace-nowrap"
+                className="bg-white text-black px-6 py-3 cursor-pointer rounded font-medium transition-colors whitespace-nowrap"
               >
                 Subscribe
               </button>
@@ -157,6 +156,12 @@ export default function Footer() {
         <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
           <p>
             &copy; {new Date().getFullYear()} Lolaselan. All rights reserved.
+            Designed and Developed by{" "}
+            <span>
+              <Link href="https://abdulsalamalao.com" className="underline">
+                Abdul-salam
+              </Link>
+            </span>
           </p>
           <div className="flex justify-center space-x-4 mt-2">
             <Link

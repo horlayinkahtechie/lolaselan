@@ -1,3 +1,5 @@
+import Footer from "./_components/footer";
+import Navbar from "./_components/navbar";
 import "./globals.css";
 export default function RootLayout({ children }) {
   return (
@@ -6,7 +8,11 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="/lolaselan.jpg" type="image/jpg" />
       </head>
 
-      <body>{children}</body>
+      <body>
+        <Navbar />
+        {children}
+        <Footer />
+      </body>
     </html>
   );
 }
