@@ -8,76 +8,77 @@ import {
   FiZap,
 } from "react-icons/fi";
 
-export default function NewArrivalsPage() {
-  const NewArrivals = [
-    {
-      id: 1,
-      name: "Ankara Maxi Dress",
-      category: "Dresses",
-      price: "£89.99",
-      size: "S-XXL",
-      gender: "Women",
-      fabric: "African Wax",
-      isNew: true,
-      image:
-        "https://i.pinimg.com/736x/78/e2/cd/78e2cdc01f0a63dac69dfddec689984a.jpg",
-    },
-    {
-      id: 2,
-      name: "Kente Print Shirt",
-      category: "Tops",
-      price: "£49.99",
-      size: "M-XXXL",
-      gender: "Unisex",
-      fabric: "Cotton Blend",
-      isNew: true,
-      image:
-        "https://i.pinimg.com/1200x/4d/ac/53/4dac537396c816aab49bf1e4cab1b3ad.jpg",
-    },
-    {
-      id: 3,
-      name: "Adire Wrap Skirt",
-      category: "Bottoms",
-      price: "£59.99",
-      size: "S-XL",
-      gender: "Women",
-      fabric: "African Print",
-      isNew: true,
-      image:
-        "https://i.pinimg.com/736x/8a/f5/dd/8af5ddfbab8aaf49b7910bd3cc174890.jpg",
-    },
-    {
-      id: 4,
-      name: "Dashiki Tunic",
-      category: "Tops",
-      price: "£65.99",
-      size: "XS-XXL",
-      gender: "Men",
-      fabric: "Handwoven Cotton",
-      isNew: true,
-      image:
-        "https://i.pinimg.com/1200x/c5/ae/bf/c5aebf46bf446dba75b41f919f1700fb.jpg",
-    },
-    {
-      id: 5,
-      name: "Buba and Sokoto Set",
-      category: "Sets",
-      price: "£99.99",
-      size: "M-XXL",
-      gender: "Unisex",
-      fabric: "Traditional Cotton",
-      isNew: true,
-      image:
-        "https://i.pinimg.com/736x/5c/11/e5/5c11e5ce1c31bf811cc90393a9d11432.jpg",
-    },
-  ];
+export default function AnkaraPants() {
+    const AnkaraPants = [
+      {
+        id: 1,
+        name: "Ankara Palazzo Trousers",
+        category: "Dresses",
+        price: "£89.99",
+        size: "S-XXL",
+        gender: "Women",
+        fabric: "African Wax",
+        isNew: true,
+        image:
+          "https://i.pinimg.com/736x/b3/7e/f3/b37ef3b83e5e90ca4ce8b679bc18b74a.jpg",
+      },
+      {
+        id: 2,
+        name: "Ankara Jogger Pants",
+        category: "Tops",
+        price: "£49.99",
+        size: "M-XXXL",
+        gender: "Unisex",
+        fabric: "Cotton Blend",
+        isNew: true,
+        image:
+          "https://i.pinimg.com/1200x/bb/5a/09/bb5a0913ce1404e2a59caf62270451cd.jpg",
+      },
+      {
+        id: 3,
+        name: "Ankara Harem Pants",
+        category: "Bottoms",
+        price: "£59.99",
+        size: "S-XL",
+        gender: "Women",
+        fabric: "African Print",
+        isNew: false,
+        image:
+          "https://i.pinimg.com/736x/28/4b/58/284b58c96d7b7a76cfdab83ddfe5d684.jpg",
+      },
+      {
+        id: 4,
+        name: "Ankara Slim-Fit Trousers",
+        category: "Tops",
+        price: "£65.99",
+        size: "XS-XXL",
+        gender: "Men",
+        fabric: "Handwoven Cotton",
+        isNew: false,
+        image:
+          "https://i.pinimg.com/1200x/3f/e3/e7/3fe3e74bd2ee3226713a35bb7d11c474.jpg",
+      },
+      {
+        id: 5,
+        name: "Ankara Cargo Pants",
+        category: "Sets",
+        price: "£99.99",
+        size: "M-XXL",
+        gender: "Unisex",
+        fabric: "Traditional Cotton",
+        isNew: true,
+        image:
+          "https://i.pinimg.com/736x/cd/61/0e/cd610e7cdb98197ead5a0f833a3de8c4.jpg",
+      },
+    ];
+      
   return (
     <>
       <h2 className="text-3xl font-playfair font-bold flex items-center lg:pt-50 lg:p-5 pt-35 p-2">
-        <FiZap className="mr-2 text-black" /> New Arrivals
+        <FiZap className="mr-2 text-black" /> Ankara Pants
       </h2>
       <div className="grid grid-cols-1 lg:grid-cols-4 lg:pt-10 lg:pb-20 lg:p-5 pb-10 p-2 pt-5">
-        {NewArrivals.map((product) => (
+        {AnkaraPants.map((product) => (
           <div key={product.id} className="p-2">
             <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 h-full">
               {/* Product Image */}

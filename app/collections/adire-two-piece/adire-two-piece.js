@@ -8,11 +8,11 @@ import {
   FiZap,
 } from "react-icons/fi";
 
-export default function NewArrivalsPage() {
-  const NewArrivals = [
+export default function AdireTwoPiece() {
+  const AdireTwoPiece = [
     {
       id: 1,
-      name: "Ankara Maxi Dress",
+      name: "Adire Kimono Set",
       category: "Dresses",
       price: "£89.99",
       size: "S-XXL",
@@ -20,11 +20,11 @@ export default function NewArrivalsPage() {
       fabric: "African Wax",
       isNew: true,
       image:
-        "https://i.pinimg.com/736x/78/e2/cd/78e2cdc01f0a63dac69dfddec689984a.jpg",
+        "https://i.pinimg.com/1200x/c3/77/1e/c3771ebb3b93a903ca4a4147a484e3c7.jpg",
     },
     {
       id: 2,
-      name: "Kente Print Shirt",
+      name: "Adire Crop Top & Pants",
       category: "Tops",
       price: "£49.99",
       size: "M-XXXL",
@@ -32,11 +32,11 @@ export default function NewArrivalsPage() {
       fabric: "Cotton Blend",
       isNew: true,
       image:
-        "https://i.pinimg.com/1200x/4d/ac/53/4dac537396c816aab49bf1e4cab1b3ad.jpg",
+        "https://i.pinimg.com/736x/82/ed/97/82ed97af33e03e7258b35561fadcca49.jpg",
     },
     {
       id: 3,
-      name: "Adire Wrap Skirt",
+      name: "Adire Blouse & Wrapper",
       category: "Bottoms",
       price: "£59.99",
       size: "S-XL",
@@ -44,11 +44,11 @@ export default function NewArrivalsPage() {
       fabric: "African Print",
       isNew: true,
       image:
-        "https://i.pinimg.com/736x/8a/f5/dd/8af5ddfbab8aaf49b7910bd3cc174890.jpg",
+        "https://i.pinimg.com/1200x/49/21/2b/49212b6a02c10e12e6e0e986cdab94bb.jpg",
     },
     {
       id: 4,
-      name: "Dashiki Tunic",
+      name: "Adire Shirt & Trousers",
       category: "Tops",
       price: "£65.99",
       size: "XS-XXL",
@@ -56,11 +56,11 @@ export default function NewArrivalsPage() {
       fabric: "Handwoven Cotton",
       isNew: true,
       image:
-        "https://i.pinimg.com/1200x/c5/ae/bf/c5aebf46bf446dba75b41f919f1700fb.jpg",
+        "https://i.pinimg.com/736x/76/03/23/760323e284118c10191b5fc02c3c4258.jpg",
     },
     {
       id: 5,
-      name: "Buba and Sokoto Set",
+      name: "Adire Kaftan & Pants",
       category: "Sets",
       price: "£99.99",
       size: "M-XXL",
@@ -68,16 +68,17 @@ export default function NewArrivalsPage() {
       fabric: "Traditional Cotton",
       isNew: true,
       image:
-        "https://i.pinimg.com/736x/5c/11/e5/5c11e5ce1c31bf811cc90393a9d11432.jpg",
+        "https://i.pinimg.com/736x/64/aa/10/64aa10d24b12f9a4657235b4d2a71215.jpg",
     },
   ];
+
   return (
     <>
       <h2 className="text-3xl font-playfair font-bold flex items-center lg:pt-50 lg:p-5 pt-35 p-2">
-        <FiZap className="mr-2 text-black" /> New Arrivals
+        <FiZap className="mr-2 text-black" /> Adire Two Piece
       </h2>
       <div className="grid grid-cols-1 lg:grid-cols-4 lg:pt-10 lg:pb-20 lg:p-5 pb-10 p-2 pt-5">
-        {NewArrivals.map((product) => (
+        {AdireTwoPiece.map((product) => (
           <div key={product.id} className="p-2">
             <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 h-full">
               {/* Product Image */}

@@ -141,7 +141,7 @@ export default function NewArrivals() {
                   <div className="relative aspect-square bg-gray-100 flex items-center justify-center">
                     <Image
                       src={product.image}
-                      fill // This makes the image fill the container
+                      fill
                       alt={product.title}
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

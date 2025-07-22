@@ -8,40 +8,35 @@ export default function FeaturedCollections() {
   const scrollContainerRef = useRef(null);
   const collections = [
     {
-      title: "Ankara Dresses",
+      title: "Ankara pants",
       image:
         "https://i.pinimg.com/1200x/a2/48/73/a248732874518524f902016a42b8d219.jpg",
-      link: "/collections/ankara-dresses",
+      link: "/collections/ankara-pants",
     },
     {
-      title: "Modern Wraps",
+      title: "Adire two piece",
       image:
-        "https://i.pinimg.com/1200x/6b/b9/12/6bb912d209ca0e0593aee7383f875538.jpg",
-      link: "/collections/wraps",
+        "https://i.pinimg.com/1200x/c4/c9/7e/c4c97e79a86100fa678ee208f9914a8c.jpg",
+      link: "/collections/adire-two-piece",
+    },
+
+    {
+      title: "Bubu",
+      image:
+        "https://i.pinimg.com/1200x/be/ba/78/beba78d0d610c4d9f7c47574ac78826f.jpg",
+      link: "/collections/bubu",
+    },
+    {
+      title: "Aso oke skirt",
+      image:
+        "https://i.pinimg.com/736x/b7/8b/7e/b78b7e7d9c069e3bd056323f47460db9.jpg",
+      link: "/collections/aso-oke-skirts",
     },
     {
       title: "Kente Tops",
       image:
         "https://i.pinimg.com/736x/f0/b4/ca/f0b4ca97b598c687550d6fe70052f1a6.jpg",
       link: "/collections/kente-tops",
-    },
-    {
-      title: "Adire Skirts",
-      image:
-        "https://i.pinimg.com/1200x/c4/c9/7e/c4c97e79a86100fa678ee208f9914a8c.jpg",
-      link: "/collections/adire-skirts",
-    },
-    {
-      title: "Dashiki Shirts",
-      image:
-        "https://i.pinimg.com/736x/b7/8b/7e/b78b7e7d9c069e3bd056323f47460db9.jpg",
-      link: "/collections/dashiki-shirts",
-    },
-    {
-      title: "Buba & Sokoto Sets",
-      image:
-        "https://i.pinimg.com/1200x/be/ba/78/beba78d0d610c4d9f7c47574ac78826f.jpg",
-      link: "/collections/buba-sets",
     },
   ];
 

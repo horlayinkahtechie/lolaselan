@@ -8,8 +8,8 @@ import {
   FiZap,
 } from "react-icons/fi";
 
-export default function NewArrivalsPage() {
-  const NewArrivals = [
+export default function AsoOkeSkirt() {
+  const asoOkeskirt = [
     {
       id: 1,
       name: "Ankara Maxi Dress",
@@ -74,10 +74,10 @@ export default function NewArrivalsPage() {
   return (
     <>
       <h2 className="text-3xl font-playfair font-bold flex items-center lg:pt-50 lg:p-5 pt-35 p-2">
-        <FiZap className="mr-2 text-black" /> New Arrivals
+        <FiZap className="mr-2 text-black" /> Aso Oke Skirt
       </h2>
       <div className="grid grid-cols-1 lg:grid-cols-4 lg:pt-10 lg:pb-20 lg:p-5 pb-10 p-2 pt-5">
-        {NewArrivals.map((product) => (
+        {asoOkeskirt.map((product) => (
           <div key={product.id} className="p-2">
             <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 h-full">
               {/* Product Image */}
