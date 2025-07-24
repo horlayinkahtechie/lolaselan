@@ -1,3 +1,4 @@
+import Buy from "@/app/_components/buy";
 import Image from "next/image";
 import {
   FiHeart,
@@ -9,69 +10,69 @@ import {
 } from "react-icons/fi";
 
 export default function AnkaraPants() {
-    const AnkaraPants = [
-      {
-        id: 1,
-        name: "Ankara Palazzo Trousers",
-        category: "Dresses",
-        price: "£89.99",
-        size: "S-XXL",
-        gender: "Women",
-        fabric: "African Wax",
-        isNew: true,
-        image:
-          "https://i.pinimg.com/736x/b3/7e/f3/b37ef3b83e5e90ca4ce8b679bc18b74a.jpg",
-      },
-      {
-        id: 2,
-        name: "Ankara Jogger Pants",
-        category: "Tops",
-        price: "£49.99",
-        size: "M-XXXL",
-        gender: "Unisex",
-        fabric: "Cotton Blend",
-        isNew: true,
-        image:
-          "https://i.pinimg.com/1200x/bb/5a/09/bb5a0913ce1404e2a59caf62270451cd.jpg",
-      },
-      {
-        id: 3,
-        name: "Ankara Harem Pants",
-        category: "Bottoms",
-        price: "£59.99",
-        size: "S-XL",
-        gender: "Women",
-        fabric: "African Print",
-        isNew: false,
-        image:
-          "https://i.pinimg.com/736x/28/4b/58/284b58c96d7b7a76cfdab83ddfe5d684.jpg",
-      },
-      {
-        id: 4,
-        name: "Ankara Slim-Fit Trousers",
-        category: "Tops",
-        price: "£65.99",
-        size: "XS-XXL",
-        gender: "Men",
-        fabric: "Handwoven Cotton",
-        isNew: false,
-        image:
-          "https://i.pinimg.com/1200x/3f/e3/e7/3fe3e74bd2ee3226713a35bb7d11c474.jpg",
-      },
-      {
-        id: 5,
-        name: "Ankara Cargo Pants",
-        category: "Sets",
-        price: "£99.99",
-        size: "M-XXL",
-        gender: "Unisex",
-        fabric: "Traditional Cotton",
-        isNew: true,
-        image:
-          "https://i.pinimg.com/736x/cd/61/0e/cd610e7cdb98197ead5a0f833a3de8c4.jpg",
-      },
-    ];
-      
+  const AnkaraPants = [
+    {
+      id: 1,
+      name: "Ankara Palazzo Trousers",
+      category: "Dresses",
+      price: "£89.99",
+      size: "S-XXL",
+      gender: "Women",
+      fabric: "African Wax",
+      isNew: true,
+      image:
+        "https://i.pinimg.com/736x/b3/7e/f3/b37ef3b83e5e90ca4ce8b679bc18b74a.jpg",
+    },
+    {
+      id: 2,
+      name: "Ankara Jogger Pants",
+      category: "Tops",
+      price: "£49.99",
+      size: "M-XXXL",
+      gender: "Unisex",
+      fabric: "Cotton Blend",
+      isNew: true,
+      image:
+        "https://i.pinimg.com/1200x/bb/5a/09/bb5a0913ce1404e2a59caf62270451cd.jpg",
+    },
+    {
+      id: 3,
+      name: "Ankara Harem Pants",
+      category: "Bottoms",
+      price: "£59.99",
+      size: "S-XL",
+      gender: "Women",
+      fabric: "African Print",
+      isNew: false,
+      image:
+        "https://i.pinimg.com/736x/28/4b/58/284b58c96d7b7a76cfdab83ddfe5d684.jpg",
+    },
+    {
+      id: 4,
+      name: "Ankara Slim-Fit Trousers",
+      category: "Tops",
+      price: "£65.99",
+      size: "XS-XXL",
+      gender: "Men",
+      fabric: "Handwoven Cotton",
+      isNew: false,
+      image:
+        "https://i.pinimg.com/1200x/3f/e3/e7/3fe3e74bd2ee3226713a35bb7d11c474.jpg",
+    },
+    {
+      id: 5,
+      name: "Ankara Cargo Pants",
+      category: "Sets",
+      price: "£99.99",
+      size: "M-XXL",
+      gender: "Unisex",
+      fabric: "Traditional Cotton",
+      isNew: true,
+      image:
+        "https://i.pinimg.com/736x/cd/61/0e/cd610e7cdb98197ead5a0f833a3de8c4.jpg",
+    },
+  ];
+
   return (
     <>
       <h2 className="text-3xl font-playfair font-bold flex items-center lg:pt-50 lg:p-5 pt-35 p-2">
@@ -91,7 +92,7 @@ export default function AnkaraPants() {
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
                 {product.isNew && (
-                  <div className="absolute top-2 left-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded-full">
+                  <div className="absolute top-2 left-2 bg-primary text-white bg-[#7B2D26]  text-xs font-bold px-2 py-1 rounded-full">
                     NEW
                   </div>
                 )}
@@ -125,12 +126,10 @@ export default function AnkaraPants() {
 
                 {/* Action Buttons */}
                 <div className="grid grid-cols-2 gap-2">
-                  <button className="flex items-center justify-center bg-primary hover:bg-primary-dark text-white py-2 px-3 rounded text-sm transition-colors">
-                    <FiShoppingCart className="mr-2" /> Add
+                  <button className="flex items-center justify-center bg-[#7B2D26]  hover:bg-primary-dark text-white py-2 px-3 rounded text-sm transition-colors">
+                    <FiShoppingCart className="mr-2" /> Add to cart
                   </button>
-                  <button className="border border-primary text-primary hover:bg-black cursor-pointer hover:text-white py-2 px-3 rounded text-sm transition-colors">
-                    Buy Now
-                  </button>
+                  <Buy product={product} />
                 </div>
               </div>
             </div>

@@ -1,3 +1,4 @@
+import Buy from "@/app/_components/buy";
 import Image from "next/image";
 import {
   FiHeart,
@@ -90,7 +91,7 @@ export default function NewArrivalsPage() {
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
                 {product.isNew && (
-                  <div className="absolute top-2 left-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded-full">
+                  <div className="absolute top-2 left-2 bg-primary text-white bg-[#7B2D26]  text-xs font-bold px-2 py-1 rounded-full">
                     NEW
                   </div>
                 )}
@@ -122,14 +123,11 @@ export default function NewArrivalsPage() {
                   </span>
                 </div>
 
-                {/* Action Buttons */}
                 <div className="grid grid-cols-2 gap-2">
-                  <button className="flex items-center justify-center bg-primary hover:bg-primary-dark text-white py-2 px-3 rounded text-sm transition-colors">
-                    <FiShoppingCart className="mr-2" /> Add
+                  <button className="flex items-center justify-center bg-[#7B2D26]  hover:bg-primary-dark text-white py-2 px-3 rounded text-sm transition-colors">
+                    <FiShoppingCart className="mr-2" /> Add to cart
                   </button>
-                  <button className="border border-primary text-primary hover:bg-black cursor-pointer hover:text-white py-2 px-3 rounded text-sm transition-colors">
-                    Buy Now
-                  </button>
+                  <Buy product={product} />
                 </div>
               </div>
             </div>

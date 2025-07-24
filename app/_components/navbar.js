@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Cinzel_Decorative } from "next/font/google";
 import { FiMail } from "react-icons/fi";
 import NewsletterModal from "./subscriptionModal";
+import { useSession, signOut } from "next-auth/react";
 
 const cinzelDecorative = Cinzel_Decorative({
   weight: ["400", "700", "900"],
@@ -17,6 +18,8 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
+
+  const { data: session, status } = useSession();
 
   const clickShowModal = () => {
     setShowModal(true);
@@ -41,6 +44,10 @@ export default function Navbar() {
     { name: "Shop", path: "/collections/all" },
     { name: "About", path: "/aboutus" },
     { name: "Contact", path: "/contactus" },
+    {
+      name: session ? "Logout" : "Login",
+      path: session ? "/api/auth/signout" : "/user/login",
+    },
   ];
 
   return (
@@ -81,7 +88,10 @@ export default function Navbar() {
           <div className="flex items-center space-x-4 md:space-x-0">
             {/* Mobile Cart and Profile (visible on mobile) */}
             <div className="md:hidden flex items-center space-x-4">
-              <button className="p-2 text-[#FFE9D9] hover:text-[#FFB38A] cursor-pointer">
+              <Link
+                href="/cart"
+                className="p-2 text-[#FFE9D9] hover:text-[#FFB38A] cursor-pointer"
+              >
                 <svg
                   className="w-5 h-5"
                   fill="none"
@@ -95,9 +105,12 @@ export default function Navbar() {
                     d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                   />
                 </svg>
-              </button>
+              </Link>
 
-              <button className="p-2 text-[#FFE9D9] hover:text-[#FFB38A] cursor-pointer">
+              <Link
+                href="/user/profile"
+                className="p-2 text-[#FFE9D9] hover:text-[#FFB38A] cursor-pointer"
+              >
                 <svg
                   className="w-5 h-5"
                   fill="none"
@@ -111,7 +124,7 @@ export default function Navbar() {
                     d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                   />
                 </svg>
-              </button>
+              </Link>
               <button
                 className="p-2 text-[#FFE9D9] hover:text-[#FFB38A] cursor-pointer"
                 onClick={clickShowModal}
@@ -159,7 +172,10 @@ export default function Navbar() {
 
             {/* Desktop Cart and Profile (hidden on mobile) */}
             <div className="hidden md:flex items-center space-x-4 ml-8">
-              <button className="p-2 text-[#FFE9D9] hover:text-[#FFB38A] cursor-pointer">
+              <Link
+                href="/cart"
+                className="p-2 text-[#FFE9D9] hover:text-[#FFB38A] cursor-pointer"
+              >
                 <svg
                   className="w-5 h-5"
                   fill="none"
@@ -173,8 +189,11 @@ export default function Navbar() {
                     d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                   />
                 </svg>
-              </button>
-              <button className="p-2 text-[#FFE9D9] hover:text-[#FFB38A] cursor-pointer">
+              </Link>
+              <Link
+                href="/user/profile"
+                className="p-2 text-[#FFE9D9] hover:text-[#FFB38A] cursor-pointer"
+              >
                 <svg
                   className="w-5 h-5"
                   fill="none"
@@ -188,7 +207,7 @@ export default function Navbar() {
                     d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                   />
                 </svg>
-              </button>
+              </Link>
               <button
                 className="p-2 text-[#FFE9D9] hover:text-[#FFB38A] cursor-pointer"
                 onClick={clickShowModal}
