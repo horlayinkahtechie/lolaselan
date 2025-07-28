@@ -14,6 +14,8 @@ import {
 } from "react-icons/fi";
 import Image from "next/image";
 import Buy from "@/app/_components/buy";
+import AddToCart from "@/app/_components/addToCart";
+import AddToFavorite from "@/app/_components/addToFavorite";
 
 export default function AllProducts() {
   const scrollContainerRef = useRef(null);
@@ -77,6 +79,258 @@ export default function AllProducts() {
       isNew: true,
       image:
         "https://i.pinimg.com/736x/5c/11/e5/5c11e5ce1c31bf811cc90393a9d11432.jpg",
+    },
+  ];
+
+  const AdireTwoPiece = [
+    {
+      id: "ADIRETWOPIECES1",
+      name: "Adire Kimono Set",
+      category: "Dresses",
+      price: "£89.99",
+      size: "S-XXL",
+      gender: "Women",
+      fabric: "African Wax",
+      isNew: true,
+      image:
+        "https://i.pinimg.com/1200x/c3/77/1e/c3771ebb3b93a903ca4a4147a484e3c7.jpg",
+    },
+    {
+      id: "ADIRETWOPIECES2",
+      name: "Adire Crop Top & Pants",
+      category: "Tops",
+      price: "£49.99",
+      size: "M-XXXL",
+      gender: "Unisex",
+      fabric: "Cotton Blend",
+      isNew: true,
+      image:
+        "https://i.pinimg.com/736x/82/ed/97/82ed97af33e03e7258b35561fadcca49.jpg",
+    },
+    {
+      id: "ADIRETWOPIECES3",
+      name: "Adire Blouse & Wrapper",
+      category: "Bottoms",
+      price: "£59.99",
+      size: "S-XL",
+      gender: "Women",
+      fabric: "African Print",
+      isNew: true,
+      image:
+        "https://i.pinimg.com/1200x/49/21/2b/49212b6a02c10e12e6e0e986cdab94bb.jpg",
+    },
+    {
+      id: "ADIRETWOPIECES4",
+      name: "Adire Shirt & Trousers",
+      category: "Tops",
+      price: "£65.99",
+      size: "XS-XXL",
+      gender: "Men",
+      fabric: "Handwoven Cotton",
+      isNew: true,
+      image:
+        "https://i.pinimg.com/736x/76/03/23/760323e284118c10191b5fc02c3c4258.jpg",
+    },
+    {
+      id: "ADIRETWOPIECES5",
+      name: "Adire Kaftan & Pants",
+      category: "Sets",
+      price: "£99.99",
+      size: "M-XXL",
+      gender: "Unisex",
+      fabric: "Traditional Cotton",
+      isNew: true,
+      image:
+        "https://i.pinimg.com/736x/64/aa/10/64aa10d24b12f9a4657235b4d2a71215.jpg",
+    },
+  ];
+
+  const AnkaraPants = [
+    {
+      id: "ANKARAPANTS1",
+      name: "Ankara Palazzo Trousers",
+      category: "Dresses",
+      price: "£89.99",
+      size: "S-XXL",
+      gender: "Women",
+      fabric: "African Wax",
+      isNew: true,
+      image:
+        "https://i.pinimg.com/736x/b3/7e/f3/b37ef3b83e5e90ca4ce8b679bc18b74a.jpg",
+    },
+    {
+      id: "ANKARAPANTS2",
+      name: "Ankara Jogger Pants",
+      category: "Tops",
+      price: "£49.99",
+      size: "M-XXXL",
+      gender: "Unisex",
+      fabric: "Cotton Blend",
+      isNew: true,
+      image:
+        "https://i.pinimg.com/1200x/bb/5a/09/bb5a0913ce1404e2a59caf62270451cd.jpg",
+    },
+    {
+      id: "ANKARAPANTS3",
+      name: "Ankara Harem Pants",
+      category: "Bottoms",
+      price: "£59.99",
+      size: "S-XL",
+      gender: "Women",
+      fabric: "African Print",
+      isNew: false,
+      image:
+        "https://i.pinimg.com/736x/28/4b/58/284b58c96d7b7a76cfdab83ddfe5d684.jpg",
+    },
+    {
+      id: "ANKARAPANTS4",
+      name: "Ankara Slim-Fit Trousers",
+      category: "Tops",
+      price: "£65.99",
+      size: "XS-XXL",
+      gender: "Men",
+      fabric: "Handwoven Cotton",
+      isNew: false,
+      image:
+        "https://i.pinimg.com/1200x/3f/e3/e7/3fe3e74bd2ee3226713a35bb7d11c474.jpg",
+    },
+    {
+      id: "ANKARAPANTS5",
+      name: "Ankara Cargo Pants",
+      category: "Sets",
+      price: "£99.99",
+      size: "M-XXL",
+      gender: "Unisex",
+      fabric: "Traditional Cotton",
+      isNew: true,
+      image:
+        "https://i.pinimg.com/736x/cd/61/0e/cd610e7cdb98197ead5a0f833a3de8c4.jpg",
+    },
+  ];
+
+  const asoOkeskirt = [
+    {
+      id: "ASOOKESKIRT1",
+      name: "Ankara Maxi Dress",
+      category: "Dresses",
+      price: "£89.99",
+      size: "S-XXL",
+      gender: "Women",
+      fabric: "African Wax",
+      isNew: true,
+      image:
+        "https://i.pinimg.com/736x/78/e2/cd/78e2cdc01f0a63dac69dfddec689984a.jpg",
+    },
+    {
+      id: "ASOOKESKIRT2",
+      name: "Kente Print Shirt",
+      category: "Tops",
+      price: "£49.99",
+      size: "M-XXXL",
+      gender: "Unisex",
+      fabric: "Cotton Blend",
+      isNew: true,
+      image:
+        "https://i.pinimg.com/1200x/4d/ac/53/4dac537396c816aab49bf1e4cab1b3ad.jpg",
+    },
+    {
+      id: "ASOOKESKIRT3",
+      name: "Adire Wrap Skirt",
+      category: "Bottoms",
+      price: "£59.99",
+      size: "S-XL",
+      gender: "Women",
+      fabric: "African Print",
+      isNew: true,
+      image:
+        "https://i.pinimg.com/736x/8a/f5/dd/8af5ddfbab8aaf49b7910bd3cc174890.jpg",
+    },
+    {
+      id: "ASOOKESKIRT4",
+      name: "Dashiki Tunic",
+      category: "Tops",
+      price: "£65.99",
+      size: "XS-XXL",
+      gender: "Men",
+      fabric: "Handwoven Cotton",
+      isNew: true,
+      image:
+        "https://i.pinimg.com/1200x/c5/ae/bf/c5aebf46bf446dba75b41f919f1700fb.jpg",
+    },
+    {
+      id: "ASOOKESKIRT5",
+      name: "Buba and Sokoto Set",
+      category: "Sets",
+      price: "£99.99",
+      size: "M-XXL",
+      gender: "Unisex",
+      fabric: "Traditional Cotton",
+      isNew: true,
+      image:
+        "https://i.pinimg.com/736x/5c/11/e5/5c11e5ce1c31bf811cc90393a9d11432.jpg",
+    },
+  ];
+
+  const bubu = [
+    {
+      id: "BUBU1",
+      name: "Classic Bubu Gown",
+      category: "Dresses",
+      price: "£89.99",
+      size: "S-XXL",
+      gender: "Women",
+      fabric: "African Wax",
+      isNew: true,
+      image:
+        "https://i.pinimg.com/1200x/e0/13/fb/e013fbbe4a19429f2e6a7990c157c12f.jpg",
+    },
+    {
+      id: "BUBU2",
+      name: "Modern Bubu Kaftan",
+      category: "Tops",
+      price: "£49.99",
+      size: "M-XXXL",
+      gender: "Unisex",
+      fabric: "Cotton Blend",
+      isNew: true,
+      image:
+        "https://i.pinimg.com/736x/cc/9d/46/cc9d461520fc2e107f5c0e45746c028e.jpg",
+    },
+    {
+      id: "BUBU3",
+      name: "Embroidered Bubu Dress",
+      category: "Bottoms",
+      price: "£59.99",
+      size: "S-XL",
+      gender: "Women",
+      fabric: "African Print",
+      isNew: true,
+      image:
+        "https://i.pinimg.com/736x/b8/7d/dd/b87dddc68edd2f88e2a318d1b124d649.jpg",
+    },
+    {
+      id: "BUBU4",
+      name: "Chiffon Bubu Gown",
+      category: "Tops",
+      price: "£65.99",
+      size: "XS-XXL",
+      gender: "Men",
+      fabric: "Handwoven Cotton",
+      isNew: true,
+      image:
+        "https://i.pinimg.com/736x/ab/bc/3d/abbc3d29b2d4558139fad75df92c322a.jpg",
+    },
+    {
+      id: "BUBU5",
+      name: "Silk Bubu Outfit",
+      category: "Sets",
+      price: "£99.99",
+      size: "M-XXL",
+      gender: "Unisex",
+      fabric: "Traditional Cotton",
+      isNew: true,
+      image:
+        "https://i.pinimg.com/736x/ac/8e/eb/ac8eeb20f54517854c95759485e958b2.jpg",
     },
   ];
 
@@ -153,9 +407,7 @@ export default function AllProducts() {
                           NEW
                         </div>
                       )}
-                      <button className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-gray-100">
-                        <FiHeart className="text-gray-600 hover:text-red-500" />
-                      </button>
+                      <AddToFavorite />
                     </div>
 
                     {/* Product Details */}
@@ -187,9 +439,17 @@ export default function AllProducts() {
 
                       {/* Action Buttons */}
                       <div className="grid grid-cols-2 gap-2">
-                        <button className="flex items-center justify-center bg-[#7B2D26]  hover:bg-primary-dark text-white py-2 px-3 rounded text-sm transition-colors">
-                          <FiShoppingCart className="mr-2" /> Add to cart
-                        </button>
+                        <AddToCart
+                          id={product.id}
+                          name={product.name}
+                          category={product.category}
+                          price={product.price}
+                          size={product.size}
+                          gender={product.gender}
+                          fabric={product.fabric}
+                          isNew={product.isNew}
+                          image={product.image}
+                        />
                         <Buy product={product} />
                       </div>
                     </div>
@@ -251,7 +511,7 @@ export default function AllProducts() {
                 scrollSnapType: "x mandatory",
               }}
             >
-              {newArrivals.map((product) => (
+              {AdireTwoPiece.map((product) => (
                 <div
                   key={product.id}
                   className="flex-shrink-0 w-[80vw] md:w-[40vw] lg:w-[30vw] px-2 snap-start"
@@ -271,9 +531,7 @@ export default function AllProducts() {
                           NEW
                         </div>
                       )}
-                      <button className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-gray-100">
-                        <FiHeart className="text-gray-600 hover:text-red-500" />
-                      </button>
+                      <AddToFavorite />
                     </div>
 
                     {/* Product Details */}
@@ -305,12 +563,18 @@ export default function AllProducts() {
 
                       {/* Action Buttons */}
                       <div className="grid grid-cols-2 gap-2">
-                        <button className="flex items-center justify-center bg-primary hover:bg-primary-dark text-white py-2 px-3 rounded text-sm transition-colors">
-                          <FiShoppingCart className="mr-2" /> Add
-                        </button>
-                        <button className="border border-primary text-primary hover:bg-black cursor-pointer hover:text-white py-2 px-3 rounded text-sm transition-colors">
-                          Buy Now
-                        </button>
+                        <AddToCart
+                          id={product.id}
+                          name={product.name}
+                          category={product.category}
+                          price={product.price}
+                          size={product.size}
+                          gender={product.gender}
+                          fabric={product.fabric}
+                          isNew={product.isNew}
+                          image={product.image}
+                        />
+                        <Buy product={product} />
                       </div>
                     </div>
                   </div>
@@ -371,7 +635,7 @@ export default function AllProducts() {
                 scrollSnapType: "x mandatory",
               }}
             >
-              {newArrivals.map((product) => (
+              {AnkaraPants.map((product) => (
                 <div
                   key={product.id}
                   className="flex-shrink-0 w-[80vw] md:w-[40vw] lg:w-[30vw] px-2 snap-start"
@@ -391,9 +655,7 @@ export default function AllProducts() {
                           NEW
                         </div>
                       )}
-                      <button className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-gray-100">
-                        <FiHeart className="text-gray-600 hover:text-red-500" />
-                      </button>
+                      <AddToFavorite />
                     </div>
 
                     {/* Product Details */}
@@ -425,12 +687,18 @@ export default function AllProducts() {
 
                       {/* Action Buttons */}
                       <div className="grid grid-cols-2 gap-2">
-                        <button className="flex items-center justify-center bg-primary hover:bg-primary-dark text-white py-2 px-3 rounded text-sm transition-colors">
-                          <FiShoppingCart className="mr-2" /> Add
-                        </button>
-                        <button className="border border-primary text-primary hover:bg-black cursor-pointer hover:text-white py-2 px-3 rounded text-sm transition-colors">
-                          Buy Now
-                        </button>
+                        <AddToCart
+                          id={product.id}
+                          name={product.name}
+                          category={product.category}
+                          price={product.price}
+                          size={product.size}
+                          gender={product.gender}
+                          fabric={product.fabric}
+                          isNew={product.isNew}
+                          image={product.image}
+                        />
+                        <Buy product={product} />
                       </div>
                     </div>
                   </div>
@@ -491,7 +759,7 @@ export default function AllProducts() {
                 scrollSnapType: "x mandatory",
               }}
             >
-              {newArrivals.map((product) => (
+              {asoOkeskirt.map((product) => (
                 <div
                   key={product.id}
                   className="flex-shrink-0 w-[80vw] md:w-[40vw] lg:w-[30vw] px-2 snap-start"
@@ -511,9 +779,8 @@ export default function AllProducts() {
                           NEW
                         </div>
                       )}
-                      <button className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-gray-100">
-                        <FiHeart className="text-gray-600 hover:text-red-500" />
-                      </button>
+
+                      <AddToFavorite />
                     </div>
 
                     {/* Product Details */}
@@ -545,12 +812,18 @@ export default function AllProducts() {
 
                       {/* Action Buttons */}
                       <div className="grid grid-cols-2 gap-2">
-                        <button className="flex items-center justify-center bg-primary hover:bg-primary-dark text-white py-2 px-3 rounded text-sm transition-colors">
-                          <FiShoppingCart className="mr-2" /> Add
-                        </button>
-                        <button className="border border-primary text-primary hover:bg-black cursor-pointer hover:text-white py-2 px-3 rounded text-sm transition-colors">
-                          Buy Now
-                        </button>
+                        <AddToCart
+                          id={product.id}
+                          name={product.name}
+                          category={product.category}
+                          price={product.price}
+                          size={product.size}
+                          gender={product.gender}
+                          fabric={product.fabric}
+                          isNew={product.isNew}
+                          image={product.image}
+                        />
+                        <Buy product={product} />
                       </div>
                     </div>
                   </div>
@@ -611,7 +884,7 @@ export default function AllProducts() {
                 scrollSnapType: "x mandatory",
               }}
             >
-              {newArrivals.map((product) => (
+              {bubu.map((product) => (
                 <div
                   key={product.id}
                   className="flex-shrink-0 w-[80vw] md:w-[40vw] lg:w-[30vw] px-2 snap-start"
@@ -631,9 +904,7 @@ export default function AllProducts() {
                           NEW
                         </div>
                       )}
-                      <button className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-gray-100">
-                        <FiHeart className="text-gray-600 hover:text-red-500" />
-                      </button>
+                      <AddToFavorite />
                     </div>
 
                     {/* Product Details */}
@@ -665,12 +936,18 @@ export default function AllProducts() {
 
                       {/* Action Buttons */}
                       <div className="grid grid-cols-2 gap-2">
-                        <button className="flex items-center justify-center bg-primary hover:bg-primary-dark text-white py-2 px-3 rounded text-sm transition-colors">
-                          <FiShoppingCart className="mr-2" /> Add
-                        </button>
-                        <button className="border border-primary text-primary hover:bg-black cursor-pointer hover:text-white py-2 px-3 rounded text-sm transition-colors">
-                          Buy Now
-                        </button>
+                        <AddToCart
+                          id={product.id}
+                          name={product.name}
+                          category={product.category}
+                          price={product.price}
+                          size={product.size}
+                          gender={product.gender}
+                          fabric={product.fabric}
+                          isNew={product.isNew}
+                          image={product.image}
+                        />
+                        <Buy product={product} />
                       </div>
                     </div>
                   </div>

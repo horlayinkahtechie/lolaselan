@@ -1,3 +1,5 @@
+import AddToCart from "@/app/_components/addToCart";
+import AddToFavorite from "@/app/_components/addToFavorite";
 import Buy from "@/app/_components/buy";
 import Image from "next/image";
 import {
@@ -12,7 +14,7 @@ import {
 export default function AnkaraPants() {
   const AnkaraPants = [
     {
-      id: 1,
+      id: "ANKARAPANTS1",
       name: "Ankara Palazzo Trousers",
       category: "Dresses",
       price: "£89.99",
@@ -24,7 +26,7 @@ export default function AnkaraPants() {
         "https://i.pinimg.com/736x/b3/7e/f3/b37ef3b83e5e90ca4ce8b679bc18b74a.jpg",
     },
     {
-      id: 2,
+      id: "ANKARAPANTS2",
       name: "Ankara Jogger Pants",
       category: "Tops",
       price: "£49.99",
@@ -36,7 +38,7 @@ export default function AnkaraPants() {
         "https://i.pinimg.com/1200x/bb/5a/09/bb5a0913ce1404e2a59caf62270451cd.jpg",
     },
     {
-      id: 3,
+      id: "ANKARAPANTS3",
       name: "Ankara Harem Pants",
       category: "Bottoms",
       price: "£59.99",
@@ -48,7 +50,7 @@ export default function AnkaraPants() {
         "https://i.pinimg.com/736x/28/4b/58/284b58c96d7b7a76cfdab83ddfe5d684.jpg",
     },
     {
-      id: 4,
+      id: "ANKARAPANTS4",
       name: "Ankara Slim-Fit Trousers",
       category: "Tops",
       price: "£65.99",
@@ -60,7 +62,7 @@ export default function AnkaraPants() {
         "https://i.pinimg.com/1200x/3f/e3/e7/3fe3e74bd2ee3226713a35bb7d11c474.jpg",
     },
     {
-      id: 5,
+      id: "ANKARAPANTS5",
       name: "Ankara Cargo Pants",
       category: "Sets",
       price: "£99.99",
@@ -96,9 +98,7 @@ export default function AnkaraPants() {
                     NEW
                   </div>
                 )}
-                <button className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-gray-100">
-                  <FiHeart className="text-gray-600 hover:text-red-500" />
-                </button>
+                <AddToFavorite />
               </div>
 
               {/* Product Details */}
@@ -126,9 +126,17 @@ export default function AnkaraPants() {
 
                 {/* Action Buttons */}
                 <div className="grid grid-cols-2 gap-2">
-                  <button className="flex items-center justify-center bg-[#7B2D26]  hover:bg-primary-dark text-white py-2 px-3 rounded text-sm transition-colors">
-                    <FiShoppingCart className="mr-2" /> Add to cart
-                  </button>
+                  <AddToCart
+                    id={product.id}
+                    name={product.name}
+                    category={product.category}
+                    price={product.price}
+                    size={product.size}
+                    gender={product.gender}
+                    fabric={product.fabric}
+                    isNew={product.isNew}
+                    image={product.image}
+                  />
                   <Buy product={product} />
                 </div>
               </div>

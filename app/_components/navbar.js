@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { Cinzel_Decorative } from "next/font/google";
 import { FiMail } from "react-icons/fi";
 import NewsletterModal from "./subscriptionModal";
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import CartCount from "./cartCount";
 
 const cinzelDecorative = Cinzel_Decorative({
   weight: ["400", "700", "900"],
@@ -88,24 +89,7 @@ export default function Navbar() {
           <div className="flex items-center space-x-4 md:space-x-0">
             {/* Mobile Cart and Profile (visible on mobile) */}
             <div className="md:hidden flex items-center space-x-4">
-              <Link
-                href="/cart"
-                className="p-2 text-[#FFE9D9] hover:text-[#FFB38A] cursor-pointer"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                  />
-                </svg>
-              </Link>
+              <CartCount />
 
               <Link
                 href="/user/profile"
@@ -172,24 +156,7 @@ export default function Navbar() {
 
             {/* Desktop Cart and Profile (hidden on mobile) */}
             <div className="hidden md:flex items-center space-x-4 ml-8">
-              <Link
-                href="/cart"
-                className="p-2 text-[#FFE9D9] hover:text-[#FFB38A] cursor-pointer"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                  />
-                </svg>
-              </Link>
+              <CartCount />
               <Link
                 href="/user/profile"
                 className="p-2 text-[#FFE9D9] hover:text-[#FFB38A] cursor-pointer"

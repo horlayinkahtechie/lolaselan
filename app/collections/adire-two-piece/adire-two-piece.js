@@ -1,3 +1,5 @@
+import AddToCart from "@/app/_components/addToCart";
+import AddToFavorite from "@/app/_components/addToFavorite";
 import Buy from "@/app/_components/buy";
 import Image from "next/image";
 import {
@@ -12,7 +14,7 @@ import {
 export default function AdireTwoPiece() {
   const AdireTwoPiece = [
     {
-      id: 1,
+      id: "ADIRETWOPIECES1",
       name: "Adire Kimono Set",
       category: "Dresses",
       price: "£89.99",
@@ -24,7 +26,7 @@ export default function AdireTwoPiece() {
         "https://i.pinimg.com/1200x/c3/77/1e/c3771ebb3b93a903ca4a4147a484e3c7.jpg",
     },
     {
-      id: 2,
+      id: "ADIRETWOPIECES2",
       name: "Adire Crop Top & Pants",
       category: "Tops",
       price: "£49.99",
@@ -36,7 +38,7 @@ export default function AdireTwoPiece() {
         "https://i.pinimg.com/736x/82/ed/97/82ed97af33e03e7258b35561fadcca49.jpg",
     },
     {
-      id: 3,
+      id: "ADIRETWOPIECES3",
       name: "Adire Blouse & Wrapper",
       category: "Bottoms",
       price: "£59.99",
@@ -48,7 +50,7 @@ export default function AdireTwoPiece() {
         "https://i.pinimg.com/1200x/49/21/2b/49212b6a02c10e12e6e0e986cdab94bb.jpg",
     },
     {
-      id: 4,
+      id: "ADIRETWOPIECES4",
       name: "Adire Shirt & Trousers",
       category: "Tops",
       price: "£65.99",
@@ -60,7 +62,7 @@ export default function AdireTwoPiece() {
         "https://i.pinimg.com/736x/76/03/23/760323e284118c10191b5fc02c3c4258.jpg",
     },
     {
-      id: 5,
+      id: "ADIRETWOPIECES5",
       name: "Adire Kaftan & Pants",
       category: "Sets",
       price: "£99.99",
@@ -96,9 +98,7 @@ export default function AdireTwoPiece() {
                     NEW
                   </div>
                 )}
-                <button className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-gray-100">
-                  <FiHeart className="text-gray-600 hover:text-red-500" />
-                </button>
+                <AddToFavorite />
               </div>
 
               {/* Product Details */}
@@ -126,9 +126,17 @@ export default function AdireTwoPiece() {
 
                 {/* Action Buttons */}
                 <div className="grid grid-cols-2 gap-2">
-                  <button className="flex items-center justify-center bg-[#7B2D26]  hover:bg-primary-dark text-white py-2 px-3 rounded text-sm transition-colors">
-                    <FiShoppingCart className="mr-2" /> Add to cart
-                  </button>
+                  <AddToCart
+                    id={product.id}
+                    name={product.name}
+                    category={product.category}
+                    price={product.price}
+                    size={product.size}
+                    gender={product.gender}
+                    fabric={product.fabric}
+                    isNew={product.isNew}
+                    image={product.image}
+                  />
                   <Buy product={product} />
                 </div>
               </div>

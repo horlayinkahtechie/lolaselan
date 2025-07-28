@@ -14,6 +14,8 @@ import {
 } from "react-icons/fi";
 import Image from "next/image";
 import Buy from "./buy";
+import AddToCart from "./addToCart";
+import AddToFavorite from "./addToFavorite";
 
 export default function NewArrivals() {
   const scrollContainerRef = useRef(null);
@@ -156,9 +158,7 @@ export default function NewArrivals() {
                         NEW
                       </div>
                     )}
-                    <button className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-gray-100">
-                      <FiHeart className="text-gray-600 hover:text-red-500" />
-                    </button>
+                    <AddToFavorite />
                   </div>
 
                   {/* Product Details */}
@@ -190,9 +190,17 @@ export default function NewArrivals() {
 
                     {/* Action Buttons */}
                     <div className="grid grid-cols-2 gap-2">
-                      <button className="flex items-center justify-center bg-[#7B2D26]  hover:bg-primary-dark text-white py-2 px-3 rounded text-sm transition-colors">
-                        <FiShoppingCart className="mr-2" /> Add to cart
-                      </button>
+                      <AddToCart
+                        id={product.id}
+                        name={product.name}
+                        category={product.category}
+                        price={product.price}
+                        size={product.size}
+                        gender={product.gender}
+                        fabric={product.fabric}
+                        isNew={product.isNew}
+                        image={product.image}
+                      />
                       <Buy product={product} />
                     </div>
                   </div>

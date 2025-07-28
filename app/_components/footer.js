@@ -165,19 +165,19 @@ export default function Footer() {
           </p>
           <div className="flex justify-center space-x-4 mt-2">
             <Link
-              href="/privacy"
+              href="/privacy-policy"
               className="hover:text-primary transition-colors"
             >
               Privacy Policy
             </Link>
             <Link
-              href="/terms"
+              href="/terms-of-service"
               className="hover:text-primary transition-colors"
             >
               Terms of Service
             </Link>
             <Link
-              href="/cookies"
+              href="/cookies-policy"
               className="hover:text-primary transition-colors"
             >
               Cookie Policy

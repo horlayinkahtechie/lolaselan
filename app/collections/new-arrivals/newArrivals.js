@@ -1,3 +1,5 @@
+import AddToCart from "@/app/_components/addToCart";
+import AddToFavorite from "@/app/_components/addToFavorite";
 import Buy from "@/app/_components/buy";
 import Image from "next/image";
 import {
@@ -12,7 +14,7 @@ import {
 export default function NewArrivalsPage() {
   const NewArrivals = [
     {
-      id: 1,
+      id: "NEWARRIVALS1",
       name: "Ankara Maxi Dress",
       category: "Dresses",
       price: "£89.99",
@@ -24,7 +26,7 @@ export default function NewArrivalsPage() {
         "https://i.pinimg.com/736x/78/e2/cd/78e2cdc01f0a63dac69dfddec689984a.jpg",
     },
     {
-      id: 2,
+      id: "NEWARRIVALS2",
       name: "Kente Print Shirt",
       category: "Tops",
       price: "£49.99",
@@ -36,7 +38,7 @@ export default function NewArrivalsPage() {
         "https://i.pinimg.com/1200x/4d/ac/53/4dac537396c816aab49bf1e4cab1b3ad.jpg",
     },
     {
-      id: 3,
+      id: "NEWARRIVALS3",
       name: "Adire Wrap Skirt",
       category: "Bottoms",
       price: "£59.99",
@@ -48,7 +50,7 @@ export default function NewArrivalsPage() {
         "https://i.pinimg.com/736x/8a/f5/dd/8af5ddfbab8aaf49b7910bd3cc174890.jpg",
     },
     {
-      id: 4,
+      id: "NEWARRIVALS4",
       name: "Dashiki Tunic",
       category: "Tops",
       price: "£65.99",
@@ -60,7 +62,7 @@ export default function NewArrivalsPage() {
         "https://i.pinimg.com/1200x/c5/ae/bf/c5aebf46bf446dba75b41f919f1700fb.jpg",
     },
     {
-      id: 5,
+      id: "NEWARRIVALS5",
       name: "Buba and Sokoto Set",
       category: "Sets",
       price: "£99.99",
@@ -95,9 +97,7 @@ export default function NewArrivalsPage() {
                     NEW
                   </div>
                 )}
-                <button className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-gray-100">
-                  <FiHeart className="text-gray-600 hover:text-red-500" />
-                </button>
+                <AddToFavorite />
               </div>
 
               {/* Product Details */}
@@ -124,9 +124,17 @@ export default function NewArrivalsPage() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
-                  <button className="flex items-center justify-center bg-[#7B2D26]  hover:bg-primary-dark text-white py-2 px-3 rounded text-sm transition-colors">
-                    <FiShoppingCart className="mr-2" /> Add to cart
-                  </button>
+                  <AddToCart
+                    id={product.id}
+                    name={product.name}
+                    category={product.category}
+                    price={product.price}
+                    size={product.size}
+                    gender={product.gender}
+                    fabric={product.fabric}
+                    isNew={product.isNew}
+                    image={product.image}
+                  />
                   <Buy product={product} />
                 </div>
               </div>

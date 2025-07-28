@@ -1,3 +1,5 @@
+import AddToCart from "@/app/_components/addToCart";
+import AddToFavorite from "@/app/_components/addToFavorite";
 import Buy from "@/app/_components/buy";
 import Image from "next/image";
 import {
@@ -12,7 +14,7 @@ import {
 export default function Bubu() {
   const bubu = [
     {
-      id: 1,
+      id: "BUBU1",
       name: "Classic Bubu Gown",
       category: "Dresses",
       price: "£89.99",
@@ -24,7 +26,7 @@ export default function Bubu() {
         "https://i.pinimg.com/1200x/e0/13/fb/e013fbbe4a19429f2e6a7990c157c12f.jpg",
     },
     {
-      id: 2,
+      id: "BUBU2",
       name: "Modern Bubu Kaftan",
       category: "Tops",
       price: "£49.99",
@@ -36,7 +38,7 @@ export default function Bubu() {
         "https://i.pinimg.com/736x/cc/9d/46/cc9d461520fc2e107f5c0e45746c028e.jpg",
     },
     {
-      id: 3,
+      id: "BUBU3",
       name: "Embroidered Bubu Dress",
       category: "Bottoms",
       price: "£59.99",
@@ -48,7 +50,7 @@ export default function Bubu() {
         "https://i.pinimg.com/736x/b8/7d/dd/b87dddc68edd2f88e2a318d1b124d649.jpg",
     },
     {
-      id: 4,
+      id: "BUBU4",
       name: "Chiffon Bubu Gown",
       category: "Tops",
       price: "£65.99",
@@ -60,7 +62,7 @@ export default function Bubu() {
         "https://i.pinimg.com/736x/ab/bc/3d/abbc3d29b2d4558139fad75df92c322a.jpg",
     },
     {
-      id: 5,
+      id: "BUBU5",
       name: "Silk Bubu Outfit",
       category: "Sets",
       price: "£99.99",
@@ -96,9 +98,7 @@ export default function Bubu() {
                     NEW
                   </div>
                 )}
-                <button className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-gray-100">
-                  <FiHeart className="text-gray-600 hover:text-red-500" />
-                </button>
+                <AddToFavorite />
               </div>
 
               {/* Product Details */}
@@ -126,9 +126,17 @@ export default function Bubu() {
 
                 {/* Action Buttons */}
                 <div className="grid grid-cols-2 gap-2">
-                  <button className="flex items-center justify-center bg-[#7B2D26]  hover:bg-primary-dark text-white py-2 px-3 rounded text-sm transition-colors">
-                    <FiShoppingCart className="mr-2" /> Add to cart
-                  </button>
+                  <AddToCart
+                    id={product.id}
+                    name={product.name}
+                    category={product.category}
+                    price={product.price}
+                    size={product.size}
+                    gender={product.gender}
+                    fabric={product.fabric}
+                    isNew={product.isNew}
+                    image={product.image}
+                  />
                   <Buy product={product} />
                 </div>
               </div>

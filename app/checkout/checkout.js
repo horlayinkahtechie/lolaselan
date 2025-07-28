@@ -3,8 +3,10 @@ import { useState } from "react";
 import { FiArrowLeft, FiCheck, FiLock, FiTruck } from "react-icons/fi";
 import { Cinzel_Decorative } from "next/font/google";
 import { useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
-
+import supabase from "../lib/supabase";
+import { useRouter } from "next/navigation";
 const cinzelDecorative = Cinzel_Decorative({
   weight: ["400", "700"],
   subsets: ["latin"],
@@ -12,11 +14,15 @@ const cinzelDecorative = Cinzel_Decorative({
 });
 
 export default function CheckoutPage() {
+  const { data: session } = useSession();
+  const router = useRouter();
+
   const searchParams = useSearchParams();
 
+  const order_id = searchParams.get("order_id") || "";
   const id = searchParams.get("id") || "";
   const name = searchParams.get("name") || "";
-  const category = searchParams.get("category") || "₦0";
+  const category = searchParams.get("category") || "";
   const price = searchParams.get("price") || "";
   const size = searchParams.get("size") || "";
   const gender = searchParams.get("gender") || "";
@@ -25,11 +31,10 @@ export default function CheckoutPage() {
   const image = searchParams.get("image") || "";
 
   const [activeStep, setActiveStep] = useState(1);
-  const [paymentMethod, setPaymentMethod] = useState("credit-card");
   const [agreeToTerms, setAgreeToTerms] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Step one states
-  const [email, setEmail] = useState("");
   const [subscribe, setSubscribe] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -43,33 +48,57 @@ export default function CheckoutPage() {
   //   Shipping States
   const [shippingMethod, setShippingMethod] = useState("standard");
   const [shippingPrice, setShippingPrice] = useState(9.99);
+  const [paymentMethod, setPaymentMethod] = useState("credit-card");
 
   //   Order submission function
-  const orderSubmit = () => {
+  const orderSubmit = async () => {
+    if (!session || !session.user?.email) {
+      alert("Please log in first to place an order.");
+      return;
+    }
+
+    setLoading(true);
+
+    const orderId = order_id;
+
+    try {
+      const { error: orderError } = await supabase.from("orders").insert([
+        {
+          product_id: id,
+          order_id: orderId,
+          email: session.user.email,
+          firstName,
+          lastName,
+          address,
+          city,
+          postalCode,
+          country,
+          size: selectedSize,
+          quantity,
+          shippingMethod,
+          paymentMethod,
+          productPrice: price,
+          totalProductPrice: roundedTotal,
+        },
+      ]);
+
+      if (orderError) {
+        console.error("Order insert error:", orderError);
+        router.push("/status/declined");
+        return;
+      }
+
+      router.push(`/status/confirmed?order_id=${orderId}`);
+    } catch (err) {
+      console.error("Unexpected error:", err);
+    } finally {
+      setLoading(false);
+    }
+
     console.log("order submitted");
   };
 
   // Sample cart data
-  const cartItems = [
-    {
-      id: 1,
-      name: "Silk Camisole Dress",
-      color: "Taupe",
-      size: "M",
-      price: 89.99,
-      quantity: 1,
-      image: "/images/product1.jpg",
-    },
-    {
-      id: 2,
-      name: "Linen Wide-Leg Pants",
-      color: "Ivory",
-      size: "S",
-      price: 120.0,
-      quantity: 1,
-      image: "/images/product2.jpg",
-    },
-  ];
 
   // Available sizes and quantities
   const sizes = [
@@ -83,9 +112,19 @@ export default function CheckoutPage() {
   const quantities = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
   // Calculate order totals
-  const subtotal = parseFloat(price) * quantity;
+  const numericPrice =
+    parseFloat((price || "0").toString().replace(/[^0-9.]/g, "")) || 0;
 
-  const total = parseFloat(subtotal + shippingPrice);
+  const numericQuantity = parseInt(quantity) || 1;
+  const numericShipping = parseFloat(shippingPrice) || 0;
+
+  // Calculate subtotal and total
+  const subtotal = numericPrice * numericQuantity;
+  const total = subtotal + numericShipping;
+
+  // Round to 2 decimal places for display
+  const roundedSubtotal = subtotal.toFixed(2);
+  const roundedTotal = total.toFixed(2);
 
   return (
     <div className="min-h-screen bg-[#FFF5F0] py-12 px-4 sm:px-6 lg:px-8 lg:pt-35 pt-35">
@@ -154,42 +193,8 @@ export default function CheckoutPage() {
           <div className="lg:w-2/3">
             {activeStep === 1 && (
               <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-                <h2 className="text-xl font-semibold text-[#7B2D26] mb-6">
-                  Contact Information
-                </h2>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-[#7B2D26] mb-1">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full px-4 py-3 border border-[#FFD8BE] rounded-lg focus:ring-2 focus:ring-[#7B2D26] focus:border-[#7B2D26]"
-                      placeholder="your@email.com"
-                      required
-                    />
-                  </div>
-                  <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id="subscribe"
-                      checked={subscribe}
-                      onChange={(e) => setSubscribe(e.target.checked)}
-                      className="mr-2 h-4 w-4 text-[#7B2D26] border-[#FFD8BE] rounded focus:ring-[#7B2D26]"
-                    />
-                    <label
-                      htmlFor="subscribe"
-                      className="text-sm text-[#7B2D26]"
-                    >
-                      Subscribe to our newsletter for exclusive offers
-                    </label>
-                  </div>
-                </div>
-
                 <h2 className="text-xl font-semibold text-[#7B2D26] mt-8 mb-6">
-                  Shipping Address
+                  Contact Information
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
@@ -216,6 +221,9 @@ export default function CheckoutPage() {
                       required
                     />
                   </div>
+                  <h2 className="text-xl font-semibold text-[#7B2D26] mt-8 mb-6">
+                    Shipping Address
+                  </h2>
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-[#7B2D26] mb-1">
                       Address
@@ -318,7 +326,6 @@ export default function CheckoutPage() {
                     onClick={() => {
                       // Validate required fields before proceeding
                       if (
-                        email &&
                         firstName &&
                         lastName &&
                         address &&
@@ -392,7 +399,7 @@ export default function CheckoutPage() {
                         </div>
                       </div>
                       <span className="font-medium text-[#7B2D26]">
-                        ${method.price.toFixed(2)}
+                        £{method.price.toFixed(2)}
                       </span>
                     </label>
                   ))}
@@ -488,6 +495,18 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="subscribe"
+                    checked={subscribe}
+                    onChange={(e) => setSubscribe(e.target.checked)}
+                    className="mr-2 h-4 w-4 text-[#7B2D26] border-[#FFD8BE] rounded focus:ring-[#7B2D26]"
+                  />
+                  <label htmlFor="subscribe" className="text-sm text-[#7B2D26]">
+                    Subscribe to our newsletter for exclusive offers
+                  </label>
+                </div>
                 <div className="flex items-center mb-6">
                   <input
                     type="checkbox"
@@ -516,7 +535,7 @@ export default function CheckoutPage() {
                     <FiArrowLeft className="mr-2" /> Return to shipping
                   </button>
                   <button
-                    disabled={!agreeToTerms}
+                    disabled={!agreeToTerms || loading}
                     onClick={() => orderSubmit()}
                     className={`px-6 py-3 rounded-lg cursor-pointer font-medium transition-colors ${
                       agreeToTerms
@@ -526,7 +545,7 @@ export default function CheckoutPage() {
                   >
                     <div className="flex items-center">
                       <FiLock className="mr-2" />
-                      Complete Order
+                      {loading ? "Sending Order..." : "Complete Order"}
                     </div>
                   </button>
                 </div>
@@ -571,7 +590,7 @@ export default function CheckoutPage() {
                     </h3>
                     <div className="flex items-center mt-1">
                       <span className="text-[#7B2D26] font-semibold">
-                        ₦{price}
+                        {price}
                       </span>
                       {isNew === "true" && (
                         <span className="ml-2 px-2 py-0.5 bg-[#7B2D26] text-[#FFD8BE] text-xs rounded-full">
@@ -678,7 +697,7 @@ export default function CheckoutPage() {
                     </svg>
                     Subtotal
                   </span>
-                  <span className="text-[#7B2D26]">£{price}</span>
+                  <span className="text-[#7B2D26]">£{roundedSubtotal}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[#7B2D26] flex items-center">
@@ -736,7 +755,7 @@ export default function CheckoutPage() {
                     <FiLock className="h-4 w-4 mr-1" />
                     Total
                   </span>
-                  <span className="text-[#7B2D26]">{total}</span>
+                  <span className="text-[#7B2D26]">£{roundedTotal}</span>
                 </div>
               </div>
             </div>

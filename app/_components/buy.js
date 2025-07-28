@@ -5,11 +5,23 @@ import { useRouter } from "next/navigation";
 export default function Buy({ product }) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  //Random orderID
+  const generateOrderId = () => {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let orderId = "";
+    for (let i = 0; i < 8; i++) {
+      orderId += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return orderId;
+  };
+
   const handleBuyNow = async () => {
     setLoading(true);
 
     try {
       const params = new URLSearchParams({
+        order_id: generateOrderId(),
         id: product.id,
         name: product.name,
         category: product.category,
