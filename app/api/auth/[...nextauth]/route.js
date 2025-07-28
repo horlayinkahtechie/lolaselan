@@ -7,6 +7,7 @@ export const authOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
     }),
   ],
   callbacks: {
