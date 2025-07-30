@@ -77,7 +77,7 @@ export default function AnkaraPants() {
 
   return (
     <>
-      <h2 className="text-3xl font-playfair font-bold flex items-center lg:pt-50 lg:p-5 pt-35 p-2">
+      <h2 className="lg:text-3xl text-2xl font-playfair font-bold flex items-center lg:pt-50 lg:p-5 pt-35 p-2">
         <FiZap className="mr-2 text-black" /> Ankara Pants
       </h2>
       <div className="grid grid-cols-1 lg:grid-cols-4 lg:pt-10 lg:pb-20 lg:p-5 pb-10 p-2 pt-5">
@@ -89,7 +89,7 @@ export default function AnkaraPants() {
                 <Image
                   src={product.image}
                   fill
-                  alt={product.title}
+                  alt={product.name}
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
@@ -98,7 +98,17 @@ export default function AnkaraPants() {
                     NEW
                   </div>
                 )}
-                <AddToFavorite />
+                <AddToFavorite
+                  id={product.id}
+                  name={product.name}
+                  category={product.category}
+                  price={product.price}
+                  size={product.size}
+                  gender={product.gender}
+                  fabric={product.fabric}
+                  isNew={product.isNew}
+                  image={product.image}
+                />
               </div>
 
               {/* Product Details */}

@@ -344,11 +344,11 @@ export default function AllProducts() {
 
   return (
     <>
-      <section className="py-12 bg-gray-50 lg:pt-40">
+      <section className="py-12 bg-gray-50 lg:pt-40 pt-40">
         <div className="container mx-auto px-4">
           {/* Section Header */}
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-playfair font-bold flex items-center">
+            <h2 className="lg:text-3xl text-2xl font-playfair font-bold flex items-center">
               <FiZap className="mr-2 text-primary" /> New Arrivals
             </h2>
             <Link
@@ -398,16 +398,26 @@ export default function AllProducts() {
                       <Image
                         src={product.image}
                         fill
-                        alt={product.title}
+                        alt={product.name}
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
                       {product.isNew && (
-                        <div className="absolute top-2 left-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded-full">
+                        <div className="absolute top-2 left-2 bg-primary text-white bg-[#7B2D26]  text-xs font-bold px-2 py-1 rounded-full">
                           NEW
                         </div>
                       )}
-                      <AddToFavorite />
+                      <AddToFavorite
+                        id={product.id}
+                        name={product.name}
+                        category={product.category}
+                        price={product.price}
+                        size={product.size}
+                        gender={product.gender}
+                        fabric={product.fabric}
+                        isNew={product.isNew}
+                        image={product.image}
+                      />
                     </div>
 
                     {/* Product Details */}
@@ -472,7 +482,7 @@ export default function AllProducts() {
         <div className="container mx-auto px-4">
           {/* Section Header */}
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-playfair font-bold flex items-center">
+            <h2 className="lg:text-3xl text-2xl font-playfair font-bold flex items-center">
               <FiZap className="mr-2 text-primary" /> Adire two piece
             </h2>
             <Link
@@ -522,7 +532,7 @@ export default function AllProducts() {
                       <Image
                         src={product.image}
                         fill
-                        alt={product.title}
+                        alt={product.name}
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
@@ -531,7 +541,17 @@ export default function AllProducts() {
                           NEW
                         </div>
                       )}
-                      <AddToFavorite />
+                      <AddToFavorite
+                        id={product.id}
+                        name={product.name}
+                        category={product.category}
+                        price={product.price}
+                        size={product.size}
+                        gender={product.gender}
+                        fabric={product.fabric}
+                        isNew={product.isNew}
+                        image={product.image}
+                      />
                     </div>
 
                     {/* Product Details */}
@@ -596,7 +616,7 @@ export default function AllProducts() {
         <div className="container mx-auto px-4">
           {/* Section Header */}
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-playfair font-bold flex items-center">
+            <h2 className="lg:text-3xl text-2xl font-playfair font-bold flex items-center">
               <FiZap className="mr-2 text-primary" /> Ankara Pants
             </h2>
             <Link
@@ -646,16 +666,26 @@ export default function AllProducts() {
                       <Image
                         src={product.image}
                         fill
-                        alt={product.title}
+                        alt={product.name}
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
                       {product.isNew && (
-                        <div className="absolute top-2 left-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded-full">
+                        <div className="absolute top-2 left-2 bg-primary text-white bg-[#7B2D26]  text-xs font-bold px-2 py-1 rounded-full">
                           NEW
                         </div>
                       )}
-                      <AddToFavorite />
+                      <AddToFavorite
+                        id={product.id}
+                        name={product.name}
+                        category={product.category}
+                        price={product.price}
+                        size={product.size}
+                        gender={product.gender}
+                        fabric={product.fabric}
+                        isNew={product.isNew}
+                        image={product.image}
+                      />
                     </div>
 
                     {/* Product Details */}
@@ -720,7 +750,7 @@ export default function AllProducts() {
         <div className="container mx-auto px-4">
           {/* Section Header */}
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-playfair font-bold flex items-center">
+            <h2 className="lg:text-3xl text-2xl font-playfair font-bold flex items-center">
               <FiZap className="mr-2 text-primary" /> Aso oke skirts
             </h2>
             <Link
@@ -770,17 +800,27 @@ export default function AllProducts() {
                       <Image
                         src={product.image}
                         fill
-                        alt={product.title}
+                        alt={product.name}
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
                       {product.isNew && (
-                        <div className="absolute top-2 left-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded-full">
+                        <div className="absolute top-2 left-2 bg-primary text-white bg-[#7B2D26]  text-xs font-bold px-2 py-1 rounded-full">
                           NEW
                         </div>
                       )}
 
-                      <AddToFavorite />
+                      <AddToFavorite
+                        id={product.id}
+                        name={product.name}
+                        category={product.category}
+                        price={product.price}
+                        size={product.size}
+                        gender={product.gender}
+                        fabric={product.fabric}
+                        isNew={product.isNew}
+                        image={product.image}
+                      />
                     </div>
 
                     {/* Product Details */}
@@ -845,7 +885,7 @@ export default function AllProducts() {
         <div className="container mx-auto px-4">
           {/* Section Header */}
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-playfair font-bold flex items-center">
+            <h2 className="lg:text-3xl text-2xl font-playfair font-bold flex items-center">
               <FiZap className="mr-2 text-primary" /> Bubu
             </h2>
             <Link
@@ -895,16 +935,26 @@ export default function AllProducts() {
                       <Image
                         src={product.image}
                         fill
-                        alt={product.title}
+                        alt={product.name}
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
                       {product.isNew && (
-                        <div className="absolute top-2 left-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded-full">
+                        <div className="absolute top-2 left-2 bg-primary text-white bg-[#7B2D26]  text-xs font-bold px-2 py-1 rounded-full">
                           NEW
                         </div>
                       )}
-                      <AddToFavorite />
+                      <AddToFavorite
+                        id={product.id}
+                        name={product.name}
+                        category={product.category}
+                        price={product.price}
+                        size={product.size}
+                        gender={product.gender}
+                        fabric={product.fabric}
+                        isNew={product.isNew}
+                        image={product.image}
+                      />
                     </div>
 
                     {/* Product Details */}

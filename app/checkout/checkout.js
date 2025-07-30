@@ -8,6 +8,7 @@ import Image from "next/image";
 import supabase from "../lib/supabase";
 import { useRouter } from "next/navigation";
 import { Suspense } from "react";
+import { useEffect } from "react";
 const cinzelDecorative = Cinzel_Decorative({
   weight: ["400", "700"],
   subsets: ["latin"],
@@ -50,6 +51,10 @@ export default function CheckoutPage() {
   const [shippingMethod, setShippingMethod] = useState("standard");
   const [shippingPrice, setShippingPrice] = useState(9.99);
   const [paymentMethod, setPaymentMethod] = useState("credit-card");
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   //   Order submission function
   const orderSubmit = async () => {
@@ -119,7 +124,7 @@ export default function CheckoutPage() {
   const numericQuantity = parseInt(quantity) || 1;
   const numericShipping = parseFloat(shippingPrice) || 0;
 
-  // Calculate subtotal and total
+  // Subtotal and total
   const subtotal = numericPrice * numericQuantity;
   const total = subtotal + numericShipping;
 

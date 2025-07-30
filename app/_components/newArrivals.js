@@ -99,7 +99,7 @@ export default function NewArrivals() {
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl font-playfair font-bold flex items-center">
+          <h2 className="lg:text-3xl text-2xl font-playfair font-bold flex items-center">
             <FiZap className="mr-2 text-primary" /> New Arrivals
           </h2>
           <Link
@@ -149,7 +149,7 @@ export default function NewArrivals() {
                     <Image
                       src={product.image}
                       fill
-                      alt={product.title}
+                      alt={product.name}
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
@@ -158,7 +158,17 @@ export default function NewArrivals() {
                         NEW
                       </div>
                     )}
-                    <AddToFavorite />
+                    <AddToFavorite
+                      id={product.id}
+                      name={product.name}
+                      category={product.category}
+                      price={product.price}
+                      size={product.size}
+                      gender={product.gender}
+                      fabric={product.fabric}
+                      isNew={product.isNew}
+                      image={product.image}
+                    />
                   </div>
 
                   {/* Product Details */}

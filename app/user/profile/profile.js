@@ -13,9 +13,9 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import OrderHistory from "@/app/_components/orderHistory";
+import WishlistHistory from "@/app/_components/wishListHistory";
 
 // import SavedAddresses from "@/components/SavedAddresses";
-// import Wishlist from "@/components/Wishlist";
 // import AccountSettings from "@/components/AccountSettings";
 
 export default function ProfilePage() {
@@ -114,7 +114,7 @@ export default function ProfilePage() {
           <div className="lg:w-3/4">
             <div className="bg-white rounded-xl shadow-sm p-6">
               {activeTab === "orders" && <OrderHistory />}
-              {activeTab === "wishlist" && <p>Your wishlist</p>}
+              {activeTab === "wishlist" && <WishlistHistory />}
               {activeTab === "addresses" && <p>Your address</p>}
               {activeTab === "settings" && <p>Your Account settings</p>}
             </div>

@@ -15,68 +15,69 @@ export default function AsoOkeSkirt() {
   const asoOkeskirt = [
     {
       id: "ASOOKESKIRT1",
-      name: "Ankara Maxi Dress",
-      category: "Dresses",
-      price: "£89.99",
-      size: "S-XXL",
+      name: "Royal Aso Oke Pleated Skirt",
+      category: "Bottoms",
+      price: "£119.99",
+      size: "S-XL",
       gender: "Women",
-      fabric: "African Wax",
+      fabric: "Handwoven Aso Oke",
       isNew: true,
       image:
-        "https://i.pinimg.com/736x/78/e2/cd/78e2cdc01f0a63dac69dfddec689984a.jpg",
+        "https://i.pinimg.com/1200x/29/89/e5/2989e5c9398c1295d0b5f5beb290037b.jpg",
     },
     {
       id: "ASOOKESKIRT2",
-      name: "Kente Print Shirt",
-      category: "Tops",
-      price: "£49.99",
-      size: "M-XXXL",
-      gender: "Unisex",
-      fabric: "Cotton Blend",
+      name: "Luxury Aso Oke High-Waist Skirt",
+      category: "Bottoms",
+      price: "£139.99",
+      size: "M-XXL",
+      gender: "Women",
+      fabric: "Metallic Aso Oke Blend",
       isNew: true,
       image:
-        "https://i.pinimg.com/1200x/4d/ac/53/4dac537396c816aab49bf1e4cab1b3ad.jpg",
+        "https://i.pinimg.com/1200x/11/88/2e/11882ee2482a1241da39b1f725b6c0bc.jpg",
     },
     {
       id: "ASOOKESKIRT3",
-      name: "Adire Wrap Skirt",
+      name: "Heritage Aso Oke Fringe Skirt",
       category: "Bottoms",
-      price: "£59.99",
-      size: "S-XL",
+      price: "£129.99",
+      size: "S-L",
       gender: "Women",
-      fabric: "African Print",
+      fabric: "Traditional Aso Oke with Fringe Detail",
       isNew: true,
       image:
-        "https://i.pinimg.com/736x/8a/f5/dd/8af5ddfbab8aaf49b7910bd3cc174890.jpg",
+        "https://i.pinimg.com/1200x/fe/9e/18/fe9e189d0de78541e1504161ca9248ba.jpg",
     },
     {
       id: "ASOOKESKIRT4",
-      name: "Dashiki Tunic",
-      category: "Tops",
-      price: "£65.99",
-      size: "XS-XXL",
-      gender: "Men",
-      fabric: "Handwoven Cotton",
+      name: "Minimalist Aso Oke Panel Skirt",
+      category: "Bottoms",
+      price: "£109.99",
+      size: "XS-XL",
+      gender: "Women",
+      fabric: "Soft Woven Aso Oke",
       isNew: true,
       image:
-        "https://i.pinimg.com/1200x/c5/ae/bf/c5aebf46bf446dba75b41f919f1700fb.jpg",
+        "https://i.pinimg.com/736x/56/c3/73/56c373c5b058bfa81f3ccf6f05702c9a.jpg",
     },
     {
       id: "ASOOKESKIRT5",
-      name: "Buba and Sokoto Set",
-      category: "Sets",
-      price: "£99.99",
+      name: "Glam Aso Oke Mermaid Skirt",
+      category: "Bottoms",
+      price: "£149.99",
       size: "M-XXL",
-      gender: "Unisex",
-      fabric: "Traditional Cotton",
+      gender: "Women",
+      fabric: "Premium Aso Oke with Silk Lining",
       isNew: true,
       image:
-        "https://i.pinimg.com/736x/5c/11/e5/5c11e5ce1c31bf811cc90393a9d11432.jpg",
+        "https://i.pinimg.com/736x/a7/2f/71/a72f714d7fe36fafac72a61ee1c769f1.jpg",
     },
   ];
+
   return (
     <>
-      <h2 className="text-3xl font-playfair font-bold flex items-center lg:pt-50 lg:p-5 pt-35 p-2">
+      <h2 className="lg:text-3xl text-2xl font-playfair font-bold flex items-center lg:pt-50 lg:p-5 pt-35 p-2">
         <FiZap className="mr-2 text-black" /> Aso Oke Skirt
       </h2>
       <div className="grid grid-cols-1 lg:grid-cols-4 lg:pt-10 lg:pb-20 lg:p-5 pb-10 p-2 pt-5">
@@ -88,7 +89,7 @@ export default function AsoOkeSkirt() {
                 <Image
                   src={product.image}
                   fill
-                  alt={product.title}
+                  alt={product.name}
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
@@ -97,7 +98,17 @@ export default function AsoOkeSkirt() {
                     NEW
                   </div>
                 )}
-                <AddToFavorite />
+                <AddToFavorite
+                  id={product.id}
+                  name={product.name}
+                  category={product.category}
+                  price={product.price}
+                  size={product.size}
+                  gender={product.gender}
+                  fabric={product.fabric}
+                  isNew={product.isNew}
+                  image={product.image}
+                />
               </div>
 
               {/* Product Details */}

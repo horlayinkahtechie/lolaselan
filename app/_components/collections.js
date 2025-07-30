@@ -29,14 +29,8 @@ export default function FeaturedCollections() {
     {
       title: "Aso oke skirt",
       image:
-        "https://i.pinimg.com/736x/b7/8b/7e/b78b7e7d9c069e3bd056323f47460db9.jpg",
+        "https://i.pinimg.com/736x/a7/2f/71/a72f714d7fe36fafac72a61ee1c769f1.jpg",
       link: "/collections/aso-oke-skirts",
-    },
-    {
-      title: "Kente Tops",
-      image:
-        "https://i.pinimg.com/736x/f0/b4/ca/f0b4ca97b598c687550d6fe70052f1a6.jpg",
-      link: "/collections/kente-tops",
     },
   ];
 

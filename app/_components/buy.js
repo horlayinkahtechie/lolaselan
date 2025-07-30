@@ -1,10 +1,12 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function Buy({ product }) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { data: session } = useSession();
 
   //Random orderID
   const generateOrderId = () => {
@@ -17,6 +19,10 @@ export default function Buy({ product }) {
   };
 
   const handleBuyNow = async () => {
+    if (!session || !session.user?.email) {
+      alert("Please log in first to place an order.");
+      return;
+    }
     setLoading(true);
 
     try {

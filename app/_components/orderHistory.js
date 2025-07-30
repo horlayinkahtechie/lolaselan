@@ -3,8 +3,16 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import supabase from "../lib/supabase";
-import { FiPackage, FiCheckCircle, FiTruck, FiClock } from "react-icons/fi";
+import {
+  FiPackage,
+  FiCheckCircle,
+  FiTruck,
+  FiClock,
+  FiChevronRight,
+} from "react-icons/fi";
 import Link from "next/link";
+import Image from "next/image";
+import { toast } from "react-hot-toast";
 
 export default function OrderHistory() {
   const { data: session } = useSession();
@@ -39,78 +47,142 @@ export default function OrderHistory() {
     };
 
     fetchOrders();
-  }, [session]); // Re-fetch when session changes
-
-  console.log(orders.length);
+  }, [session]);
 
   if (loading) {
     return (
-      <div className="flex justify-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-amber-500"></div>
+      <div className="flex justify-center items-center min-h-[300px]">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-amber-500 border-solid"></div>
       </div>
     );
   }
 
   return (
-    <div>
-      <h2 className="text-xl font-bold mb-6">Order History</h2>
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-gray-900">Your Orders</h1>
+        <p className="text-gray-600 mt-1">
+          {orders.length} {orders.length === 1 ? "order" : "orders"} placed
+        </p>
+      </div>
+
       {orders.length === 0 ? (
-        <div className="text-center py-12">
-          <FiPackage className="mx-auto text-4xl text-gray-400 mb-4" />
-          <p className="text-gray-600">
-            You haven&apops;t placed any orders yet.
+        <div className="bg-white rounded-lg shadow-sm p-8 text-center">
+          <FiPackage className="mx-auto text-4xl text-gray-300 mb-4" />
+          <h2 className="text-xl font-medium text-gray-900 mb-2">
+            No orders yet
+          </h2>
+          <p className="text-gray-600 mb-6">
+            Your order history will appear here once you make a purchase
           </p>
           <Link
             href="/collections/all"
-            className="mt-4 inline-flex items-center px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg"
+            className="inline-flex items-center px-6 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors"
           >
             Start Shopping
           </Link>
         </div>
       ) : (
         <div className="space-y-4">
-          {orders.map((order) => (
-            <div
-              key={order.id}
-              className="border rounded-lg p-4 hover:shadow-sm transition"
-            >
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="font-medium">Order #{order.order_id}</p>
-                  <p className="text-sm text-gray-500">
-                    Placed on {new Date(order.created_at).toLocaleDateString()}
-                  </p>
+          {orders.map((order) => {
+            const items = order.products || []; // assuming products is an array inside each order
+            return (
+              <div
+                key={order.order_id}
+                className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100"
+              >
+                <div className="p-4 sm:p-6 border-b border-gray-100">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                      <p className="text-sm text-gray-500">
+                        Order #{order.order_id}
+                      </p>
+                      <p className="text-sm text-gray-500 mt-1">
+                        Placed on{" "}
+                        {new Date(order.created_at).toLocaleDateString(
+                          "en-GB",
+                          {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          }
+                        )}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`px-3 py-1 text-xs rounded-full ${
+                          order.status === "delivered"
+                            ? "bg-green-100 text-green-800"
+                            : order.status === "shipped"
+                            ? "bg-blue-100 text-blue-800"
+                            : "bg-amber-100 text-amber-800"
+                        }`}
+                      >
+                        {order.status === "delivered" ? (
+                          <>
+                            <FiCheckCircle className="inline mr-1" /> Delivered
+                          </>
+                        ) : order.status === "shipped" ? (
+                          <>
+                            <FiTruck className="inline mr-1" /> Shipped
+                          </>
+                        ) : (
+                          <>
+                            <FiClock className="inline mr-1" /> Processing
+                          </>
+                        )}
+                      </span>
+                      <span className="font-medium">
+                        £{order.totalProductPrice}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <span className="px-3 py-1 text-sm rounded-full bg-amber-100 text-amber-800 flex items-center gap-1">
-                  {order.status === "delivered" ? (
-                    <>
-                      <FiCheckCircle /> Delivered
-                    </>
-                  ) : order.status === "shipped" ? (
-                    <>
-                      <FiTruck /> Shipped
-                    </>
-                  ) : (
-                    <>
-                      <FiClock /> Processing
-                    </>
+
+                <div className="p-4 sm:p-6">
+                  <div className="grid gap-4">
+                    {items.slice(0, 2).map((item, index) => (
+                      <div key={index} className="flex items-start gap-4">
+                        <div className="relative w-16 h-16 rounded-md overflow-hidden bg-gray-100">
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-medium text-gray-900">
+                            {item.name}
+                          </h3>
+                          <p className="text-sm text-gray-500 mt-1">
+                            Qty: {item.quantity} • £{item.price}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {items.length > 2 && (
+                    <p className="text-sm text-gray-500 mt-4">
+                      + {items.length - 2} more item
+                      {items.length - 2 !== 1 ? "s" : ""}
+                    </p>
                   )}
-                </span>
-              </div>
-              <div className="mt-4 flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <span className="text-gray-600">{orders.length} items</span>
-                  <span className="font-bold">£{order.totalProductPrice}</span>
+
+                  <div className="mt-6 flex justify-end">
+                    <Link
+                      href={`/profile/orders/${order.order_id}`}
+                      className="flex items-center text-sm font-medium text-amber-600 hover:text-amber-700"
+                    >
+                      View order details <FiChevronRight className="ml-1" />
+                    </Link>
+                  </div>
                 </div>
-                <Link
-                  href={`/profile/orders/${order.order_id}`}
-                  className="text-sm text-amber-600 hover:text-amber-700"
-                >
-                  View Details
-                </Link>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
