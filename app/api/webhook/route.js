@@ -1,20 +1,20 @@
-import { buffer } from "micro";
+import { Readable } from "stream";
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
+import getRawBody from "raw-body";
 import supabase from "@/app/lib/supabase";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
-// Disable body parser
 export const config = {
   api: {
     bodyParser: false,
   },
 };
 
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
 export async function POST(req) {
-  const rawBody = await buffer(req);
-  const sig = req.headers["stripe-signature"];
+  const rawBody = await getRawBody(Readable.fromWeb(req.body));
+  const sig = req.headers.get("stripe-signature");
 
   let event;
 
@@ -33,11 +33,8 @@ export async function POST(req) {
 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object;
-
-    // Extract metadata
     const data = session.metadata;
 
-    // Insert into Supabase
     const { error } = await supabase.from("orders").insert([
       {
         email: data.email,
