@@ -17,7 +17,7 @@ export default function AsoOkeSkirt() {
       id: "ASOOKESKIRT1",
       name: "Royal Aso Oke Pleated Skirt",
       category: "Bottoms",
-      price: "£119.99",
+      price: 119.99,
       size: "S-XL",
       gender: "Women",
       fabric: "Handwoven Aso Oke",
@@ -29,7 +29,7 @@ export default function AsoOkeSkirt() {
       id: "ASOOKESKIRT2",
       name: "Luxury Aso Oke High-Waist Skirt",
       category: "Bottoms",
-      price: "£139.99",
+      price: 139.99,
       size: "M-XXL",
       gender: "Women",
       fabric: "Metallic Aso Oke Blend",
@@ -41,7 +41,7 @@ export default function AsoOkeSkirt() {
       id: "ASOOKESKIRT3",
       name: "Heritage Aso Oke Fringe Skirt",
       category: "Bottoms",
-      price: "£129.99",
+      price: 129.99,
       size: "S-L",
       gender: "Women",
       fabric: "Traditional Aso Oke with Fringe Detail",
@@ -53,7 +53,7 @@ export default function AsoOkeSkirt() {
       id: "ASOOKESKIRT4",
       name: "Minimalist Aso Oke Panel Skirt",
       category: "Bottoms",
-      price: "£109.99",
+      price: 109.99,
       size: "XS-XL",
       gender: "Women",
       fabric: "Soft Woven Aso Oke",
@@ -65,7 +65,7 @@ export default function AsoOkeSkirt() {
       id: "ASOOKESKIRT5",
       name: "Glam Aso Oke Mermaid Skirt",
       category: "Bottoms",
-      price: "£149.99",
+      price: 149.99,
       size: "M-XXL",
       gender: "Women",
       fabric: "Premium Aso Oke with Silk Lining",
@@ -116,7 +116,7 @@ export default function AsoOkeSkirt() {
                 <div className="flex justify-between items-start mb-2">
                   <h3 className="font-medium text-gray-900">{product.name}</h3>
                   <span className="font-bold text-primary">
-                    {product.price}
+                    £{product.price}
                   </span>
                 </div>
                 <p className="text-sm text-gray-500 mb-3">{product.category}</p>

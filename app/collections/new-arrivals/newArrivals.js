@@ -17,7 +17,7 @@ export default function NewArrivalsPage() {
       id: "NEWARRIVALS1",
       name: "Ankara Maxi Dress",
       category: "Dresses",
-      price: "£89.99",
+      price: 89.99,
       size: "S-XXL",
       gender: "Women",
       fabric: "African Wax",
@@ -29,7 +29,7 @@ export default function NewArrivalsPage() {
       id: "NEWARRIVALS2",
       name: "Kente Print Shirt",
       category: "Tops",
-      price: "£49.99",
+      price: 49.99,
       size: "M-XXXL",
       gender: "Unisex",
       fabric: "Cotton Blend",
@@ -41,7 +41,7 @@ export default function NewArrivalsPage() {
       id: "NEWARRIVALS3",
       name: "Adire Wrap Skirt",
       category: "Bottoms",
-      price: "£59.99",
+      price: 59.99,
       size: "S-XL",
       gender: "Women",
       fabric: "African Print",
@@ -53,7 +53,7 @@ export default function NewArrivalsPage() {
       id: "NEWARRIVALS4",
       name: "Dashiki Tunic",
       category: "Tops",
-      price: "£65.99",
+      price: 65.99,
       size: "XS-XXL",
       gender: "Men",
       fabric: "Handwoven Cotton",
@@ -65,7 +65,7 @@ export default function NewArrivalsPage() {
       id: "NEWARRIVALS5",
       name: "Buba and Sokoto Set",
       category: "Sets",
-      price: "£99.99",
+      price: 99.99,
       size: "M-XXL",
       gender: "Unisex",
       fabric: "Traditional Cotton",
@@ -115,7 +115,7 @@ export default function NewArrivalsPage() {
                 <div className="flex justify-between items-start mb-2">
                   <h3 className="font-medium text-gray-900">{product.name}</h3>
                   <span className="font-bold text-primary">
-                    {product.price}
+                    £{product.price}
                   </span>
                 </div>
                 <p className="text-sm text-gray-500 mb-3">{product.category}</p>

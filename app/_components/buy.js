@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import toast from "react-hot-toast";
 
 export default function Buy({ product }) {
   const [loading, setLoading] = useState(false);
@@ -20,7 +21,7 @@ export default function Buy({ product }) {
 
   const handleBuyNow = async () => {
     if (!session || !session.user?.email) {
-      alert("Please log in first to place an order.");
+      toast.error("Please log in first to place an order.");
       return;
     }
     setLoading(true);

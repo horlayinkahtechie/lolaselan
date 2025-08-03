@@ -9,9 +9,11 @@ import { FiShoppingBag, FiTrash2, FiArrowRight } from "react-icons/fi";
 import { HiOutlineEmojiSad } from "react-icons/hi";
 import { RiLoader4Line } from "react-icons/ri";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function CartPage() {
   const { data: session, status } = useSession();
+  const route = useRouter();
   const [cartItems, setCartItems] = useState([0]);
   const [loading, setLoading] = useState(true);
 
@@ -23,7 +25,9 @@ export default function CartPage() {
   // Fetch cart items
   useEffect(() => {
     const fetchCartItems = async () => {
-      if (!session?.user?.email) return;
+      if (!session?.user?.email) {
+        route.push("user/login");
+      }
 
       const { data, error } = await supabase
         .from("cart")
@@ -46,6 +50,14 @@ export default function CartPage() {
 
     fetchCartItems();
   }, [session]);
+
+  const checkOut = () => {
+    route.push("/cart/checkout", {
+      state: { source: "cart" },
+    });
+
+    console.log("Navigating to checkout");
+  };
 
   // Update quantity in database and state
   const updateQuantity = async (id, newQuantity) => {
@@ -274,7 +286,7 @@ export default function CartPage() {
               </div>
               <button
                 className="w-full mt-6 py-3 px-4 cursor-pointer bg-amber-600 hover:bg-amber-700 text-white font-medium rounded-lg transition-colors"
-                onClick={() => toast.success("Proceeding to checkout")}
+                onClick={() => checkOut()}
               >
                 Proceed to Checkout
               </button>

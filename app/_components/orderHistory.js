@@ -85,7 +85,6 @@ export default function OrderHistory() {
       ) : (
         <div className="space-y-4">
           {orders.map((order) => {
-            const items = order.products || []; // assuming products is an array inside each order
             return (
               <div
                 key={order.order_id}
@@ -95,18 +94,22 @@ export default function OrderHistory() {
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                       <p className="text-sm text-gray-500">
-                        Order #{order.order_id}
+                        Order No{" "}
+                        <span className="font-bold">{order.order_id}</span>
                       </p>
                       <p className="text-sm text-gray-500 mt-1">
                         Placed on{" "}
-                        {new Date(order.created_at).toLocaleDateString(
-                          "en-GB",
-                          {
-                            day: "numeric",
-                            month: "short",
-                            year: "numeric",
-                          }
-                        )}
+                        <span className="font-bold">
+                          {" "}
+                          {new Date(order.created_at).toLocaleDateString(
+                            "en-GB",
+                            {
+                              day: "numeric",
+                              month: "short",
+                              year: "numeric",
+                            }
+                          )}
+                        </span>
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
@@ -133,7 +136,7 @@ export default function OrderHistory() {
                           </>
                         )}
                       </span>
-                      <span className="font-medium">
+                      <span className="font-bold">
                         £{order.totalProductPrice}
                       </span>
                     </div>
@@ -142,32 +145,36 @@ export default function OrderHistory() {
 
                 <div className="p-4 sm:p-6">
                   <div className="grid gap-4">
-                    {items.slice(0, 2).map((item, index) => (
-                      <div key={index} className="flex items-start gap-4">
-                        <div className="relative w-16 h-16 rounded-md overflow-hidden bg-gray-100">
-                          <Image
-                            src={item.image}
-                            alt={item.name}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-medium text-gray-900">
-                            {item.name}
-                          </h3>
-                          <p className="text-sm text-gray-500 mt-1">
-                            Qty: {item.quantity} • £{item.price}
-                          </p>
-                        </div>
+                    <div className="flex items-start gap-4">
+                      <div className="relative w-16 h-16 rounded-md overflow-hidden bg-gray-100">
+                        <Image
+                          src={order.image}
+                          alt={order.name}
+                          fill
+                          className="object-cover"
+                        />
                       </div>
-                    ))}
+                      <div className="flex-1">
+                        <h3 className="font-medium text-gray-900">
+                          {order.name}
+                        </h3>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Qty:{" "}
+                          <span className="font-bold">
+                            {order.quantity} • £{order.totalProductPrice}
+                          </span>
+                        </p>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Size: <span className="font-bold">{order.size}</span>
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
-                  {items.length > 2 && (
+                  {order.length > 2 && (
                     <p className="text-sm text-gray-500 mt-4">
-                      + {items.length - 2} more item
-                      {items.length - 2 !== 1 ? "s" : ""}
+                      + {order.length - 2} more item
+                      {order.length - 2 !== 1 ? "s" : ""}
                     </p>
                   )}
 

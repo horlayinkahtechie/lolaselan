@@ -5,7 +5,7 @@ import { Cinzel_Decorative } from "next/font/google";
 import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import supabase from "../lib/supabase";
+// import supabase from "../lib/supabase";
 import { useRouter } from "next/navigation";
 import { Suspense } from "react";
 import { useEffect } from "react";
@@ -14,10 +14,16 @@ const cinzelDecorative = Cinzel_Decorative({
   subsets: ["latin"],
   display: "swap",
 });
+import Link from "next/link";
+import PaymentMethodSection from "../_components/paymentComponent";
+import { loadStripe } from "@stripe/stripe-js";
 
 export default function CheckoutPage() {
   const { data: session } = useSession();
   const router = useRouter();
+  const stripePromise = loadStripe(
+    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+  );
 
   const searchParams = useSearchParams();
 
@@ -50,14 +56,14 @@ export default function CheckoutPage() {
   //   Shipping States
   const [shippingMethod, setShippingMethod] = useState("standard");
   const [shippingPrice, setShippingPrice] = useState(9.99);
-  const [paymentMethod, setPaymentMethod] = useState("credit-card");
+  // const [paymentMethod, setPaymentMethod] = useState("credit-card");
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   //   Order submission function
-  const orderSubmit = async () => {
+  const handleBuyNow = async () => {
     if (!session || !session.user?.email) {
       alert("Please log in first to place an order.");
       return;
@@ -68,8 +74,12 @@ export default function CheckoutPage() {
     const orderId = order_id;
 
     try {
-      const { error: orderError } = await supabase.from("orders").insert([
-        {
+      const res = await fetch("/api/create-payment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
           product_id: id,
           order_id: orderId,
           email: session.user.email,
@@ -80,31 +90,31 @@ export default function CheckoutPage() {
           postalCode,
           country,
           size: selectedSize,
-          quantity,
+          quantity: quantity,
           shippingMethod,
-          paymentMethod,
           productPrice: price,
           totalProductPrice: roundedTotal,
-        },
-      ]);
+          name: name,
+          image: image,
+          shippingPrice: numericShipping,
+        }),
+      });
 
-      if (orderError) {
-        console.error("Order insert error:", orderError);
-        router.push("/status/declined");
+      const data = await res.json();
+
+      if (data.error) {
+        alert("Stripe error: " + data.error);
         return;
       }
 
-      router.push(`/status/confirmed?order_id=${orderId}`);
+      const stripe = await stripePromise;
+      await stripe.redirectToCheckout({ sessionId: data.id });
     } catch (err) {
-      console.error("Unexpected error:", err);
+      console.error("Checkout error:", err);
     } finally {
       setLoading(false);
     }
-
-    console.log("order submitted");
   };
-
-  // Sample cart data
 
   // Available sizes and quantities
   const sizes = [
@@ -118,11 +128,10 @@ export default function CheckoutPage() {
   const quantities = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
   // Calculate order totals
-  const numericPrice =
-    parseFloat((price || "0").toString().replace(/[^0-9.]/g, "")) || 0;
+  const numericPrice = price;
 
   const numericQuantity = parseInt(quantity) || 1;
-  const numericShipping = parseFloat(shippingPrice) || 0;
+  const numericShipping = shippingPrice;
 
   // Subtotal and total
   const subtotal = numericPrice * numericQuantity;
@@ -131,6 +140,8 @@ export default function CheckoutPage() {
   // Round to 2 decimal places for display
   const roundedSubtotal = subtotal.toFixed(2);
   const roundedTotal = total.toFixed(2);
+
+  const stripeProductPrice = Number(numericPrice) + Number(numericShipping);
 
   return (
     <Suspense>
@@ -437,129 +448,15 @@ export default function CheckoutPage() {
               )}
 
               {activeStep === 3 && (
-                <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-                  <h2 className="text-xl font-semibold text-[#7B2D26] mb-6">
-                    Payment Method
-                  </h2>
-                  <div className="space-y-4 mb-6">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {/* Paystack */}
-                      <div
-                        onClick={() => setPaymentMethod("paystack")}
-                        className={`flex items-center p-4 border rounded-lg cursor-pointer transition duration-200 ${
-                          paymentMethod === "paystack"
-                            ? "border-[#7B2D26] bg-[#FFF5F0]"
-                            : "border-[#FFD8BE]"
-                        }`}
-                      >
-                        <Image
-                          src="https://upload.wikimedia.org/wikipedia/commons/3/30/Paystack_Logo.png"
-                          alt="Paystack"
-                          width={40}
-                          height={40}
-                          className="mr-3 object-contain"
-                        />
-                        <h3 className="font-medium text-[#7B2D26]">Paystack</h3>
-                      </div>
-
-                      {/* Stripe */}
-                      <div
-                        onClick={() => setPaymentMethod("stripe")}
-                        className={`flex items-center p-4 border rounded-lg cursor-pointer transition duration-200 ${
-                          paymentMethod === "stripe"
-                            ? "border-[#7B2D26] bg-[#FFF5F0]"
-                            : "border-[#FFD8BE]"
-                        }`}
-                      >
-                        <Image
-                          src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Stripe_Logo%2C_revised_2016.svg"
-                          alt="Stripe"
-                          width={40}
-                          height={40}
-                          className="mr-3 object-contain"
-                        />
-                        <h3 className="font-medium text-[#7B2D26]">Stripe</h3>
-                      </div>
-
-                      {/* PayPal */}
-                      <div
-                        onClick={() => setPaymentMethod("paypal")}
-                        className={`flex items-center p-4 border rounded-lg cursor-pointer transition duration-200 ${
-                          paymentMethod === "paypal"
-                            ? "border-[#7B2D26] bg-[#FFF5F0]"
-                            : "border-[#FFD8BE]"
-                        }`}
-                      >
-                        <Image
-                          src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg"
-                          alt="PayPal"
-                          width={40}
-                          height={40}
-                          className="mr-3 object-contain"
-                        />
-                        <h3 className="font-medium text-[#7B2D26]">PayPal</h3>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id="subscribe"
-                      checked={subscribe}
-                      onChange={(e) => setSubscribe(e.target.checked)}
-                      className="mr-2 h-4 w-4 text-[#7B2D26] border-[#FFD8BE] rounded focus:ring-[#7B2D26]"
-                    />
-                    <label
-                      htmlFor="subscribe"
-                      className="text-sm text-[#7B2D26]"
-                    >
-                      Subscribe to our newsletter for exclusive offers
-                    </label>
-                  </div>
-                  <div className="flex items-center mb-6">
-                    <input
-                      type="checkbox"
-                      id="terms"
-                      checked={agreeToTerms}
-                      onChange={(e) => setAgreeToTerms(e.target.checked)}
-                      className="mr-2 h-4 w-4 text-[#7B2D26] border-[#FFD8BE] rounded focus:ring-[#7B2D26]"
-                    />
-                    <label htmlFor="terms" className="text-sm text-[#7B2D26]">
-                      I agree to the{" "}
-                      <a href="#" className="underline">
-                        Terms & Conditions
-                      </a>{" "}
-                      and{" "}
-                      <a href="#" className="underline">
-                        Privacy Policy
-                      </a>
-                    </label>
-                  </div>
-
-                  <div className="flex justify-between">
-                    <button
-                      onClick={() => setActiveStep(2)}
-                      className="flex items-center cursor-pointer text-[#7B2D26] hover:text-[#5A1E1A]"
-                    >
-                      <FiArrowLeft className="mr-2" /> Return to shipping
-                    </button>
-                    <button
-                      disabled={!agreeToTerms || loading}
-                      onClick={() => orderSubmit()}
-                      className={`px-6 py-3 rounded-lg cursor-pointer font-medium transition-colors ${
-                        agreeToTerms
-                          ? "bg-[#7B2D26] hover:bg-[#5A1E1A] text-[#FFD8BE]"
-                          : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                      }`}
-                    >
-                      <div className="flex items-center">
-                        <FiLock className="mr-2" />
-                        {loading ? "Sending Order..." : "Complete Order"}
-                      </div>
-                    </button>
-                  </div>
-                </div>
+                <PaymentMethodSection
+                  loading={loading}
+                  agreeToTerms={agreeToTerms}
+                  setAgreeToTerms={setAgreeToTerms}
+                  subscribe={subscribe}
+                  setSubscribe={setSubscribe}
+                  handleBuyNow={handleBuyNow}
+                  setActiveStep={setActiveStep}
+                />
               )}
             </div>
 
@@ -600,7 +497,7 @@ export default function CheckoutPage() {
                       </h3>
                       <div className="flex items-center mt-1">
                         <span className="text-[#7B2D26] font-semibold">
-                          {price}
+                          £{price}
                         </span>
                         {isNew === "true" && (
                           <span className="ml-2 px-2 py-0.5 bg-[#7B2D26] text-[#FFD8BE] text-xs rounded-full">
@@ -608,6 +505,12 @@ export default function CheckoutPage() {
                           </span>
                         )}
                       </div>
+                      <Link
+                        href="/view-details"
+                        className="underline text-[#7B2D26] "
+                      >
+                        View Details
+                      </Link>
                     </div>
                   </div>
 
@@ -707,7 +610,7 @@ export default function CheckoutPage() {
                           clipRule="evenodd"
                         />
                       </svg>
-                      Subtotal
+                      Price
                     </span>
                     <span className="text-[#7B2D26]">£{roundedSubtotal}</span>
                   </div>

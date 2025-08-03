@@ -21,6 +21,15 @@ export default function AddToWishList({
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
 
+  const generateWishlistId = () => {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let orderId = "";
+    for (let i = 0; i < 8; i++) {
+      orderId += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return orderId;
+  };
+
   const handleAddToWishList = async () => {
     if (!session?.user?.email) {
       toast.error("Please log in to add to wishlist.");
@@ -33,6 +42,7 @@ export default function AddToWishList({
 
     const { error } = await supabase.from("wishlist").insert([
       {
+        wishlist_id: generateWishlistId(),
         email: session.user.email,
         product_id: id,
         orderName: name,
