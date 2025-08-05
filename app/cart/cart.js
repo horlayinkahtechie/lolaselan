@@ -263,11 +263,14 @@ export default function CartPage() {
         {/* Order Summary Section */}
         {cartItems.length > 0 && (
           <div className="lg:w-1/3">
-            <div className="bg-white rounded-xl shadow-sm p-6 sticky top-8">
+            <div className="bg-white rounded-xl shadow-sm p-6 sticky top-8 md:relative">
               <h2 className="text-lg font-bold text-gray-900 mb-6">
                 Order Summary
               </h2>
-              <div className="space-y-4">
+
+              <div className="space-y-4 pb-20">
+                {" "}
+                {/* Add padding bottom for mobile button */}
                 <div className="flex justify-between">
                   <span className="text-gray-600">
                     Subtotal (
@@ -276,7 +279,6 @@ export default function CartPage() {
                   </span>
                   <span className="font-medium">£{total}</span>
                 </div>
-
                 <div className="border-t border-gray-200 pt-4 flex justify-between">
                   <span className="font-bold text-gray-900">Total</span>
                   <span className="font-bold text-lg text-amber-600">
@@ -284,21 +286,25 @@ export default function CartPage() {
                   </span>
                 </div>
               </div>
-              <button
-                className="w-full mt-6 py-3 px-4 cursor-pointer bg-amber-600 hover:bg-amber-700 text-white font-medium rounded-lg transition-colors"
-                onClick={() => checkOut()}
-              >
-                Proceed to Checkout
-              </button>
-              <p className="mt-4 text-center text-sm text-gray-500">
-                or{" "}
-                <Link
-                  href="/collections/all"
-                  className="text-amber-600 hover:text-amber-700"
+
+              {/* Fixed mobile checkout button */}
+              <div className="md:static fixed bottom-0 left-0 w-full px-6 pb-6 bg-white z-50 shadow-[0_-2px_6px_rgba(0,0,0,0.05)]">
+                <button
+                  className="w-full py-3 px-4 bg-amber-600 hover:bg-amber-700 text-white font-medium rounded-lg transition-colors"
+                  onClick={() => checkOut()}
                 >
-                  continue shopping
-                </Link>
-              </p>
+                  Proceed to Checkout
+                </button>
+                <p className="mt-4 text-center text-sm text-gray-500">
+                  or{" "}
+                  <Link
+                    href="/collections/all"
+                    className="text-amber-600 hover:text-amber-700"
+                  >
+                    continue shopping
+                  </Link>
+                </p>
+              </div>
             </div>
           </div>
         )}
