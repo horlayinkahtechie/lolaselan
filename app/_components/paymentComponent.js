@@ -12,7 +12,7 @@ export default function PaymentMethodSection({
 }) {
   return (
     <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-      <h2 className="text-xl font-semibold text-[#7B2D26] mb-6">
+      <h2 className="text-lg lg:text-xl font-semibold text-[#7B2D26] mb-6">
         Payment Method
       </h2>
 
@@ -55,14 +55,14 @@ export default function PaymentMethodSection({
       <div className="flex justify-between">
         <button
           onClick={() => setActiveStep(2)}
-          className="flex items-center cursor-pointer text-[#7B2D26] hover:text-[#5A1E1A]"
+          className="flex lg:text-[17px] text-[15px] items-center cursor-pointer text-[#7B2D26] hover:text-[#5A1E1A]"
         >
-          <FiArrowLeft className="mr-2" /> Return to shipping
+          <FiArrowLeft className="lg:mr-2 mr-1" /> Return to shipping
         </button>
         <button
           disabled={!agreeToTerms || loading}
           onClick={handleBuyNow}
-          className={`px-6 py-3 rounded-lg cursor-pointer font-medium transition-colors flex items-center ${
+          className={`lg:px-6 px-4 py-3 rounded-lg cursor-pointer font-medium transition-colors flex items-center ${
             agreeToTerms
               ? "bg-[#7B2D26] hover:bg-[#5A1E1A] text-[#FFD8BE]"
               : "bg-gray-300 text-gray-500 cursor-not-allowed"

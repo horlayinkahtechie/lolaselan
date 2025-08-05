@@ -35,12 +35,22 @@ export default function AddToCart({
       ? availableSizes
       : [];
 
+  const generateCartId = () => {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let orderId = "";
+    for (let i = 0; i < 8; i++) {
+      orderId += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return orderId;
+  };
+
   const handleAddToCart = async () => {
     if (!session?.user?.email) {
       toast.error("Please log in to add to cart.");
       return;
     }
 
+    const cart_id = generateCartId;
     if (!selectedSize && sizesArray.length > 0) {
       toast.error("Please select a size.");
       return;
@@ -62,6 +72,7 @@ export default function AddToCart({
           fabric,
           isNew,
           image,
+          cart_id,
         },
       ]);
 
@@ -126,7 +137,7 @@ export default function AddToCart({
               animate="visible"
               exit="exit"
               variants={overlayVariants}
-              transition={{ duration: 0.05 }}
+              transition={{ duration: 0.0001 }}
               className="fixed inset-0 bg-transparent bg-opacity-50 z-40"
               onClick={closeModal}
             />

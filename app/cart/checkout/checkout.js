@@ -173,7 +173,7 @@ const CheckoutPage = () => {
     try {
       // Create order items
       const orderItems = cartItems.map((item) => ({
-        order_id: order_id,
+        order_id: item.cart_id,
         product_id: item.product_id,
         quantity: item.quantity || 1,
         productPrice: item.price,

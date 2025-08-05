@@ -150,7 +150,7 @@ export default function CheckoutPage() {
           {/* Header */}
           <div className="text-center mb-12">
             <h1
-              className={`text-4xl font-bold text-[#7B2D26] ${cinzelDecorative.className} mb-4`}
+              className={`lg:text-4xl text-3xl font-bold text-[#7B2D26] ${cinzelDecorative.className} mb-4`}
             >
               Complete Your Purchase
             </h1>
@@ -211,7 +211,7 @@ export default function CheckoutPage() {
             <div className="lg:w-2/3">
               {activeStep === 1 && (
                 <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-                  <h2 className="text-xl font-semibold text-[#7B2D26] mt-8 mb-6">
+                  <h2 className="text-lg lg:text-xl font-semibold text-[#7B2D26] mt-8 mb-6">
                     Contact Information
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -239,7 +239,7 @@ export default function CheckoutPage() {
                         required
                       />
                     </div>
-                    <h2 className="text-xl font-semibold text-[#7B2D26] mt-8 mb-6">
+                    <h2 className="text-lg lg:text-xl font-semibold text-[#7B2D26] mt-8 mb-6">
                       Shipping Address
                     </h2>
                     <div className="md:col-span-2">
@@ -295,7 +295,7 @@ export default function CheckoutPage() {
                     </div>
                   </div>
 
-                  <h2 className="text-xl font-semibold text-[#7B2D26] mt-8 mb-6">
+                  <h2 className="text-lg lg:text-xl font-semibold text-[#7B2D26] mt-8 mb-6">
                     Product Details
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -337,9 +337,6 @@ export default function CheckoutPage() {
                   </div>
 
                   <div className="flex justify-between mt-8">
-                    <button className="flex items-center cursor-pointer text-[#7B2D26] hover:text-[#5A1E1A]">
-                      <FiArrowLeft className="mr-2" /> Return to cart
-                    </button>
                     <button
                       onClick={() => {
                         // Validate required fields before proceeding
@@ -358,7 +355,7 @@ export default function CheckoutPage() {
                           alert("Please fill in all required fields");
                         }
                       }}
-                      className="bg-[#7B2D26] cursor-pointer hover:bg-[#5A1E1A] text-[#FFD8BE] px-6 py-3 rounded-lg font-medium transition-colors"
+                      className="bg-[#7B2D26] cursor-pointer hover:bg-[#5A1E1A] text-[#FFD8BE] px-4 py-3 lg:px-6 rounded-lg font-medium transition-colors"
                     >
                       Continue to Shipping
                     </button>
@@ -368,7 +365,7 @@ export default function CheckoutPage() {
 
               {activeStep === 2 && (
                 <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-                  <h2 className="text-xl font-semibold text-[#7B2D26] mb-6">
+                  <h2 className="text-lg lg:text-xl font-semibold text-[#7B2D26] mb-6">
                     Shipping Method
                   </h2>
                   <div className="space-y-4">
@@ -426,9 +423,10 @@ export default function CheckoutPage() {
                   <div className="flex justify-between mt-8">
                     <button
                       onClick={() => setActiveStep(1)}
-                      className="flex items-center cursor-pointer text-[#7B2D26] hover:text-[#5A1E1A]"
+                      className="flex lg:text-[17px] text-[15px] items-center cursor-pointer text-[#7B2D26] hover:text-[#5A1E1A]"
                     >
-                      <FiArrowLeft className="mr-2" /> Return to information
+                      <FiArrowLeft className="lg:mr-2 mr-[4px]" /> Return to
+                      information
                     </button>
                     <button
                       onClick={() => {
@@ -439,7 +437,7 @@ export default function CheckoutPage() {
                           alert("Please fill in all required fields");
                         }
                       }}
-                      className="bg-[#7B2D26] cursor-pointer hover:bg-[#5A1E1A] text-[#FFD8BE] px-6 py-3 rounded-lg font-medium transition-colors"
+                      className="bg-[#7B2D26] lg:text-[17px] text-[15px] cursor-pointer hover:bg-[#5A1E1A] text-[#FFD8BE] px-4 py-3 lg:px-6 rounded-lg font-medium transition-colors"
                     >
                       Continue to Payment
                     </button>
