@@ -12,10 +12,13 @@ import {
 } from "react-icons/fi";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { loadStripe } from "@stripe/stripe-js";
 
 const CheckoutPage = () => {
-  const router = useRouter();
+  const stripePromise = loadStripe(
+    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+  );
+
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const { data: session } = useSession();
@@ -32,6 +35,7 @@ const CheckoutPage = () => {
     postCode: "",
     country: "United Kingdom",
     phoneNo: "",
+    shipping: 10,
   });
 
   // Form errors
@@ -113,20 +117,28 @@ const CheckoutPage = () => {
     fetchCartItems();
   }, [session]);
 
-  // Calculate totals
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.price * (item.quantity || 1),
-    0
-  );
-  const shipping = 4.99;
-  const total = subtotal + shipping;
+  // Calculate totals with proper type checking
+  const subtotal = cartItems.reduce((sum, item) => {
+    const price =
+      typeof item.price === "string"
+        ? parseFloat(item.price.replace(/[^0-9.-]/g, ""))
+        : Number(item.price);
+    const quantity = Number(item.quantity) || 1;
+    return sum + (isNaN(price) ? 0 : price) * quantity;
+  }, 0);
+
+  const shipping =
+    typeof formData.shipping === "number"
+      ? formData.shipping
+      : parseFloat(formData.shipping) || 0;
+  const total = (subtotal + shipping).toFixed(2);
 
   // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: name === "shipping" ? parseFloat(value) || 0 : value,
     }));
 
     // Clear error when user starts typing
@@ -146,19 +158,12 @@ const CheckoutPage = () => {
     }
   };
 
-  // Order ID
-  const generateOrderID = () => {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let orderId = "";
-    for (let i = 0; i < 8; i++) {
-      orderId += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return orderId;
-  };
-
-  // Handle form submission
   const handleSubmit = async () => {
-    const order_id = generateOrderID();
+    if (!session?.user?.email) {
+      toast.error("Please sign in to checkout");
+      return;
+    }
+
     if (!agreeTerms) {
       toast.error("Please agree to the terms and conditions");
       return;
@@ -171,47 +176,67 @@ const CheckoutPage = () => {
 
     setLoading(true);
     try {
-      // Create order items
-      const orderItems = cartItems.map((item) => ({
-        order_id: item.cart_id,
-        product_id: item.product_id,
-        quantity: item.quantity || 1,
-        productPrice: item.price,
-        size: item.size,
-        name: item.orderName,
-        image: item.image,
-        email: session.user.email,
-        status: "processing",
-        totalProductPrice: total,
-        address: formData.address,
-        city: formData.city,
-        postalCode: formData.postCode,
-        country: formData.country,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        phoneNo: formData.phoneNo,
-        shippingMethod: "Standard",
-      }));
+      // Create order records for database
+      const orderRecords = cartItems.map((item) => {
+        const price =
+          typeof item.price === "string"
+            ? parseFloat(item.price.replace(/[^0-9.-]/g, ""))
+            : Number(item.price);
+        const quantity = Number(item.quantity) || 1;
+        const numericShipping = Number(shipping);
 
-      const { error: itemsError } = await supabase
-        .from("orders")
-        .insert(orderItems);
+        return {
+          order_id: item.cart_id,
+          email: session.user.email,
+          status: "pending",
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          address: formData.address,
+          city: formData.city,
+          postalCode: formData.postCode,
+          country: formData.country,
+          phoneNo: formData.phoneNo,
+          shippingMethod: "standard",
+          shippingPrice: Math.round(numericShipping),
+          paymentMethod: "Stripe",
+          productPrice: Math.round(price),
+          totalToBePaid: (price * quantity + numericShipping).toFixed(2),
+          name: item.orderName || "Unknown Product",
+          image: item.image || null,
+          quantity: quantity,
+          size: item.size || "N/A",
+        };
+      });
 
-      if (itemsError) throw itemsError;
+      // Create payment session
+      const res = await fetch("/api/cart-checkout-payment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          items: orderRecords,
+          email: session.user.email,
+          shippingPrice: Number(shipping),
+        }),
+      });
 
-      // Clear cart
-      const { error: deleteError } = await supabase
-        .from("cart")
-        .delete()
-        .eq("email", session.user.email);
+      const data = await res.json();
 
-      if (deleteError) throw deleteError;
+      if (data.error) {
+        throw new Error(data.error);
+      }
 
-      // Redirect to success page
-      router.push(`/status/confirmed`);
+      // Redirect to checkout
+      const stripe = await stripePromise;
+      const { error: stripeError } = await stripe.redirectToCheckout({
+        sessionId: data.id,
+      });
+
+      if (stripeError) throw stripeError;
     } catch (error) {
-      console.error("Checkout error:", error.message);
-      toast.error("Failed to complete checkout");
+      console.error("Checkout error:", error);
+      toast.error("Failed to complete checkout: " + error.message);
     } finally {
       setLoading(false);
     }
@@ -549,7 +574,7 @@ const CheckoutPage = () => {
 
               <div className="pt-6">
                 <button
-                  onClick={() => handleSubmit()}
+                  onClick={handleSubmit}
                   disabled={!agreeTerms || loading}
                   className={`w-full py-3 text-white font-medium rounded-lg transition-colors ${
                     !agreeTerms || loading
@@ -557,7 +582,7 @@ const CheckoutPage = () => {
                       : "bg-amber-600 hover:bg-amber-700"
                   }`}
                 >
-                  {loading ? "Processing..." : `Pay £${total.toFixed(2)}`}
+                  {loading ? "Processing..." : `Pay £${total}`}
                 </button>
               </div>
             </div>
@@ -570,32 +595,38 @@ const CheckoutPage = () => {
             <h3 className="text-lg font-bold mb-6">Order Summary</h3>
 
             <div className="space-y-4 mb-6 max-h-96 overflow-y-auto">
-              {cartItems.map((item) => (
-                <div key={item.id} className="flex items-start gap-4">
-                  <div className="relative w-16 h-16 rounded-md overflow-hidden bg-gray-100">
-                    <Image
-                      src={item.image}
-                      alt={item.orderName}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="font-medium text-gray-900">
-                      {item.orderName}
-                    </h4>
-                    <p className="text-sm text-gray-500">
-                      {item.size && `Size: ${item.size}`}
+              {cartItems.map((item) => {
+                const price =
+                  typeof item.price === "string"
+                    ? parseFloat(item.price.replace(/[^0-9.-]/g, ""))
+                    : Number(item.price);
+                const quantity = Number(item.quantity) || 1;
+
+                return (
+                  <div key={item.id} className="flex items-start gap-4">
+                    <div className="relative w-16 h-16 rounded-md overflow-hidden bg-gray-100">
+                      <Image
+                        src={item.image}
+                        alt={item.orderName}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-medium text-gray-900">
+                        {item.orderName}
+                      </h4>
+                      <p className="text-sm text-gray-500">
+                        {item.size && `Size: ${item.size}`}
+                      </p>
+                      <p className="text-sm text-gray-500">Qty: {quantity}</p>
+                    </div>
+                    <p className="font-medium">
+                      £{(price * quantity).toFixed(2)}
                     </p>
-                    <p className="text-sm text-gray-500">
-                      Qty: {item.quantity || 1}
-                    </p>
                   </div>
-                  <p className="font-medium">
-                    £{(item.price * (item.quantity || 1)).toFixed(2)}
-                  </p>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <div className="border-t border-gray-200 pt-4 space-y-3">
@@ -610,7 +641,7 @@ const CheckoutPage = () => {
               <div className="flex justify-between pt-2">
                 <span className="font-bold">Total</span>
                 <span className="font-bold text-lg text-amber-600">
-                  £{total.toFixed(2)}
+                  £{total}
                 </span>
               </div>
             </div>

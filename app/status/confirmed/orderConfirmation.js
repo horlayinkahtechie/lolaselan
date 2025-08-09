@@ -10,8 +10,6 @@ export default function PaymentSuccessPage() {
   const searchParams = useSearchParams();
   const { data: session } = useSession();
 
-  const orderId = searchParams.get("order_id");
-
   return (
     <>
       <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-12 px-4 sm:px-6 lg:px-8 pt-35">
@@ -38,9 +36,8 @@ export default function PaymentSuccessPage() {
                   Order confirmed
                 </h1>{" "}
                 <p className="text-lg text-gray-600 max-w-md mb-8">
-                  Thank you for your purchase! Your order no {orderId} has been
-                  placed successfully. We&apos;ve sent a confirmation to your
-                  email.
+                  Thank you for your purchase! Your order has been placed
+                  successfully. We&apos;ve sent a confirmation to your email.
                 </p>
                 {/* CTA Buttons */}{" "}
                 <div className="flex flex-col sm:flex-row gap-4 w-full max-w-sm">

@@ -90,10 +90,6 @@ export default function NewArrivals() {
     }
   };
 
-  const addToCart = () => {
-    console.log("Item Added to cart successfully");
-  };
-
   return (
     <section className="py-12 bg-gray-50">
       <div className="container mx-auto px-4">

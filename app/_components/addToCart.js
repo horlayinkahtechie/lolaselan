@@ -32,8 +32,8 @@ export default function AddToCart({
     typeof availableSizes === "string"
       ? [availableSizes]
       : Array.isArray(availableSizes)
-      ? availableSizes
-      : [];
+        ? availableSizes
+        : [];
 
   const generateCartId = () => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -44,13 +44,14 @@ export default function AddToCart({
     return orderId;
   };
 
+  const cart_id = generateCartId();
+
   const handleAddToCart = async () => {
     if (!session?.user?.email) {
       toast.error("Please log in to add to cart.");
       return;
     }
 
-    const cart_id = generateCartId;
     if (!selectedSize && sizesArray.length > 0) {
       toast.error("Please select a size.");
       return;
@@ -66,7 +67,7 @@ export default function AddToCart({
           product_id: id,
           orderName: name,
           category,
-          price,
+          price: price,
           size: selectedSize || sizesArray[0] || null,
           gender,
           fabric,
@@ -82,6 +83,7 @@ export default function AddToCart({
       toast.success("Added to cart!");
       incrementCart();
       setIsModalOpen(false);
+      window.dispatchEvent(new CustomEvent("cartUpdated"));
     } catch (error) {
       toast.error("Failed to add to cart.");
       console.error("Error adding to cart:", error.message);

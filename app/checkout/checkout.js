@@ -5,8 +5,6 @@ import { Cinzel_Decorative } from "next/font/google";
 import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-// import supabase from "../lib/supabase";
-import { useRouter } from "next/navigation";
 import { Suspense } from "react";
 import { useEffect } from "react";
 const cinzelDecorative = Cinzel_Decorative({
@@ -20,7 +18,6 @@ import { loadStripe } from "@stripe/stripe-js";
 
 export default function CheckoutPage() {
   const { data: session } = useSession();
-  const router = useRouter();
   const stripePromise = loadStripe(
     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
   );
@@ -52,6 +49,7 @@ export default function CheckoutPage() {
   const [country, setCountry] = useState("United States");
   const [selectedSize, setSelectedSize] = useState("");
   const [quantity, setQuantity] = useState(1);
+  const [phoneNo, setPhoneNo] = useState("");
 
   //   Shipping States
   const [shippingMethod, setShippingMethod] = useState("standard");
@@ -97,6 +95,7 @@ export default function CheckoutPage() {
           name: name,
           image: image,
           shippingPrice: numericShipping,
+          phoneNo: phoneNo,
         }),
       });
 
@@ -141,8 +140,6 @@ export default function CheckoutPage() {
   const roundedSubtotal = subtotal.toFixed(2);
   const roundedTotal = total.toFixed(2);
 
-  const stripeProductPrice = Number(numericPrice) + Number(numericShipping);
-
   return (
     <Suspense>
       <div className="min-h-screen bg-[#FFF5F0] py-12 px-4 sm:px-6 lg:px-8 lg:pt-35 pt-35">
@@ -169,8 +166,8 @@ export default function CheckoutPage() {
                   activeStep === 1
                     ? "w-1/3"
                     : activeStep === 2
-                    ? "w-2/3"
-                    : "w-full"
+                      ? "w-2/3"
+                      : "w-full"
                 }`}
               ></div>
             </div>
@@ -199,8 +196,8 @@ export default function CheckoutPage() {
                   {step === 1
                     ? "Information"
                     : step === 2
-                    ? "Shipping"
-                    : "Payment"}
+                      ? "Shipping"
+                      : "Payment"}
                 </span>
               </div>
             ))}
@@ -292,6 +289,18 @@ export default function CheckoutPage() {
                         <option value="Canada">Canada</option>
                         <option value="United Kingdom">United Kingdom</option>
                       </select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-[#7B2D26] mb-1">
+                        Phone Number
+                      </label>
+                      <input
+                        type="number"
+                        value={phoneNo}
+                        onChange={(e) => setPhoneNo(e.target.value)}
+                        className="w-full px-4 py-3 border border-[#FFD8BE] rounded-lg focus:ring-2 focus:ring-[#7B2D26] focus:border-[#7B2D26]"
+                        required
+                      />
                     </div>
                   </div>
 

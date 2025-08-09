@@ -1,39 +1,50 @@
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import supabase from "../lib/supabase";
 import { useSession } from "next-auth/react";
+
+// Move debounce function outside the component
+function debounce(func, timeout = 300) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      func.apply(this, args);
+    }, timeout);
+  };
+}
 
 export default function CartCount() {
   const { data: session } = useSession();
   const [cartCount, setCartCount] = useState(0);
 
-  const fetchCartCount = async () => {
+  const fetchCartCount = useCallback(async () => {
     if (!session?.user?.email) return;
 
-    const { data, error } = await supabase
+    const { count, error } = await supabase
       .from("cart")
-      .select("id", { count: "exact" })
+      .select("*", { count: "exact", head: true })
       .eq("email", session.user.email);
 
-    if (!error && data) {
-      setCartCount(data.length);
+    if (!error && count !== null) {
+      setCartCount(count);
     }
-  };
+  }, [session]);
 
   useEffect(() => {
     fetchCartCount();
 
-    // Listen for custom event
-    const handleCartUpdated = () => {
+    // Create debounced version of the handler
+    const debouncedHandler = debounce(() => {
       fetchCartCount();
-    };
+    }, 300);
 
-    window.addEventListener("cartUpdated", handleCartUpdated);
+    window.addEventListener("cartUpdated", debouncedHandler);
 
     return () => {
-      window.removeEventListener("cartUpdated", handleCartUpdated);
+      window.removeEventListener("cartUpdated", debouncedHandler);
     };
-  }, [session]);
+  }, [session, fetchCartCount]);
 
   return (
     <Link
