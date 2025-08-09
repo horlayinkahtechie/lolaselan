@@ -43,9 +43,6 @@ export default function HeroSection() {
             >
               Shop Collection
             </Link>
-            <button className="px-8 py-3 border-2 border-[#FFD8BE] text-[#FFD8BE] hover:bg-[#FFD8BE] hover:text-[#5C2018] rounded-full font-medium transition-all">
-              Explore Styles
-            </button>
           </div>
         </div>
       </div>

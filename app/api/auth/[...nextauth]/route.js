@@ -39,7 +39,10 @@ export const authOptions = {
     },
 
     async jwt({ token }) {
-      const adminEmails = ["horlayinkah2005@gmail.com"];
+      const adminEmails = [
+        "horlayinkah2005@gmail.com",
+        "adebayoadelola14@gmail.com",
+      ];
       token.role = adminEmails.includes(token.email) ? "admin" : "user";
       return token;
     },

@@ -114,30 +114,6 @@ export default function WishlistHistory() {
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span
-                        className={`px-3 py-1 text-xs rounded-full ${
-                          order.status === "delivered"
-                            ? "bg-green-100 text-green-800"
-                            : order.status === "shipped"
-                            ? "bg-blue-100 text-blue-800"
-                            : "bg-amber-100 text-amber-800"
-                        }`}
-                      >
-                        {/* {order.status === "delivered" ? (
-                          <>
-                            <FiCheckCircle className="inline mr-1" /> Delivered
-                          </>
-                        ) : order.status === "shipped" ? (
-                          <>
-                            <FiTruck className="inline mr-1" /> Shipped
-                          </>
-                        ) : (
-                          <>
-                            <FiClock className="inline mr-1" /> Awaiting
-                            checkout
-                          </>
-                        )} */}
-                      </span>
                       <span className="font-bold">£{order.price}</span>
                     </div>
                   </div>

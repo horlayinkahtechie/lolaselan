@@ -32,15 +32,14 @@ export async function POST(req) {
 
     const { data: order, error: dbError } = await supabase
       .from("orders")
-      .insert(orderData)
-      .select()
-      .single();
+      .insert(orderData);
 
     if (dbError) throw dbError;
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card", "paypal", "klarna", "afterpay_clearpay"],
       mode: "payment",
+      customer_email: body.email,
       line_items: [
         {
           price_data: {
@@ -66,7 +65,7 @@ export async function POST(req) {
       ],
       metadata: {
         order_id: body.order_id,
-        email: body.email,
+        customer_email: body.email,
         firstName: body.firstName,
         lastName: body.lastName,
         address: body.address,
@@ -82,7 +81,7 @@ export async function POST(req) {
         image: body.image,
         quantity: body.quantity,
       },
-      success_url: `${process.env.NEXTAUTH_URL}/status/confirmed`,
+      success_url: `${process.env.NEXTAUTH_URL}/status/confirmed?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXTAUTH_URL}/status/declined`,
     });
 

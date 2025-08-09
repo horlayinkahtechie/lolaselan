@@ -1,7 +1,6 @@
 "use client";
-// import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-// import { createClient } from "@supabase/supabase-js";
 import Link from "next/link";
 import { FaThumbsUp } from "react-icons/fa";
 import { useSession } from "next-auth/react";
@@ -9,6 +8,20 @@ import { useSession } from "next-auth/react";
 export default function PaymentSuccessPage() {
   const searchParams = useSearchParams();
   const { data: session } = useSession();
+
+  useEffect(() => {
+    const session_id = searchParams.get("session_id");
+    if (session_id) {
+      fetch("/api/confirm-cart-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ session_id }),
+      })
+        .then((res) => res.json())
+        .then((data) => console.log("Payment confirmation result:", data))
+        .catch((err) => console.error("Payment confirmation failed:", err));
+    }
+  }, [searchParams]);
 
   return (
     <>
@@ -109,7 +122,8 @@ export default function PaymentSuccessPage() {
                 <p className="mt-1 text-gray-600">
                   Your order will arrive by{" "}
                   <span className="font-medium">To be calculated</span>.
-                  We&apos;ll send tracking information when your items ship.{" "}
+                  We&apos;ll send tracking information when your items
+                  ship.{" "}
                 </p>{" "}
               </div>{" "}
             </div>{" "}

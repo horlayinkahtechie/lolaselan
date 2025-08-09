@@ -118,17 +118,17 @@ export default function OrderHistory() {
                           order.status === "delivered"
                             ? "bg-green-100 text-green-800"
                             : order.status === "shipped"
-                            ? "bg-blue-100 text-blue-800"
-                            : "bg-amber-100 text-amber-800"
+                              ? "bg-blue-100 text-blue-800"
+                              : "bg-amber-100 text-amber-800"
                         }`}
                       >
-                        {order.status === "delivered" ? (
+                        {order.status === "processing" ? (
                           <>
-                            <FiCheckCircle className="inline mr-1" /> Delivered
+                            <FiClock className="inline mr-1" /> Processing
                           </>
-                        ) : order.status === "shipped" ? (
+                        ) : order.status === "paid" ? (
                           <>
-                            <FiTruck className="inline mr-1" /> Shipped
+                            <FiCheckCircle className="inline mr-1" /> Paid
                           </>
                         ) : (
                           <>
@@ -136,9 +136,31 @@ export default function OrderHistory() {
                           </>
                         )}
                       </span>
-                      <span className="font-bold">
-                        £{order.totalProductPrice}
+                      <span
+                        className={`px-3 py-1 text-xs rounded-full ${
+                          order.status === "delivered"
+                            ? "bg-green-100 text-green-800"
+                            : order.status === "shipped"
+                              ? "bg-blue-100 text-blue-800"
+                              : "bg-amber-100 text-amber-800"
+                        }`}
+                      >
+                        {order.delivery_status === "delivered" ? (
+                          <>
+                            <FiCheckCircle className="inline mr-1" /> Delivered
+                          </>
+                        ) : order.delivery_status === "shipping" ? (
+                          <>
+                            <FiTruck className="inline mr-1" /> Shipping
+                          </>
+                        ) : (
+                          <>
+                            <FiClock className="inline mr-1" /> Processing
+                            Delivery
+                          </>
+                        )}
                       </span>
+                      <span className="font-bold">£{order.productPrice}</span>
                     </div>
                   </div>
                 </div>
@@ -161,7 +183,7 @@ export default function OrderHistory() {
                         <p className="text-sm text-gray-500 mt-1">
                           Qty:{" "}
                           <span className="font-bold">
-                            {order.quantity} • £{order.totalProductPrice}
+                            {order.quantity} • £{order.productPrice}
                           </span>
                         </p>
                         <p className="text-sm text-gray-500 mt-1">
@@ -177,15 +199,6 @@ export default function OrderHistory() {
                       {order.length - 2 !== 1 ? "s" : ""}
                     </p>
                   )}
-
-                  <div className="mt-6 flex justify-end">
-                    <Link
-                      href={`/profile/orders/${order.order_id}`}
-                      className="flex items-center text-sm font-medium text-amber-600 hover:text-amber-700"
-                    >
-                      View order details <FiChevronRight className="ml-1" />
-                    </Link>
-                  </div>
                 </div>
               </div>
             );

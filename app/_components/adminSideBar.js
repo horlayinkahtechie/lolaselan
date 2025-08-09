@@ -32,11 +32,11 @@ export default function AdminSideBar() {
           <span>Products</span>
         </Link>
         <Link
-          href="/admin/customers"
+          href="/admin/users"
           className="flex items-center space-x-3 p-3  hover:bg-opacity-10 rounded-lg mb-2"
         >
           <FiUsers className="text-lg" />
-          <span>Customers</span>
+          <span>Users</span>
         </Link>
         <Link
           href="/admin/orders"

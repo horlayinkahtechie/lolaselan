@@ -1,10 +1,5 @@
-import { Suspense } from "react";
-import OrderConfirmation from "./orderConfirmation";
+import PaymentSuccessPage from "./confirmed";
 
-export default function Page() {
-  return (
-    <Suspense>
-      <OrderConfirmation />
-    </Suspense>
-  );
+export default function page() {
+  return <PaymentSuccessPage />;
 }

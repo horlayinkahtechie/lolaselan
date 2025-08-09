@@ -89,8 +89,8 @@ export async function POST(req) {
       metadata: {
         customer_email: body.email,
       },
-      success_url: `${process.env.NEXTAUTH_URL}/status/confirmed?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXTAUTH_URL}/status/declined`,
+      success_url: `${process.env.NEXTAUTH_URL}/status/cart-checkout-confirmed?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXTAUTH_URL}/status/cart-checkout-declined`,
     });
 
     return NextResponse.json({ id: session.id });
