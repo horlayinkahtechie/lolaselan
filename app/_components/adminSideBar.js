@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FaMailBulk } from "react-icons/fa";
 import {
   FiShoppingBag,
   FiUsers,
@@ -30,6 +31,13 @@ export default function AdminSideBar() {
         >
           <FiShoppingBag className="text-lg" />
           <span>Products</span>
+        </Link>
+        <Link
+          href="/admin/subscribers"
+          className="flex items-center space-x-3 p-3  hover:bg-opacity-10 rounded-lg mb-2"
+        >
+          <FaMailBulk className="text-lg" />
+          <span>Subscribers</span>
         </Link>
         <Link
           href="/admin/users"

@@ -8,6 +8,9 @@ import {
   FiPhone,
 } from "react-icons/fi";
 import Link from "next/link";
+import { useState } from "react";
+import supabase from "../lib/supabase";
+import toast from "react-hot-toast";
 
 export default function Footer() {
   const footerLinks = [
@@ -41,6 +44,69 @@ export default function Footer() {
       ],
     },
   ];
+  const [email, setEmail] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      // 1. Check if email is valid
+      if (!email || !email.includes("@")) {
+        toast.error("Please enter a valid email address");
+        return;
+      }
+
+      // 2. Check if user already exists in subscribers
+      const { data: existingSubscriber, error: subError } = await supabase
+        .from("subscribers")
+        .select("*")
+        .eq("email", email)
+        .single();
+
+      if (existingSubscriber) {
+        toast.info("You are already subscribed!");
+        return;
+      }
+
+      // 3. Check if email has an account in users table
+      const { data: userAccount, error: userError } = await supabase
+        .from("users")
+        .select("user_id")
+        .eq("email", email)
+        .single();
+
+      const hasAnAccount = !!userAccount;
+
+      // 4. Generate unique subscriber ID
+      const generateSubId = () => {
+        const prefix = "SUB";
+        const randomNum = Math.floor(1000 + Math.random() * 9000);
+        const timestamp = Date.now().toString().slice(-4);
+        return `${prefix}-${randomNum}-${timestamp}`;
+      };
+
+      const sub_id = generateSubId();
+
+      // 5. Insert into subscribers table
+      const { error: insertError } = await supabase.from("subscribers").insert([
+        {
+          sub_id,
+          email,
+          hasAnAccount,
+          created_at: new Date().toISOString(),
+        },
+      ]);
+
+      if (insertError) throw insertError;
+
+      // 6. Success handling
+      toast.success("Thank you for subscribing!");
+      setEmail("");
+    } catch (error) {
+      console.error("Subscription error:", error);
+      toast.error(`Subscription failed: ${error.message}`);
+    }
+  };
 
   return (
     <footer className="bg-gray-900 text-white pt-16 pb-8">
@@ -56,10 +122,15 @@ export default function Footer() {
               Subscribe to get updates on new arrivals, special offers, and
               styling inspiration.
             </p>
-            <form className="flex flex-col sm:flex-row gap-2">
+            <form
+              onSubmit={handleSubmit}
+              className="flex flex-col sm:flex-row gap-2"
+            >
               <input
                 type="email"
                 placeholder="Your email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="flex-grow px-4 py-3 rounded border-1 text-white border-white"
                 required
               />

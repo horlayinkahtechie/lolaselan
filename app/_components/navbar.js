@@ -88,7 +88,7 @@ export default function Navbar() {
           {/* Mobile Icons and Menu Button */}
           <div className="flex items-center space-x-4 md:space-x-0">
             {/* Mobile Cart and Profile (visible on mobile) */}
-            <div className="md:hidden flex items-center space-x-4">
+            <div className="md:hidden flex items-center lg:space-x-4 space-x-1">
               <CartCount />
 
               <Link

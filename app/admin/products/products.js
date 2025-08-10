@@ -280,7 +280,7 @@ export default function Products() {
             </div>
             <button
               onClick={() => setShowAddModal(true)}
-              className="flex items-center space-x-2 bg-[#5E2BFF] text-white px-6 py-3 rounded-lg hover:bg-[#4a1fd1] transition mt-4 md:mt-0"
+              className="flex items-center space-x-2 border border-[#5E2BFF] text-[#5E2BFF] hover:text-white px-6 py-3 rounded-lg hover:bg-[#5E2BFF] transition mt-4 md:mt-0"
             >
               <FiPlus className="text-lg" />
               <span>Add New Product</span>
