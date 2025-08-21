@@ -16,6 +16,8 @@ import AdminSideBar from "@/app/_components/adminSideBar";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import supabase from "@/app/lib/supabase";
+import Image from "next/image";
+import toast from "react-hot-toast";
 
 export default function Products() {
   const router = useRouter();
@@ -33,25 +35,30 @@ export default function Products() {
   // Form state for new product
   const [newProduct, setNewProduct] = useState({
     name: "",
-    price: "",
-    size: [],
-    gender: "",
-    fabric: "",
-    status: "available", // Default status
-    isNew: false, // Default isNew status
-    image: "",
-  });
-
-  // Form state for edit product
-  const [editProduct, setEditProduct] = useState({
-    name: "",
+    id: "",
     price: "",
     size: [],
     gender: "",
     fabric: "",
     status: "available",
     isNew: false,
-    image: "",
+    image: [],
+    product_description: "",
+    care_instruction: "",
+  });
+
+  // Form state for edit product
+  const [editProduct, setEditProduct] = useState({
+    name: "",
+    id: "",
+    price: "",
+    size: [],
+    gender: "",
+    fabric: "",
+    status: "available",
+    isNew: false,
+    image: [],
+    product_description: "",
   });
 
   useEffect(() => {
@@ -98,7 +105,6 @@ export default function Products() {
   );
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
-  // Handle page change
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   // Handle size selection
@@ -124,11 +130,12 @@ export default function Products() {
   // Add new product
   const handleAddProduct = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const productToAdd = {
         ...newProduct,
         price: parseFloat(newProduct.price),
-        // isNew is already part of the form state
+        image: newProduct.image.length > 0 ? newProduct.image : uploadedUrls,
       };
 
       const { data, error } = await supabase
@@ -147,21 +154,27 @@ export default function Products() {
         fabric: "",
         status: "available",
         isNew: false,
-        image: "",
+        image: [],
+        product_description: "",
+        care_instruction: "",
       });
       setShowAddModal(false);
     } catch (error) {
       console.error("Error adding product:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   // Edit product
   const handleEditProduct = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const productToUpdate = {
         ...editProduct,
         price: parseFloat(editProduct.price),
+        image: editProduct.image.length > 0 ? editProduct.image : uploadedUrls,
       };
 
       const { error } = await supabase
@@ -179,6 +192,8 @@ export default function Products() {
       setShowEditModal(false);
     } catch (error) {
       console.error("Error updating product:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -251,19 +266,65 @@ export default function Products() {
     }
   };
 
-  // Handle image upload
-  const handleImageUpload = (e, formType) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        if (formType === "add") {
-          setNewProduct({ ...newProduct, image: reader.result });
-        } else {
-          setEditProduct({ ...editProduct, image: reader.result });
-        }
-      };
-      reader.readAsDataURL(file);
+  const handleImageUpload = async (e, formType) => {
+    const files = Array.from(e.target.files);
+
+    if (files.length > 3) {
+      toast.error("You can upload a maximum of 4 images");
+      return;
+    }
+
+    try {
+      const uploadedUrls = [];
+
+      for (const file of files) {
+        const fileExt = file.name.split(".").pop();
+        const fileName = `${Date.now()}-${Math.random()}.${fileExt}`;
+        const { data, error } = await supabase.storage
+          .from("product-bucket")
+          .upload(fileName, file);
+
+        if (error) throw error;
+
+        // Get public URL
+        const { data: publicUrl } = supabase.storage
+          .from("product-bucket")
+          .getPublicUrl(fileName);
+
+        uploadedUrls.push(publicUrl.publicUrl);
+      }
+
+      if (formType === "add") {
+        const newImages = [...newProduct.image, ...uploadedUrls].slice(0, 4);
+        setNewProduct((prev) => ({
+          ...prev,
+          image: newImages,
+        }));
+      } else {
+        const newImages = [...editProduct.image, ...uploadedUrls].slice(0, 4);
+        setEditProduct((prev) => ({
+          ...prev,
+          image: newImages,
+        }));
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Image upload failed");
+    }
+  };
+
+  // Remove an image from the array
+  const removeImage = (index, formType) => {
+    if (formType === "add") {
+      setNewProduct((prev) => ({
+        ...prev,
+        image: prev.image.filter((_, i) => i !== index), // ✅ use image
+      }));
+    } else {
+      setEditProduct((prev) => ({
+        ...prev,
+        image: prev.image.filter((_, i) => i !== index), // ✅ use image
+      }));
     }
   };
 
@@ -345,10 +406,13 @@ export default function Products() {
                     className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition"
                   >
                     <div className="h-48 bg-gray-100 relative overflow-hidden">
-                      {product.image ? (
-                        <img
-                          src={product.image}
+                      {product.image && product.image.length > 0 ? (
+                        <Image
+                          width={100}
+                          height={100}
+                          src={product.image[0]}
                           alt={product.name}
+                          priority
                           className="w-full h-full object-cover"
                         />
                       ) : (
@@ -364,7 +428,7 @@ export default function Products() {
                           <FiEdit2 />
                         </button>
                         <button
-                          onClick={() => openDeleteModal(product)}
+                          onClick={() => handleDeleteProduct()}
                           className="p-2 bg-white bg-opacity-80 rounded-full text-gray-700 hover:text-red-500 hover:bg-opacity-100 transition"
                         >
                           <FiTrash2 />
@@ -514,18 +578,9 @@ export default function Products() {
                 </div>
                 <h3 className="text-xl font-bold mb-2">No products found</h3>
                 <p className="text-gray-600 mb-6">
-                  Try adjusting your search or filter to find what you're
+                  Try adjusting your search or filter to find what you&apos;re
                   looking for.
                 </p>
-                <button
-                  onClick={() => {
-                    setSearchTerm("");
-                    setCurrentPage(1);
-                  }}
-                  className="px-6 py-2 bg-[#5E2BFF] text-white rounded-lg hover:bg-[#4a1fd1] transition"
-                >
-                  Reset Filters
-                </button>
               </div>
             </div>
           )}
@@ -550,6 +605,23 @@ export default function Products() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Product ID
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200"
+                      value={newProduct.id}
+                      onChange={(e) =>
+                        setNewProduct({
+                          ...newProduct,
+                          id: e.target.value,
+                        })
+                      }
+                      required
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Product Name
                     </label>
                     <input
@@ -565,7 +637,40 @@ export default function Products() {
                       required
                     />
                   </div>
-
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Product Description
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full px-4 py-2 border h-28 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200"
+                      value={newProduct.product_description}
+                      onChange={(e) =>
+                        setNewProduct({
+                          ...newProduct,
+                          product_description: e.target.value,
+                        })
+                      }
+                      required
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Care instruction
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full px-4 py-2 border h-28 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200"
+                      value={newProduct.care_instruction}
+                      onChange={(e) =>
+                        setNewProduct({
+                          ...newProduct,
+                          care_instruction: e.target.value,
+                        })
+                      }
+                      required
+                    />
+                  </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Price ($)
@@ -582,7 +687,6 @@ export default function Products() {
                       required
                     />
                   </div>
-
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Gender
@@ -604,7 +708,6 @@ export default function Products() {
                       <option value="Unisex">Unisex</option>
                     </select>
                   </div>
-
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Fabric
@@ -622,7 +725,6 @@ export default function Products() {
                       required
                     />
                   </div>
-
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Status
@@ -642,7 +744,6 @@ export default function Products() {
                       <option value="pre-order">Pre-order</option>
                     </select>
                   </div>
-
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Mark as New Arrival
@@ -664,13 +765,12 @@ export default function Products() {
                       </span>
                     </div>
                   </div>
-
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Available Sizes
                     </label>
                     <div className="flex flex-wrap gap-4">
-                      {["S", "M", "L", "XL", "One Size"].map((size) => (
+                      {["XS", "S", "M", "L", "XL", "XXL"].map((size) => (
                         <label key={size} className="inline-flex items-center">
                           <input
                             type="checkbox"
@@ -687,82 +787,106 @@ export default function Products() {
 
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Product Image
+                      Product Images (Max 3)
                     </label>
                     <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg">
-                      <div className="space-y-1 text-center">
-                        {newProduct.image ? (
-                          <div className="relative">
-                            <img
-                              src={newProduct.image}
-                              alt="Preview"
-                              className="mx-auto h-32 object-cover rounded"
-                            />
-                            <button
-                              type="button"
-                              onClick={() =>
-                                setNewProduct({ ...newProduct, image: "" })
-                              }
-                              className="absolute top-0 right-0 p-1 bg-red-500 text-white rounded-full"
-                            >
-                              <FiX />
-                            </button>
-                          </div>
-                        ) : (
-                          <>
-                            <svg
-                              className="mx-auto h-12 w-12 text-gray-400"
-                              stroke="currentColor"
-                              fill="none"
-                              viewBox="0 0 48 48"
-                              aria-hidden="true"
-                            >
-                              <path
-                                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                strokeWidth={2}
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
+                      <div className="space-y-1 text-center w-full">
+                        {/* Display uploaded images */}
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          {newProduct.image.map((img, index) => (
+                            <div key={index} className="relative">
+                              <Image
+                                src={img}
+                                width={100}
+                                height={100}
+                                alt={`Preview ${index}`}
                               />
-                            </svg>
-                            <div className="flex text-sm text-gray-600">
-                              <label
-                                htmlFor="file-upload"
-                                className="relative cursor-pointer bg-white rounded-md font-medium text-[#5E2BFF] hover:text-[#4a1fd1] focus-within:outline-none"
+                              <button
+                                type="button"
+                                onClick={() => removeImage(index, "add")}
+                                className="absolute top-0 right-0 p-1 bg-red-500 text-white rounded-full"
                               >
-                                <span>Upload a file</span>
-                                <input
-                                  id="file-upload"
-                                  name="file-upload"
-                                  type="file"
-                                  className="sr-only"
-                                  onChange={(e) => handleImageUpload(e, "add")}
-                                />
-                              </label>
-                              <p className="pl-1">or drag and drop</p>
+                                <FiX size={12} />
+                              </button>
                             </div>
-                            <p className="text-xs text-gray-500">
-                              PNG, JPG, GIF up to 10MB
-                            </p>
-                          </>
-                        )}
+                          ))}
+                        </div>
+
+                        {/* Upload area (only show if less than 4 images) */}
+
+                        <svg
+                          className="mx-auto h-12 w-12 text-gray-400"
+                          stroke="currentColor"
+                          fill="none"
+                          viewBox="0 0 48 48"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                            strokeWidth={2}
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                        <div className="flex text-sm text-gray-600 justify-center">
+                          <label
+                            htmlFor="add"
+                            className="relative cursor-pointer bg-white rounded-md font-medium text-[#5E2BFF] hover:text-[#4a1fd1] focus-within:outline-none"
+                          >
+                            {newProduct.image.length < 4 && (
+                              <input
+                                type="file"
+                                multiple
+                                accept="image/*"
+                                onChange={(e) => handleImageUpload(e, "add")}
+                              />
+                            )}
+                          </label>
+                          <p className="pl-1">or drag and drop</p>
+                        </div>
+                        <p className="text-xs text-gray-500">
+                          PNG, JPG, GIF up to 10MB each (max 4 images)
+                        </p>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div className="flex justify-end space-x-3 mt-8">
-                  <button
-                    type="button"
-                    onClick={() => setShowAddModal(false)}
-                    className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-6 py-2 bg-[#5E2BFF] text-white rounded-lg hover:bg-[#4a1fd1] transition"
-                  >
-                    Add Product
-                  </button>
+                  {loading ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => setShowAddModal(false)}
+                        disabled
+                        className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+                      >
+                        Cancel
+                      </button>
+
+                      <button
+                        type="submit"
+                        className="px-6 py-2 bg-[#5E2BFF] text-white rounded-lg hover:bg-[#4a1fd1] transition"
+                      >
+                        Adding Product...
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => setShowAddModal(false)}
+                        className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-6 py-2 bg-[#5E2BFF] text-white rounded-lg hover:bg-[#4a1fd1] transition"
+                      >
+                        Add Product
+                      </button>
+                    </>
+                  )}
                 </div>
               </form>
             </div>
@@ -859,6 +983,23 @@ export default function Products() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Product Description
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200"
+                      value={editProduct.product_description}
+                      onChange={(e) =>
+                        setEditProduct({
+                          ...editProduct,
+                          product_description: e.target.value,
+                        })
+                      }
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Fabric
                     </label>
                     <input
@@ -923,7 +1064,7 @@ export default function Products() {
                       Available Sizes
                     </label>
                     <div className="flex flex-wrap gap-4">
-                      {["S", "M", "L", "XL", "One Size"].map((size) => (
+                      {["XS", "S", "M", "L", "XL", "XXL"].map((size) => (
                         <label key={size} className="inline-flex items-center">
                           <input
                             type="checkbox"
@@ -944,78 +1085,70 @@ export default function Products() {
                     </label>
                     <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg">
                       <div className="space-y-1 text-center">
-                        {editProduct.image ? (
-                          <div className="relative">
-                            <img
-                              src={editProduct.image}
-                              alt="Preview"
-                              className="mx-auto h-32 object-cover rounded"
+                        {editProduct.image.map((img, index) => (
+                          <div key={index} className="relative">
+                            <Image
+                              src={img}
+                              width={100}
+                              height={100}
+                              alt={`Preview ${index}`}
                             />
                             <button
                               type="button"
-                              onClick={() =>
-                                setEditProduct({ ...editProduct, image: "" })
-                              }
+                              onClick={() => removeImage(index, "edit")}
                               className="absolute top-0 right-0 p-1 bg-red-500 text-white rounded-full"
                             >
-                              <FiX />
+                              <FiX size={12} />
                             </button>
                           </div>
-                        ) : (
-                          <>
-                            <svg
-                              className="mx-auto h-12 w-12 text-gray-400"
-                              stroke="currentColor"
-                              fill="none"
-                              viewBox="0 0 48 48"
-                              aria-hidden="true"
-                            >
-                              <path
-                                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                strokeWidth={2}
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                            <div className="flex text-sm text-gray-600">
-                              <label
-                                htmlFor="edit-file-upload"
-                                className="relative cursor-pointer bg-white rounded-md font-medium text-[#5E2BFF] hover:text-[#4a1fd1] focus-within:outline-none"
-                              >
-                                <span>Upload a file</span>
-                                <input
-                                  id="edit-file-upload"
-                                  name="file-upload"
-                                  type="file"
-                                  className="sr-only"
-                                  onChange={(e) => handleImageUpload(e, "edit")}
-                                />
-                              </label>
-                              <p className="pl-1">or drag and drop</p>
-                            </div>
-                            <p className="text-xs text-gray-500">
-                              PNG, JPG, GIF up to 10MB
-                            </p>
-                          </>
+                        ))}
+
+                        {editProduct.image.length < 4 && (
+                          <input
+                            type="file"
+                            multiple
+                            accept="image/*"
+                            onChange={(e) => handleImageUpload(e, "edit")}
+                          />
                         )}
                       </div>
                     </div>
                   </div>
                 </div>
                 <div className="flex justify-end space-x-3 mt-8">
-                  <button
-                    type="button"
-                    onClick={() => setShowEditModal(false)}
-                    className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-6 py-2 bg-[#5E2BFF] text-white rounded-lg hover:bg-[#4a1fd1] transition"
-                  >
-                    Save Changes
-                  </button>
+                  {loading ? (
+                    <>
+                      <button
+                        type="button"
+                        disabled
+                        className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-6 py-2 bg-[#5E2BFF] text-white rounded-lg hover:bg-[#4a1fd1] transition"
+                      >
+                        Saving Changes...
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => setShowEditModal(false)}
+                        className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-6 py-2 bg-[#5E2BFF] text-white rounded-lg hover:bg-[#4a1fd1] transition"
+                      >
+                        Save Changes
+                      </button>
+                    </>
+                  )}
                 </div>
               </form>
             </div>

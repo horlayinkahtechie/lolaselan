@@ -5,6 +5,8 @@ const nextConfig = {
       "i.pinimg.com",
       "upload.wikimedia.org",
       "lh3.googleusercontent.com",
+      "example.com",
+      "pbxqhoplqcaiifkemgdo.supabase.co",
     ],
   },
 };

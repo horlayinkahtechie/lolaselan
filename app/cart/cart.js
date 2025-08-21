@@ -5,79 +5,128 @@ import { useEffect, useState } from "react";
 import supabase from "../lib/supabase";
 import Image from "next/image";
 import toast from "react-hot-toast";
-import { FiShoppingBag, FiTrash2, FiArrowRight } from "react-icons/fi";
+import {
+  FiShoppingBag,
+  FiTrash2,
+  FiArrowRight,
+  FiX,
+  FiChevronLeft,
+  FiChevronRight,
+} from "react-icons/fi";
 import { HiOutlineEmojiSad } from "react-icons/hi";
-import { RiLoader4Line } from "react-icons/ri";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function CartPage() {
   const { data: session, status } = useSession();
   const route = useRouter();
-  const [cartItems, setCartItems] = useState([0]);
+  const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  const total = cartItems.reduce(
-    (sum, item) => sum + parseFloat(item.price || 0) * (item.quantity || 1),
-    0
-  );
+  const total = cartItems
+    .reduce(
+      (sum, item) => sum + parseFloat(item.price || 0) * (item.quantity || 1),
+      0
+    )
+    .toFixed(2);
 
   // Fetch cart items
+  // Fetch cart items with complete product data
   useEffect(() => {
     const fetchCartItems = async () => {
       if (!session?.user?.email) {
         route.push("user/login");
+        return;
       }
 
-      const { data, error } = await supabase
-        .from("cart")
-        .select("*")
-        .eq("email", session.user.email);
+      try {
+        // First get cart items
+        const { data: cartData, error: cartError } = await supabase
+          .from("cart")
+          .select("*")
+          .eq("email", session.user.email);
 
-      if (error) {
-        toast.error("Failed to load cart.");
+        if (cartError) {
+          throw cartError;
+        }
+
+        if (!cartData || cartData.length === 0) {
+          setCartItems([]);
+          setLoading(false);
+          return;
+        }
+
+        // Get product IDs from cart items
+        const productIds = cartData
+          .map((item) => item.product_id)
+          .filter(Boolean);
+
+        if (productIds.length === 0) {
+          setCartItems([]);
+          setLoading(false);
+          return;
+        }
+
+        // Fetch complete product data
+        const { data: productData, error: productError } = await supabase
+          .from("products")
+          .select("*")
+          .in("id", productIds);
+
+        if (productError) {
+          throw productError;
+        }
+
+        // Merge cart items with product data
+        const mergedItems = cartData.map((cartItem) => {
+          const product = productData.find((p) => p.id === cartItem.product_id);
+          return {
+            ...cartItem,
+            ...product, // This will overwrite cart fields with product fields
+            quantity: cartItem.quantity || 1,
+
+            images: product?.images || [product?.image].filter(Boolean) || [],
+          };
+        });
+
+        setCartItems(mergedItems);
+      } catch (error) {
         console.error("Fetch error:", error);
-      } else {
-        // Initialize quantity if not present
-        const itemsWithQuantity = data.map((item) => ({
-          ...item,
-          quantity: item.quantity || 1,
-        }));
-        setCartItems(itemsWithQuantity);
+        toast.error("Failed to load cart.");
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
-    fetchCartItems();
-  }, [session]);
+    if (session?.user?.email) {
+      fetchCartItems();
+    }
+  }, [session, route]);
 
   const checkOut = () => {
     route.push("/cart/checkout", {
       state: { source: "cart" },
     });
-
-    console.log("Navigating to checkout");
   };
 
-  // Update quantity in database and state
-  const updateQuantity = async (id, newQuantity) => {
+  const updateQuantity = async (cart_id, newQuantity) => {
     if (newQuantity < 1) return;
 
     const toastId = toast.loading("Updating quantity...");
 
     try {
-      // Update in database
       const { error } = await supabase
         .from("cart")
         .update({ quantity: newQuantity })
-        .eq("id", id);
+        .eq("cart_id", cart_id);
 
       if (error) throw error;
 
-      // Update in state
       setCartItems((prev) =>
         prev.map((item) =>
-          item.id === id ? { ...item, quantity: newQuantity } : item
+          item.cart_id === cart_id ? { ...item, quantity: newQuantity } : item
         )
       );
 
@@ -88,40 +137,115 @@ export default function CartPage() {
     }
   };
 
-  // Remove item from cart
-  const handleRemove = async (id) => {
+  const handleRemove = async (cart_id) => {
     const toastId = toast.loading("Removing item...");
-    const { error } = await supabase.from("cart").delete().eq("id", id);
+    const { error } = await supabase
+      .from("cart")
+      .delete()
+      .eq("cart_id", cart_id);
 
     if (error) {
       toast.error("Failed to remove item.", { id: toastId });
     } else {
       toast.success("Item removed from cart.", { id: toastId });
-      setCartItems((prev) => prev.filter((item) => item.id !== id));
+      setCartItems((prev) => prev.filter((item) => item.cart_id !== cart_id));
+      if (selectedItem?.cart_id === cart_id) {
+        setSelectedItem(null);
+      }
     }
   };
 
-  // Increment quantity
-  const incrementQuantity = (id) => {
-    const item = cartItems.find((item) => item.id === id);
+  const incrementQuantity = (cart_id) => {
+    const item = cartItems.find((item) => item.cart_id === cart_id);
     if (item) {
-      updateQuantity(id, item.quantity + 1);
+      updateQuantity(cart_id, item.quantity + 1);
     }
   };
 
-  // Decrement quantity
-  const decrementQuantity = (id) => {
-    const item = cartItems.find((item) => item.id === id);
+  const decrementQuantity = (cart_id) => {
+    const item = cartItems.find((item) => item.cart_id === cart_id);
     if (item && item.quantity > 1) {
-      updateQuantity(id, item.quantity - 1);
+      updateQuantity(cart_id, item.quantity - 1);
     }
   };
+
+  const openProductModal = (item) => {
+    setSelectedItem(item);
+    setCurrentImageIndex(0);
+    document.body.style.overflow = "hidden"; // Prevent scrolling when modal is open
+  };
+
+  const closeProductModal = () => {
+    setSelectedItem(null);
+    document.body.style.overflow = "auto"; // Re-enable scrolling
+  };
+
+  const nextImage = () => {
+    setCurrentImageIndex((prev) =>
+      prev === selectedItem.image.length - 1 ? 0 : prev + 1
+    );
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex((prev) =>
+      prev === 0 ? selectedItem.image.length - 1 : prev - 1
+    );
+  };
+
+  // Skeleton loader for cart items
+  const CartSkeleton = () => (
+    <div className="p-4 flex flex-col sm:flex-row gap-4 bg-white rounded-xl shadow-sm mt-4 animate-pulse">
+      <div className="w-full sm:w-32 h-32 bg-gray-200 rounded-lg"></div>
+      <div className="flex-1 space-y-3">
+        <div className="h-5 bg-gray-200 rounded w-1/2"></div>
+        <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+        <div className="grid grid-cols-2 gap-2">
+          <div className="h-4 bg-gray-200 rounded"></div>
+          <div className="h-4 bg-gray-200 rounded"></div>
+        </div>
+        <div className="flex justify-between items-center mt-4">
+          <div className="flex space-x-2">
+            <div className="w-8 h-8 bg-gray-200 rounded"></div>
+            <div className="w-8 h-8 bg-gray-200 rounded"></div>
+            <div className="w-8 h-8 bg-gray-200 rounded"></div>
+          </div>
+          <div className="h-6 bg-gray-200 rounded w-16"></div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Skeleton loader for order summary
+  const SummarySkeleton = () => (
+    <div className="bg-white rounded-xl shadow-sm p-6 animate-pulse">
+      <div className="h-5 bg-gray-200 rounded w-1/3 mb-6"></div>
+      <div className="space-y-4">
+        <div className="flex justify-between">
+          <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+          <div className="h-4 bg-gray-200 rounded w-1/6"></div>
+        </div>
+        <div className="flex justify-between">
+          <div className="h-4 bg-gray-200 rounded w-1/5"></div>
+          <div className="h-4 bg-gray-200 rounded w-1/6"></div>
+        </div>
+      </div>
+      <div className="mt-6 h-10 bg-gray-200 rounded w-full"></div>
+    </div>
+  );
 
   if (status === "loading" || loading) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center">
-        <RiLoader4Line className="animate-spin text-3xl text-amber-600 mb-4" />
-        <p className="text-gray-600">Loading your cart...</p>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-40">
+        <div className="flex flex-col lg:flex-row gap-8">
+          <div className="lg:w-2/3">
+            {[1, 2].map((_, i) => (
+              <CartSkeleton key={i} />
+            ))}
+          </div>
+          <div className="lg:w-1/3">
+            <SummarySkeleton />
+          </div>
+        </div>
       </div>
     );
   }
@@ -146,6 +270,152 @@ export default function CartPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-40 pb-15">
+      {/* Product Detail Modal */}
+      {selectedItem && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6 relative">
+              <button
+                onClick={closeProductModal}
+                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+              >
+                <FiX size={24} />
+              </button>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Image Gallery */}
+                <div className="relative">
+                  <div className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden">
+                    <Image
+                      src={selectedItem.image[currentImageIndex]}
+                      alt={selectedItem.orderName}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+
+                  {selectedItem.image.length > 1 && (
+                    <>
+                      <button
+                        onClick={prevImage}
+                        className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md hover:bg-gray-100"
+                      >
+                        <FiChevronLeft size={20} />
+                      </button>
+                      <button
+                        onClick={nextImage}
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md hover:bg-gray-100"
+                      >
+                        <FiChevronRight size={20} />
+                      </button>
+                    </>
+                  )}
+
+                  <div className="flex mt-4 space-x-2 overflow-x-auto py-2">
+                    {selectedItem.image.map((img, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentImageIndex(index)}
+                        className={`flex-shrink-0 w-16 h-16 relative rounded-md overflow-hidden border-2 ${currentImageIndex === index ? "border-amber-500" : "border-transparent"}`}
+                      >
+                        <Image
+                          src={img}
+                          alt={`Thumbnail ${index + 1}`}
+                          fill
+                          className="object-cover"
+                        />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Product Details */}
+                <div>
+                  <h2 className="text-2xl font-bold mb-2">
+                    {selectedItem.orderName}
+                  </h2>
+                  <p className="text-amber-600 text-xl font-bold mb-4">
+                    £{parseFloat(selectedItem.price).toFixed(2)}
+                  </p>
+
+                  <div className="mb-6">
+                    <h3 className="font-medium mb-2">Description</h3>
+                    <p className="text-gray-700">
+                      {selectedItem.product_description ||
+                        "No description available"}
+                    </p>
+                  </div>
+
+                  <div className="mb-6">
+                    <h3 className="font-medium mb-2">Care instruction</h3>
+                    <p className="text-gray-700">
+                      {selectedItem.care_instruction ||
+                        "No instruction available"}
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div>
+                      <p className="text-sm text-gray-500">Category</p>
+                      <p className="font-medium capitalize">
+                        {selectedItem.category}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Size</p>
+                      <p className="font-medium">{selectedItem.size}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Fabric</p>
+                      <p className="font-medium capitalize">
+                        {selectedItem.fabric}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Gender</p>
+                      <p className="font-medium capitalize">
+                        {selectedItem.gender}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Condition</p>
+                      <p className="font-medium">New</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-2">
+                      <button
+                        onClick={() => decrementQuantity(selectedItem.cart_id)}
+                        className="w-10 h-10 flex items-center justify-center border rounded-md hover:bg-gray-100 disabled:opacity-50"
+                        disabled={selectedItem.quantity <= 1}
+                      >
+                        -
+                      </button>
+                      <span className="w-10 text-center">
+                        {selectedItem.quantity}
+                      </span>
+                      <button
+                        onClick={() => incrementQuantity(selectedItem.cart_id)}
+                        className="w-10 h-10 flex items-center justify-center border rounded-md hover:bg-gray-100"
+                      >
+                        +
+                      </button>
+                    </div>
+                    <button
+                      onClick={() => handleRemove(selectedItem.cart_id)}
+                      className="flex items-center text-red-500 hover:text-red-700"
+                    >
+                      <FiTrash2 className="mr-1" /> Remove
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Cart Items Section */}
         <div className="lg:w-2/3">
@@ -179,16 +449,16 @@ export default function CartPage() {
               </Link>
             </div>
           ) : (
-            // <div className="bg-white rounded-xl shadow-sm divide-y divide-gray-200">
             <div>
               {cartItems.map((item) => (
                 <div
                   key={item.id}
-                  className="p-4 flex flex-col sm:flex-row gap-4 bg-white rounded-xl shadow-sm mt-4"
+                  className="p-4 flex flex-col sm:flex-row gap-4 bg-white rounded-xl shadow-sm mt-4 cursor-pointer hover:shadow-md transition-shadow"
+                  onClick={() => openProductModal(item)}
                 >
                   <div className="w-full sm:w-32 h-32 relative flex-shrink-0">
                     <Image
-                      src={item.image}
+                      src={item.image[0]}
                       alt={item.orderName}
                       fill
                       className="rounded-lg object-cover"
@@ -206,7 +476,10 @@ export default function CartPage() {
                         </p>
                       </div>
                       <button
-                        onClick={() => handleRemove(item.id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRemove(item.cart_id);
+                        }}
                         className="text-gray-400 cursor-pointer hover:text-red-500 transition-colors"
                         aria-label="Remove item"
                       >
@@ -234,7 +507,10 @@ export default function CartPage() {
                     <div className="mt-4 flex justify-between items-center">
                       <div className="flex items-center space-x-2">
                         <button
-                          onClick={() => decrementQuantity(item.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            decrementQuantity(item.cart_id);
+                          }}
                           className="w-8 h-8 cursor-pointer flex items-center justify-center border rounded-md hover:bg-gray-100 disabled:opacity-50"
                           disabled={item.quantity <= 1}
                         >
@@ -242,7 +518,10 @@ export default function CartPage() {
                         </button>
                         <span className="w-8 text-center">{item.quantity}</span>
                         <button
-                          onClick={() => incrementQuantity(item.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            incrementQuantity(item.cart_id);
+                          }}
                           className="w-8 h-8 cursor-pointer flex items-center justify-center border rounded-md hover:bg-gray-100"
                         >
                           +
@@ -256,7 +535,6 @@ export default function CartPage() {
                 </div>
               ))}
             </div>
-            // </div>
           )}
         </div>
 
@@ -269,8 +547,6 @@ export default function CartPage() {
               </h2>
 
               <div className="space-y-4 pb-20">
-                {" "}
-                {/* Add padding bottom for mobile button */}
                 <div className="flex justify-between">
                   <span className="text-gray-600">
                     Subtotal (
@@ -287,8 +563,7 @@ export default function CartPage() {
                 </div>
               </div>
 
-              {/* Fixed mobile checkout button */}
-              <div className="md:static fixed bottom-0 left-0 w-full px-6 pb-6 bg-white z-50 shadow-[0_-2px_6px_rgba(0,0,0,0.05)]">
+              <div className="md:static fixed bottom-0 left-0 w-full px-6 pb-6 bg-white z-40 shadow-[0_-2px_6px_rgba(0,0,0,0.05)]">
                 <button
                   className="w-full py-3 px-4 bg-amber-600 hover:bg-amber-700 text-white font-medium rounded-lg transition-colors"
                   onClick={() => checkOut()}

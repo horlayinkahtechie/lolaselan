@@ -1,7 +1,7 @@
 import FeaturedCollections from "./collections";
 import ContactSection from "./contactus";
 import Hero from "./hero";
-import ProductScrollSection from "./newArrivals";
+import NewArrivals from "./newArrivals";
 import NewsletterModal from "./subscriptionModal";
 import Testimonials from "./testimonials";
 
@@ -12,7 +12,7 @@ export default function Index() {
       <Hero />
       <FeaturedCollections />
       <Testimonials />
-      <ProductScrollSection />
+      <NewArrivals />
       <ContactSection />
     </>
   );

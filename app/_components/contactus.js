@@ -14,6 +14,7 @@ import { FiTwitter } from "react-icons/fi";
 import { FiYoutube } from "react-icons/fi";
 
 import { useState } from "react";
+import Link from "next/link";
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
@@ -46,7 +47,7 @@ export default function ContactSection() {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formErrors = validateForm();
     if (Object.keys(formErrors).length > 0) {
@@ -55,14 +56,29 @@ export default function ContactSection() {
     }
 
     setIsSubmitting(true);
-    // Simulate form submission
-    setTimeout(() => {
-      console.log("Form submitted:", formData);
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setSubmitSuccess(true);
+        setFormData({ name: "", email: "", message: "" });
+        setTimeout(() => setSubmitSuccess(false), 5000);
+      } else {
+        alert(data.error || "Something went wrong. Please try again.");
+      }
+    } catch (err) {
+      console.error("Error submitting form:", err);
+      alert("Error submitting form. Please try again later.");
+    } finally {
       setIsSubmitting(false);
-      setSubmitSuccess(true);
-      setFormData({ name: "", email: "", message: "" });
-      setTimeout(() => setSubmitSuccess(false), 5000);
-    }, 1500);
+    }
   };
 
   return (
@@ -117,15 +133,16 @@ export default function ContactSection() {
             <div className="pt-4">
               <h3 className="font-medium text-lg mb-4">Follow Us</h3>
               <div className="flex space-x-4">
-                <a
-                  href="#"
+                <Link
+                  target="_blank"
+                  href="https://www.instagram.com/lolaselan?igsh=MXRpamw3bHFnMmY5eA%3D%3D&utm_source=qr"
                   className="bg-white p-3 rounded-full shadow-sm hover:bg-primary/10 hover:text-primary transition-colors"
                   aria-label={`Follow on Instagram`}
                 >
                   <FiInstagram className="h-6 w-6" />
-                </a>
+                </Link>
                 <a
-                  href="#"
+                  href="https://www.tiktok.com/@lolaselan?_t=ZN-8yxc22lltuA&_r=1"
                   className="bg-white p-3 rounded-full shadow-sm hover:bg-primary/10 hover:text-primary transition-colors"
                   aria-label={`Follow on X`}
                 >

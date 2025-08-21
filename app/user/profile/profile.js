@@ -24,7 +24,6 @@ export default function ProfilePage() {
   const tabs = [
     { id: "orders", label: "My Orders", icon: <FiShoppingBag /> },
     { id: "wishlist", label: "Wishlist", icon: <FiHeart /> },
-    { id: "addresses", label: "Saved Addresses", icon: <FiMapPin /> },
   ];
 
   if (!session?.user) {
@@ -113,7 +112,6 @@ export default function ProfilePage() {
             <div className="bg-white rounded-xl shadow-sm p-6">
               {activeTab === "orders" && <OrderHistory />}
               {activeTab === "wishlist" && <WishlistHistory />}
-              {activeTab === "addresses" && <p>Your address</p>}
             </div>
           </div>
         </div>

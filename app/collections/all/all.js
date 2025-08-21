@@ -21,7 +21,6 @@ import supabase from "@/app/lib/supabase";
 export default function AllProducts() {
   const scrollContainerRef = useRef(null);
   const [products, setProducts] = useState({
-    newArrivals: [],
     adireTwoPiece: [],
     ankaraPants: [],
     asoOkeskirt: [],
@@ -37,18 +36,11 @@ export default function AllProducts() {
 
         // Fetch all product categories in parallel
         const [
-          { data: newArrivals },
           { data: adireTwoPiece },
           { data: ankaraPants },
           { data: asoOkeskirt },
           { data: bubu },
         ] = await Promise.all([
-          supabase
-            .from("products")
-            .select("*")
-            .eq("id", "%NEWARRIVAL%")
-            .order("created_at", { ascending: false }),
-
           supabase
             .from("products")
             .select("*")
@@ -73,7 +65,6 @@ export default function AllProducts() {
         ]);
 
         setProducts({
-          newArrivals: newArrivals || [],
           adireTwoPiece: adireTwoPiece || [],
           ankaraPants: ankaraPants || [],
           asoOkeskirt: asoOkeskirt || [],
@@ -185,7 +176,7 @@ export default function AllProducts() {
                   <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 h-full">
                     <div className="relative aspect-square bg-gray-100 flex items-center justify-center">
                       <Image
-                        src={product.image_url || "/placeholder-product.jpg"}
+                        src={product.image[0]}
                         fill
                         alt={product.name}
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -205,7 +196,7 @@ export default function AllProducts() {
                         gender={product.gender}
                         fabric={product.fabric}
                         isNew={product.isNew}
-                        image={product.image_url}
+                        image={product.image[0]}
                       />
                     </div>
 
@@ -237,18 +228,38 @@ export default function AllProducts() {
                         </span>
                       </div>
 
+                      {/* Action Buttons */}
                       <div className="grid grid-cols-2 gap-2">
-                        <AddToCart
-                          id={product.id}
-                          name={product.name}
-                          price={product.price}
-                          size={product.size}
-                          gender={product.gender}
-                          fabric={product.fabric}
-                          isNew={product.isNew}
-                          image={product.image_url}
-                        />
-                        <Buy product={product} />
+                        {product.status === "out of stock" ? (
+                          <>
+                            <button
+                              disabled
+                              className="w-full py-2 rounded-lg bg-gray-300 text-gray-600 font-semibold cursor-not-allowed"
+                            >
+                              Add to cart
+                            </button>
+                            <button
+                              disabled
+                              className="w-full py-2 rounded-lg bg-gray-300 text-gray-600 font-semibold cursor-not-allowed"
+                            >
+                              Buy now
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <AddToCart
+                              id={product.id}
+                              name={product.name}
+                              price={product.price}
+                              size={product.size}
+                              gender={product.gender}
+                              fabric={product.fabric}
+                              isNew={product.isNew}
+                              image={product.image[0]}
+                            />
+                            <Buy product={product} />
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -269,11 +280,6 @@ export default function AllProducts() {
 
   return (
     <>
-      {renderProductSection(
-        "New Arrivals",
-        products.newArrivals,
-        "new-arrivals"
-      )}
       {renderProductSection(
         "Adire Two Piece",
         products.adireTwoPiece,

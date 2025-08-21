@@ -18,26 +18,25 @@ export default function Footer() {
       title: "Shop",
       links: [
         { name: "New Arrivals", href: "/collections/new-arrivals" },
-        { name: "Best Sellers", href: "/collections/bestsellers" },
-        { name: "Dresses", href: "/collections/dresses" },
-        { name: "Tops", href: "/collections/tops" },
-        { name: "Bottoms", href: "/collections/bottoms" },
+        { name: "Bubu", href: "/collections/bubu" },
+        { name: "Collections", href: "/collections/collections" },
+        { name: "Adire two pieces", href: "/collections/adire-two-piece" },
+        { name: "Aso Oke", href: "/collections/aso-oke-skirts" },
+        { name: "Bottoms", href: "/collections/ankara-pants" },
       ],
     },
     {
       title: "About",
       links: [
         { name: "Our Story", href: "/aboutus" },
-        { name: "Designers", href: "/designers" },
-        { name: "Blog", href: "/blog" },
-        { name: "Careers", href: "/careers" },
+        { name: "Developers", href: "https://abdulsalamalao.com" },
       ],
     },
     {
       title: "Help",
       links: [
         { name: "Contact Us", href: "/contactus" },
-        { name: "Shipping Info", href: "/shipping" },
+        { name: "Shipping Info", href: "/shipping-info" },
         { name: "Returns & Exchanges", href: "/returns" },
         { name: "Size Guide", href: "/size-guide" },
         { name: "FAQs", href: "/faqs" },
@@ -190,14 +189,22 @@ export default function Footer() {
             <h4 className="text-lg font-semibold mb-4">Follow Us</h4>
             <div className="flex space-x-4">
               {[
-                { icon: FiInstagram, name: "Instagram" },
+                {
+                  icon: FiInstagram,
+                  name: "Instagram",
+                  link: "https://www.instagram.com/lolaselan?igsh=MXRpamw3bHFnMmY5eA%3D%3D&utm_source=qr",
+                },
                 { icon: FiFacebook, name: "Facebook" },
-                { icon: FiTwitter, name: "Twitter" },
+                {
+                  icon: FiTwitter,
+                  name: "TikTok",
+                  link: "https://www.tiktok.com/@lolaselan?_t=ZN-8yxc22lltuA&_r=1",
+                },
                 { icon: FiYoutube, name: "YouTube" },
               ].map((social) => (
                 <a
                   key={social.name}
-                  href="#"
+                  href={social.link}
                   aria-label={social.name}
                   className="bg-gray-800 hover:bg-gray-700 p-3 rounded-full transition-colors"
                 >

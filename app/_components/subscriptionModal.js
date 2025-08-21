@@ -203,7 +203,10 @@ const NewsletterModal = ({
             <p className="text-xs text-gray-500 text-center">
               We respect your privacy. Unsubscribe at any time. By subscribing,
               you agree to our{" "}
-              <a href="/privacy" className="text-amber-700 hover:underline">
+              <a
+                href="/privacy-policy"
+                className="text-amber-700 hover:underline"
+              >
                 Privacy Policy
               </a>
               .

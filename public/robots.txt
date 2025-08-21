@@ -1,0 +1,11 @@
+# *
+# Host
+Host: https://shoplolaselan.uk
+
+User-agent: *
+Disallow: /admin/
+Disallow: /checkout/
+Disallow: /cart/checkout/
+Allow: /
+
+Sitemap: https://shoplolaselan.uk/sitemap.xml

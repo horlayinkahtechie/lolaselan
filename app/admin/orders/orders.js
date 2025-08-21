@@ -118,6 +118,11 @@ export default function Orders() {
           icon: <FiCheckCircle className="mr-1" />,
           color: "bg-green-100 text-green-800",
         };
+      case "returned":
+        return {
+          icon: <FiCheckCircle className="mr-1" />,
+          color: "bg-green-100 text-green-800",
+        };
       default:
         return { icon: null, color: "bg-gray-100 text-gray-800" };
     }
@@ -179,6 +184,7 @@ export default function Orders() {
                   <option>Processing</option>
                   <option>Shipped</option>
                   <option>Delivered</option>
+                  <option>Returned</option>
                 </select>
               </div>
             </div>
@@ -363,6 +369,15 @@ export default function Orders() {
                   >
                     <FiCheckCircle className="mr-2" />
                     Delivered
+                  </button>
+                  <button
+                    onClick={() =>
+                      updateOrderStatus(selectedOrder.order_id, "returned")
+                    }
+                    className={`px-4 py-2 rounded-lg text-left flex items-center ${selectedOrder.delivery_status === "returned" ? "bg-[#5E2BFF] text-white" : "bg-gray-100 hover:bg-gray-200"}`}
+                  >
+                    <FiCheckCircle className="mr-2" />
+                    Returned
                   </button>
                 </div>
               </div>

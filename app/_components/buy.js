@@ -33,11 +33,13 @@ export default function Buy({ product }) {
         name: product.name,
         category: product.category,
         price: product.price,
-        size: product.size,
+        size: JSON.stringify(product.size),
         gender: product.gender,
         fabric: product.fabric,
         isNew: product.isNew,
-        image: product.image,
+        image: JSON.stringify(product.image),
+        product_description: product.product_description,
+        care_instruction: product.care_instruction,
       });
 
       router.push(`/checkout?${params.toString()}`);

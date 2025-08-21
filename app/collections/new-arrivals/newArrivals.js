@@ -26,11 +26,14 @@ export default function AdireTwoPiece() {
         const { data, error } = await supabase
           .from("products")
           .select("*")
-          .ilike("id", "%NEWARRIVAL%")
-          .order("created_at", { ascending: false });
+          .eq("isNew", true)
+          .limit(18);
 
         if (error) throw error;
-        setProducts(data || []);
+
+        // Shuffle in JS
+        const shuffled = (data || []).sort(() => 0.5 - Math.random());
+        setProducts(shuffled);
       } catch (err) {
         console.error("Error fetching New Arrivals:", err);
         setError("Failed to New Arrivals");
@@ -85,7 +88,7 @@ export default function AdireTwoPiece() {
               {/* Product Image */}
               <div className="relative aspect-square bg-gray-100 flex items-center justify-center">
                 <Image
-                  src={product.image || "/placeholder-product.jpg"}
+                  src={product.image[0]}
                   fill
                   alt={product.name}
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -123,7 +126,7 @@ export default function AdireTwoPiece() {
                   gender={product.gender}
                   fabric={product.fabric}
                   isNew={product.isNew}
-                  image={product.image}
+                  image={product.image[0]}
                 />
               </div>
 
@@ -152,21 +155,38 @@ export default function AdireTwoPiece() {
                     <FiTag className="mr-1" /> {product.fabric}
                   </span>
                 </div>
-
                 {/* Action Buttons */}
                 <div className="grid grid-cols-2 gap-2">
-                  <AddToCart
-                    id={product.id}
-                    name={product.name}
-                    category={product.category}
-                    price={product.price}
-                    size={product.size}
-                    gender={product.gender}
-                    fabric={product.fabric}
-                    isNew={product.isNew}
-                    image={product.image}
-                  />
-                  <Buy product={product} />
+                  {product.status === "out of stock" ? (
+                    <>
+                      <button
+                        disabled
+                        className="w-full py-2 rounded-lg bg-gray-300 text-gray-600 font-semibold cursor-not-allowed"
+                      >
+                        Add to cart
+                      </button>
+                      <button
+                        disabled
+                        className="w-full py-2 rounded-lg bg-gray-300 text-gray-600 font-semibold cursor-not-allowed"
+                      >
+                        Buy now
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <AddToCart
+                        id={product.id}
+                        name={product.name}
+                        price={product.price}
+                        size={product.size}
+                        gender={product.gender}
+                        fabric={product.fabric}
+                        isNew={product.isNew}
+                        image={product.image[0]}
+                      />
+                      <Buy product={product} />
+                    </>
+                  )}
                 </div>
               </div>
             </div>

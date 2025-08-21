@@ -31,11 +31,12 @@ export default function NewArrivals() {
         const { data, error } = await supabase
           .from("products")
           .select("*")
-          .ilike("id", "%ADIRETWOPIECES%")
-          .order("created_at", { ascending: false });
+          .eq("isNew", true);
 
         if (error) throw error;
-        setNewArrivals(data || []);
+
+        const shuffled = data.sort(() => 0.5 - Math.random());
+        setNewArrivals(shuffled.slice(0, 8));
       } catch (err) {
         console.error("Error fetching new arrivals:", err);
         setError("Failed to load new arrivals");
@@ -175,9 +176,10 @@ export default function NewArrivals() {
                   {/* Product Image */}
                   <div className="relative aspect-square bg-gray-100 flex items-center justify-center">
                     <Image
-                      src={product.image || "/placeholder-product.jpg"}
+                      src={product.image[0]}
                       fill
-                      alt={product.name}
+                      alt="Product image"
+                      priority
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
@@ -215,7 +217,7 @@ export default function NewArrivals() {
                       gender={product.gender}
                       fabric={product.fabric}
                       isNew={product.isNew}
-                      image={product.image}
+                      image={product.image[0]}
                     />
                   </div>
 
@@ -236,7 +238,7 @@ export default function NewArrivals() {
                     {/* Product Meta */}
                     <div className="flex flex-wrap gap-3 text-xs text-gray-500 mb-4">
                       <span className="flex items-center">
-                        <FiLayers className="mr-1" /> {product.size.join(", ")}
+                        <FiLayers className="mr-1" /> {product.size}
                       </span>
                       <span className="flex items-center">
                         <FiUsers className="mr-1" /> {product.gender}
@@ -248,17 +250,36 @@ export default function NewArrivals() {
 
                     {/* Action Buttons */}
                     <div className="grid grid-cols-2 gap-2">
-                      <AddToCart
-                        id={product.id}
-                        name={product.name}
-                        price={product.price}
-                        size={product.size}
-                        gender={product.gender}
-                        fabric={product.fabric}
-                        isNew={product.isNew}
-                        image={product.image}
-                      />
-                      <Buy product={product} />
+                      {product.status === "out of stock" ? (
+                        <>
+                          <button
+                            disabled
+                            className="w-full py-2 rounded-lg bg-gray-300 text-gray-600 font-semibold cursor-not-allowed"
+                          >
+                            Add to cart
+                          </button>
+                          <button
+                            disabled
+                            className="w-full py-2 rounded-lg bg-gray-300 text-gray-600 font-semibold cursor-not-allowed"
+                          >
+                            Buy now
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <AddToCart
+                            id={product.id}
+                            name={product.name}
+                            price={product.price}
+                            size={product.size}
+                            gender={product.gender}
+                            fabric={product.fabric}
+                            isNew={product.isNew}
+                            image={product.image}
+                          />
+                          <Buy product={product} />
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>

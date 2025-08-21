@@ -9,6 +9,7 @@ import {
   FiTruck,
   FiLock,
   FiAlertCircle,
+  FiCheck,
 } from "react-icons/fi";
 import Image from "next/image";
 import Link from "next/link";
@@ -26,6 +27,24 @@ const CheckoutPage = () => {
   const [subscribeNewsletter, setSubscribeNewsletter] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
 
+  // Shipping options
+  const shippingOptions = [
+    {
+      id: "standard",
+      name: "Standard Delivery",
+      price: 2.62,
+      description: "2-4 working days",
+      icon: <FiTruck className="text-amber-600" />,
+    },
+    {
+      id: "next-day",
+      name: "Next Day Delivery",
+      price: 3.2,
+      description: "Next working day",
+      icon: <FiTruck className="text-amber-600" />,
+    },
+  ];
+
   // Form state
   const [formData, setFormData] = useState({
     firstName: "",
@@ -33,10 +52,10 @@ const CheckoutPage = () => {
     address: "",
     city: "",
     postCode: "",
-    country: "United Kingdom",
+    country: "",
     phoneNo: "",
-    shipping: 2.62,
-    shippingMethod: "standard",
+    shipping: shippingOptions[0].price,
+    shippingMethod: shippingOptions[0].id,
   });
 
   // Form errors
@@ -139,7 +158,7 @@ const CheckoutPage = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === "shipping" ? parseFloat(value) || 0 : value,
+      [name]: value,
     }));
 
     // Clear error when user starts typing
@@ -149,6 +168,16 @@ const CheckoutPage = () => {
         [name]: "",
       }));
     }
+  };
+
+  // Handle shipping method change
+  const handleShippingChange = (method) => {
+    const selectedOption = shippingOptions.find((opt) => opt.id === method);
+    setFormData((prev) => ({
+      ...prev,
+      shippingMethod: method,
+      shipping: selectedOption.price,
+    }));
   };
 
   // Proceed to payment step
@@ -198,12 +227,12 @@ const CheckoutPage = () => {
           country: formData.country,
           phoneNo: formData.phoneNo,
           shippingMethod: formData.shippingMethod,
-          shippingPrice: Math.round(numericShipping),
+          shippingPrice: numericShipping,
           paymentMethod: "Stripe",
-          productPrice: Math.round(price),
+          productPrice: price,
           totalToBePaid: (price * quantity + numericShipping).toFixed(2),
           name: item.orderName || "Unknown Product",
-          image: item.image || null,
+          image: item.image[0] || null,
           quantity: quantity,
           size: item.size || "N/A",
         };
@@ -447,7 +476,8 @@ const CheckoutPage = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Country *
                     </label>
-                    <select
+                    <input
+                      type="text"
                       name="country"
                       value={formData.country}
                       onChange={handleInputChange}
@@ -455,15 +485,7 @@ const CheckoutPage = () => {
                         formErrors.country ? "border-red-500" : ""
                       }`}
                       required
-                    >
-                      <option value="">Select Country</option>
-                      <option value="United Kingdom">United Kingdom</option>
-                      <option value="United States">United States</option>
-                      <option value="Canada">Canada</option>
-                      <option value="Nigeria">Nigeria</option>
-                      <option value="Ghana">Ghana</option>
-                      <option value="South Africa">South Africa</option>
-                    </select>
+                    />
                     {formErrors.country && (
                       <p className="mt-1 text-sm text-red-600 flex items-center">
                         <FiAlertCircle className="mr-1" /> {formErrors.country}
@@ -491,6 +513,53 @@ const CheckoutPage = () => {
                       <FiAlertCircle className="mr-1" /> {formErrors.phoneNo}
                     </p>
                   )}
+                </div>
+
+                {/* Shipping Method Section */}
+                <div className="pt-4">
+                  <h4 className="text-sm font-medium text-gray-700 mb-3">
+                    Shipping Method *
+                  </h4>
+                  <div className="space-y-3">
+                    {shippingOptions.map((option) => (
+                      <div
+                        key={option.id}
+                        onClick={() => handleShippingChange(option.id)}
+                        className={`p-4 border rounded-lg cursor-pointer transition-all ${
+                          formData.shippingMethod === option.id
+                            ? "border-amber-500 bg-amber-50"
+                            : "border-gray-200 hover:border-amber-300"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-3">
+                            <div
+                              className={`w-5 h-5 rounded-full border flex items-center justify-center ${
+                                formData.shippingMethod === option.id
+                                  ? "bg-amber-500 border-amber-500"
+                                  : "border-gray-300"
+                              }`}
+                            >
+                              {formData.shippingMethod === option.id && (
+                                <FiCheck className="text-white text-xs" />
+                              )}
+                            </div>
+                            <div>
+                              <h5 className="font-medium text-gray-800">
+                                {option.name}
+                              </h5>
+                              <p className="text-sm text-gray-500">
+                                {option.description}
+                              </p>
+                            </div>
+                          </div>
+                          <span className="font-medium text-gray-800">
+                            £{option.price.toFixed(2)}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
                 <div className="pt-4">
@@ -607,7 +676,7 @@ const CheckoutPage = () => {
                   <div key={item.id} className="flex items-start gap-4">
                     <div className="relative w-16 h-16 rounded-md overflow-hidden bg-gray-100">
                       <Image
-                        src={item.image}
+                        src={item.image[0]}
                         alt={item.orderName}
                         fill
                         className="object-cover"
@@ -637,7 +706,11 @@ const CheckoutPage = () => {
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Shipping</span>
-                <span className="font-medium">£{shipping.toFixed(2)}</span>
+                <span className="font-medium">
+                  {shippingOptions.find((o) => o.id === formData.shippingMethod)
+                    ?.name || "Shipping"}
+                  : £{shipping.toFixed(2)}
+                </span>
               </div>
               <div className="flex justify-between pt-2">
                 <span className="font-bold">Total</span>

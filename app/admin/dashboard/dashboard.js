@@ -489,7 +489,9 @@ export default function Dashboard() {
                                         ? "bg-yellow-300 text-yellow-800"
                                         : order.delivery_status === "delivered"
                                           ? "bg-green-300 text-green-800"
-                                          : "bg-yellow-300 text-yellow-800"
+                                          : order.delivery_status === "returned"
+                                            ? "bg-yellow-300 text-yellow-800"
+                                            : "bg-yellow-300 text-yellow-800"
                                   }`}
                                 >
                                   {order.delivery_status === "processing" && (
@@ -499,6 +501,9 @@ export default function Dashboard() {
                                     <FiTruck className="mr-1" />
                                   )}
                                   {order.delivery_status === "delivered" && (
+                                    <FiCheckCircle className="mr-1" />
+                                  )}
+                                  {order.delivery_status === "returned" && (
                                     <FiCheckCircle className="mr-1" />
                                   )}
                                   {order.delivery_status}

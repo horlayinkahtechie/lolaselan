@@ -26,7 +26,7 @@ export default function AdireTwoPiece() {
         const { data, error } = await supabase
           .from("products")
           .select("*")
-          .ilike("id", "%ADIRETWOPIECES%")
+          .ilike("id", "%ADIRETWOPIECE%")
           .order("created_at", { ascending: false });
 
         if (error) throw error;
@@ -87,7 +87,7 @@ export default function AdireTwoPiece() {
               {/* Product Image */}
               <div className="relative aspect-square bg-gray-100 flex items-center justify-center">
                 <Image
-                  src={product.image || "/placeholder-product.jpg"}
+                  src={product.image[0]}
                   fill
                   alt={product.name}
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -125,7 +125,7 @@ export default function AdireTwoPiece() {
                   gender={product.gender}
                   fabric={product.fabric}
                   isNew={product.isNew}
-                  image={product.image}
+                  image={product.image[0]}
                 />
               </div>
 
@@ -157,18 +157,36 @@ export default function AdireTwoPiece() {
 
                 {/* Action Buttons */}
                 <div className="grid grid-cols-2 gap-2">
-                  <AddToCart
-                    id={product.id}
-                    name={product.name}
-                    category={product.category}
-                    price={product.price}
-                    size={product.size}
-                    gender={product.gender}
-                    fabric={product.fabric}
-                    isNew={product.isNew}
-                    image={product.image}
-                  />
-                  <Buy product={product} />
+                  {product.status === "out of stock" ? (
+                    <>
+                      <button
+                        disabled
+                        className="w-full py-2 rounded-lg bg-gray-300 text-gray-600 font-semibold cursor-not-allowed"
+                      >
+                        Add to cart
+                      </button>
+                      <button
+                        disabled
+                        className="w-full py-2 rounded-lg bg-gray-300 text-gray-600 font-semibold cursor-not-allowed"
+                      >
+                        Buy now
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <AddToCart
+                        id={product.id}
+                        name={product.name}
+                        price={product.price}
+                        size={product.size}
+                        gender={product.gender}
+                        fabric={product.fabric}
+                        isNew={product.isNew}
+                        image={product.image[0]}
+                      />
+                      <Buy product={product} />
+                    </>
+                  )}
                 </div>
               </div>
             </div>
