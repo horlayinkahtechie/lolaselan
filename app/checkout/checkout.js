@@ -53,8 +53,7 @@ export default function CheckoutPage() {
 
   //   Shipping States
   const [shippingMethod, setShippingMethod] = useState("standard");
-  const [shippingPrice, setShippingPrice] = useState(9.99);
-  // const [paymentMethod, setPaymentMethod] = useState("credit-card");
+  const [shippingPrice, setShippingPrice] = useState(2.62);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -382,14 +381,14 @@ export default function CheckoutPage() {
                       {
                         id: "standard",
                         name: "Standard Shipping",
-                        price: 9.99,
-                        days: "3-5 business days",
+                        price: 2.62,
+                        days: "2-4 working days",
                       },
                       {
-                        id: "express",
-                        name: "Express Shipping",
-                        price: 19.99,
-                        days: "1-2 business days",
+                        id: "next day",
+                        name: "Next Day Shipping",
+                        price: 3.2,
+                        days: "1 working day to most UK destinations",
                       },
                     ].map((method) => (
                       <label

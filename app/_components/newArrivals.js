@@ -1,5 +1,5 @@
 "use client";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import {
   FiShoppingCart,
@@ -16,71 +16,36 @@ import Image from "next/image";
 import Buy from "./buy";
 import AddToCart from "./addToCart";
 import AddToFavorite from "./addToFavorite";
+import supabase from "@/app/lib/supabase";
 
 export default function NewArrivals() {
   const scrollContainerRef = useRef(null);
-  const newArrivals = [
-    {
-      id: "NEWARRIVAL1",
-      name: "Ankara Maxi Dress",
-      category: "Dresses",
-      price: 89.99,
-      size: ["S", "M", "L", "XL", "XXL"],
-      gender: "Women",
-      fabric: "African Wax",
-      isNew: true,
-      image:
-        "https://i.pinimg.com/736x/78/e2/cd/78e2cdc01f0a63dac69dfddec689984a.jpg",
-    },
-    {
-      id: "NEWARRIVAL2",
-      name: "Kente Print Shirt",
-      category: "Tops",
-      price: 49.99,
-      size: ["S", "M", "L", "XL", "XXL"],
-      gender: "Unisex",
-      fabric: "Cotton Blend",
-      isNew: true,
-      image:
-        "https://i.pinimg.com/1200x/4d/ac/53/4dac537396c816aab49bf1e4cab1b3ad.jpg",
-    },
-    {
-      id: "NEWARRIVAL3",
-      name: "Adire Wrap Skirt",
-      category: "Bottoms",
-      price: 59.99,
-      size: ["S", "M", "L", "XL", "XXL"],
-      gender: "Women",
-      fabric: "African Print",
-      isNew: true,
-      image:
-        "https://i.pinimg.com/736x/8a/f5/dd/8af5ddfbab8aaf49b7910bd3cc174890.jpg",
-    },
-    {
-      id: "NEWARRIVAL4",
-      name: "Dashiki Tunic",
-      category: "Tops",
-      price: 65.99,
-      size: ["S", "M", "L", "XL", "XXL"],
-      gender: "Men",
-      fabric: "Handwoven Cotton",
-      isNew: true,
-      image:
-        "https://i.pinimg.com/1200x/c5/ae/bf/c5aebf46bf446dba75b41f919f1700fb.jpg",
-    },
-    {
-      id: "NEWARRIVAL5",
-      name: "Buba and Sokoto Set",
-      category: "Sets",
-      price: 99.99,
-      size: ["S", "M", "L", "XL", "XXL"],
-      gender: "Unisex",
-      fabric: "Traditional Cotton",
-      isNew: true,
-      image:
-        "https://i.pinimg.com/736x/5c/11/e5/5c11e5ce1c31bf811cc90393a9d11432.jpg",
-    },
-  ];
+  const [newArrivals, setNewArrivals] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchNewArrivals = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from("products")
+          .select("*")
+          .ilike("id", "%ADIRETWOPIECES%")
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+        setNewArrivals(data || []);
+      } catch (err) {
+        console.error("Error fetching new arrivals:", err);
+        setError("Failed to load new arrivals");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNewArrivals();
+  }, []);
 
   const scroll = (direction) => {
     if (scrollContainerRef.current) {
@@ -89,6 +54,73 @@ export default function NewArrivals() {
       container.scrollBy({ left: scrollAmount, behavior: "smooth" });
     }
   };
+
+  if (loading) {
+    return (
+      <section className="py-12 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="lg:text-3xl text-2xl font-playfair font-bold flex items-center">
+              <FiZap className="mr-2 text-primary" /> New Arrivals
+            </h2>
+          </div>
+          <div className="flex space-x-4 overflow-hidden">
+            {[...Array(3)].map((_, i) => (
+              <div
+                key={i}
+                className="flex-shrink-0 w-[80vw] md:w-[40vw] lg:w-[30vw] px-2"
+              >
+                <div className="bg-white rounded-lg shadow-md overflow-hidden h-full">
+                  <div className="aspect-square bg-gray-200 animate-pulse"></div>
+                  <div className="p-4 space-y-3">
+                    <div className="h-4 bg-gray-200 rounded w-3/4 animate-pulse"></div>
+                    <div className="h-4 bg-gray-200 rounded w-1/4 animate-pulse"></div>
+                    <div className="h-3 bg-gray-200 rounded w-full animate-pulse"></div>
+                    <div className="grid grid-cols-2 gap-2 mt-4">
+                      <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
+                      <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="py-12 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="lg:text-3xl text-2xl font-playfair font-bold flex items-center">
+              <FiZap className="mr-2 text-primary" /> New Arrivals
+            </h2>
+          </div>
+          <div className="text-center py-8 text-gray-500">{error}</div>
+        </div>
+      </section>
+    );
+  }
+
+  if (newArrivals.length === 0) {
+    return (
+      <section className="py-12 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="lg:text-3xl text-2xl font-playfair font-bold flex items-center">
+              <FiZap className="mr-2 text-primary" /> New Arrivals
+            </h2>
+          </div>
+          <div className="text-center py-8 text-gray-500">
+            No new arrivals at the moment. Check back soon!
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-12 bg-gray-50">
@@ -143,17 +175,37 @@ export default function NewArrivals() {
                   {/* Product Image */}
                   <div className="relative aspect-square bg-gray-100 flex items-center justify-center">
                     <Image
-                      src={product.image}
+                      src={product.image || "/placeholder-product.jpg"}
                       fill
                       alt={product.name}
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
-                    {product.isNew && (
-                      <div className="absolute top-2 left-2 bg-primary text-white bg-[#7B2D26] text-xs font-bold px-2 py-1 rounded-full">
-                        NEW
-                      </div>
-                    )}
+
+                    {/* Status Badges */}
+                    <div className="absolute top-2 left-2 flex flex-col gap-2 items-start">
+                      {product.isNew && (
+                        <div className="bg-primary text-white bg-[#7B2D26] text-xs font-bold px-2 py-1 rounded-full">
+                          NEW
+                        </div>
+                      )}
+                      {product.status === "available" && (
+                        <div className="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">
+                          AVAILABLE
+                        </div>
+                      )}
+                      {product.status === "pre-order" && (
+                        <div className="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded-full">
+                          PRE-ORDER
+                        </div>
+                      )}
+                      {product.status === "out of stock" && (
+                        <div className="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">
+                          OUT OF STOCK
+                        </div>
+                      )}
+                    </div>
+
                     <AddToFavorite
                       id={product.id}
                       name={product.name}
@@ -184,7 +236,7 @@ export default function NewArrivals() {
                     {/* Product Meta */}
                     <div className="flex flex-wrap gap-3 text-xs text-gray-500 mb-4">
                       <span className="flex items-center">
-                        <FiLayers className="mr-1" /> {product.size}
+                        <FiLayers className="mr-1" /> {product.size.join(", ")}
                       </span>
                       <span className="flex items-center">
                         <FiUsers className="mr-1" /> {product.gender}
@@ -199,7 +251,6 @@ export default function NewArrivals() {
                       <AddToCart
                         id={product.id}
                         name={product.name}
-                        category={product.category}
                         price={product.price}
                         size={product.size}
                         gender={product.gender}

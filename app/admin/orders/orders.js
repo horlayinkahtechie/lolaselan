@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   FiSearch,
   FiChevronLeft,
@@ -10,77 +10,58 @@ import {
   FiMoreVertical,
 } from "react-icons/fi";
 import AdminSideBar from "@/app/_components/adminSideBar";
+import supabase from "@/app/lib/supabase";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function Orders() {
-  // Dummy order data
-  const initialOrders = [
-    {
-      order_id: "ORD-001",
-      customer: "Amina Diallo",
-      date: "2023-08-15",
-      items: 3,
-      amount: 149.97,
-      status: "Processing",
-      payment: "Paid",
-    },
-    {
-      order_id: "ORD-002",
-      customer: "Fatou Bensouda",
-      date: "2023-08-14",
-      items: 2,
-      amount: 89.98,
-      status: "Shipped",
-      payment: "Paid",
-    },
-    {
-      order_id: "ORD-003",
-      customer: "Nneka Eze",
-      date: "2023-08-13",
-      items: 1,
-      amount: 59.99,
-      status: "Delivered",
-      payment: "Paid",
-    },
-    {
-      order_id: "ORD-004",
-      customer: "Zahra Mohammed",
-      date: "2023-08-12",
-      items: 4,
-      amount: 210.0,
-      status: "Processing",
-      payment: "Pending",
-    },
-    {
-      order_id: "ORD-005",
-      customer: "Yaa Asantewaa",
-      date: "2023-08-11",
-      items: 2,
-      amount: 78.3,
-      status: "Shipped",
-      payment: "Paid",
-    },
-    {
-      order_id: "ORD-006",
-      customer: "Adjoa Mensah",
-      date: "2023-08-10",
-      items: 3,
-      amount: 145.5,
-      status: "Delivered",
-      payment: "Paid",
-    },
-  ];
-
-  const [orders, setOrders] = useState(initialOrders);
+  const [orders, setOrders] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
   const ordersPerPage = 5;
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showStatusModal, setShowStatusModal] = useState(false);
 
+  const router = useRouter();
+  const { data: session, status } = useSession();
+
+  useEffect(() => {
+    if (status === "loading") return;
+    if (!session || session.user.role !== "admin") {
+      router.push("/unauthorized");
+    }
+  }, [session, status, router]);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from("orders")
+          .select("*")
+          .eq("status", "paid")
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        setOrders(data || []);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
   // Filter orders based on search term
   const filteredOrders = orders.filter(
     (order) =>
-      order.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      `${order.firstName} ${order.lastName}`
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
       order.order_id.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -97,29 +78,42 @@ export default function Orders() {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   // Update order status
-  const updateOrderStatus = (orderId, newStatus) => {
-    setOrders(
-      orders.map((order) =>
-        order.order_id === orderId ? { ...order, status: newStatus } : order
-      )
-    );
-    setShowStatusModal(false);
+  const updateOrderStatus = async (orderId, newStatus) => {
+    try {
+      const { error } = await supabase
+        .from("orders")
+        .update({ delivery_status: newStatus })
+        .eq("order_id", orderId);
+
+      if (error) throw error;
+
+      setOrders(
+        orders.map((order) =>
+          order.order_id === orderId
+            ? { ...order, delivery_status: newStatus }
+            : order
+        )
+      );
+      setShowStatusModal(false);
+    } catch (error) {
+      console.error("Error updating order status:", error);
+    }
   };
 
   // Get status icon and color
   const getStatusInfo = (status) => {
     switch (status) {
-      case "Processing":
+      case "processing":
         return {
           icon: <FiClock className="mr-1" />,
           color: "bg-yellow-100 text-yellow-800",
         };
-      case "Shipped":
+      case "shipping":
         return {
           icon: <FiTruck className="mr-1" />,
           color: "bg-blue-100 text-blue-800",
         };
-      case "Delivered":
+      case "delivered":
         return {
           icon: <FiCheckCircle className="mr-1" />,
           color: "bg-green-100 text-green-800",
@@ -134,6 +128,19 @@ export default function Orders() {
     setSelectedOrder(order);
     setShowStatusModal(true);
   };
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen bg-gray-50 pt-28">
+        <div className="fixed inset-y-0 left-0 w-64 bg-[#5E2BFF] text-white shadow-lg z-10">
+          <AdminSideBar />
+        </div>
+        <div className="flex-1 ml-64 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#5E2BFF]"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen bg-gray-50 pt-28">
@@ -173,11 +180,6 @@ export default function Orders() {
                   <option>Shipped</option>
                   <option>Delivered</option>
                 </select>
-                <select className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 bg-white">
-                  <option>All Payments</option>
-                  <option>Paid</option>
-                  <option>Pending</option>
-                </select>
               </div>
             </div>
           </div>
@@ -189,39 +191,45 @@ export default function Orders() {
                 <thead className="bg-gray-50">
                   <tr className="text-left text-gray-500 text-sm">
                     <th className="px-6 py-3">Order ID</th>
-                    <th className="px-6 py-3">Customer</th>
+                    <th className="px-6 py-3">Email</th>
+                    <th className="px-6 py-3">Customer Name</th>
                     <th className="px-6 py-3">Date</th>
                     <th className="px-6 py-3">Items</th>
                     <th className="px-6 py-3">Amount</th>
                     <th className="px-6 py-3">Payment</th>
-                    <th className="px-6 py-3">Status</th>
+                    <th className="px-6 py-3">Delivery Status</th>
                     <th className="px-6 py-3">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {currentOrders.length > 0 ? (
                     currentOrders.map((order) => {
-                      const statusInfo = getStatusInfo(order.status);
+                      const statusInfo = getStatusInfo(order.delivery_status);
                       return (
                         <tr key={order.order_id} className="hover:bg-gray-50">
                           <td className="px-6 py-4 font-medium">
                             {order.order_id}
                           </td>
-                          <td className="px-6 py-4">{order.customer}</td>
-                          <td className="px-6 py-4">{order.date}</td>
-                          <td className="px-6 py-4">{order.items}</td>
+                          <td className="px-6 py-4">{order.email}</td>
                           <td className="px-6 py-4">
-                            ${order.amount.toFixed(2)}
+                            {order.firstName} {order.lastName}
+                          </td>
+                          <td className="px-6 py-4">
+                            {new Date(order.created_at).toLocaleDateString()}
+                          </td>
+                          <td className="px-6 py-4">{order.quantity}</td>
+                          <td className="px-6 py-4">
+                            ${(order.productPrice * order.quantity).toFixed(2)}
                           </td>
                           <td className="px-6 py-4">
                             <span
                               className={`px-3 py-1 rounded-full text-xs ${
-                                order.payment === "Paid"
+                                order.status === "paid"
                                   ? "bg-green-100 text-green-800"
                                   : "bg-yellow-100 text-yellow-800"
                               }`}
                             >
-                              {order.payment}
+                              {order.status}
                             </span>
                           </td>
                           <td className="px-6 py-4">
@@ -229,7 +237,7 @@ export default function Orders() {
                               className={`px-3 py-1 rounded-full text-xs flex items-center ${statusInfo.color}`}
                             >
                               {statusInfo.icon}
-                              {order.status}
+                              {order.delivery_status}
                             </span>
                           </td>
                           <td className="px-6 py-4">
@@ -319,7 +327,7 @@ export default function Orders() {
                 <p className="text-gray-700">
                   Customer:{" "}
                   <span className="font-semibold">
-                    {selectedOrder.customer}
+                    {selectedOrder.firstName} {selectedOrder.lastName}
                   </span>
                 </p>
               </div>
@@ -331,27 +339,27 @@ export default function Orders() {
                 <div className="flex flex-col space-y-2">
                   <button
                     onClick={() =>
-                      updateOrderStatus(selectedOrder.order_id, "Processing")
+                      updateOrderStatus(selectedOrder.order_id, "processing")
                     }
-                    className={`px-4 py-2 rounded-lg text-left flex items-center ${selectedOrder.status === "Processing" ? "bg-[#5E2BFF] text-white" : "bg-gray-100 hover:bg-gray-200"}`}
+                    className={`px-4 py-2 rounded-lg text-left flex items-center ${selectedOrder.delivery_status === "processing" ? "bg-[#5E2BFF] text-white" : "bg-gray-100 hover:bg-gray-200"}`}
                   >
                     <FiClock className="mr-2" />
                     Processing
                   </button>
                   <button
                     onClick={() =>
-                      updateOrderStatus(selectedOrder.order_id, "Shipped")
+                      updateOrderStatus(selectedOrder.order_id, "shipping")
                     }
-                    className={`px-4 py-2 rounded-lg text-left flex items-center ${selectedOrder.status === "Shipped" ? "bg-[#5E2BFF] text-white" : "bg-gray-100 hover:bg-gray-200"}`}
+                    className={`px-4 py-2 rounded-lg text-left flex items-center ${selectedOrder.delivery_status === "shipping" ? "bg-[#5E2BFF] text-white" : "bg-gray-100 hover:bg-gray-200"}`}
                   >
                     <FiTruck className="mr-2" />
                     Shipped
                   </button>
                   <button
                     onClick={() =>
-                      updateOrderStatus(selectedOrder.order_id, "Delivered")
+                      updateOrderStatus(selectedOrder.order_id, "delivered")
                     }
-                    className={`px-4 py-2 rounded-lg text-left flex items-center ${selectedOrder.status === "Delivered" ? "bg-[#5E2BFF] text-white" : "bg-gray-100 hover:bg-gray-200"}`}
+                    className={`px-4 py-2 rounded-lg text-left flex items-center ${selectedOrder.delivery_status === "delivered" ? "bg-[#5E2BFF] text-white" : "bg-gray-100 hover:bg-gray-200"}`}
                   >
                     <FiCheckCircle className="mr-2" />
                     Delivered

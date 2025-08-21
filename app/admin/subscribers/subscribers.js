@@ -10,10 +10,13 @@ import {
   FiTrash2,
   FiChevronLeft,
   FiChevronRight,
+  FiSend,
 } from "react-icons/fi";
 import supabase from "@/app/lib/supabase";
 import AdminSideBar from "@/app/_components/adminSideBar";
 import toast from "react-hot-toast";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function Subscribers() {
   const [subscribers, setSubscribers] = useState([]);
@@ -23,6 +26,24 @@ export default function Subscribers() {
   const subscribersPerPage = 10;
   const [selectedSubscriber, setSelectedSubscriber] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [emailContent, setEmailContent] = useState({
+    subject: "",
+    message: "",
+    recipients: "all", // 'all' or 'selected'
+    selectedEmails: [],
+  });
+  const [isSending, setIsSending] = useState(false);
+
+  const router = useRouter();
+  const { data: session, status } = useSession();
+
+  useEffect(() => {
+    if (status === "loading") return;
+    if (!session || session.user.role !== "admin") {
+      router.push("/unauthorized");
+    }
+  }, [session, status, router]);
 
   // Fetch subscribers from Supabase
   useEffect(() => {
@@ -44,7 +65,7 @@ export default function Subscribers() {
     };
 
     fetchSubscribers();
-  }, [supabase]);
+  }, []);
 
   // Filter subscribers based on search term
   const filteredSubscribers = subscribers.filter((subscriber) =>
@@ -104,6 +125,69 @@ export default function Subscribers() {
     }
   };
 
+  // Handle email modal open
+  const openEmailModal = () => {
+    setShowEmailModal(true);
+    // Reset email content when opening modal
+    setEmailContent({
+      subject: "",
+      message: "",
+      recipients: "all",
+      selectedEmails: [],
+    });
+  };
+
+  // Handle email sending
+  const handleSendEmail = async () => {
+    if (!emailContent.subject || !emailContent.message) {
+      toast.error("Please fill in both subject and message");
+      return;
+    }
+
+    setIsSending(true);
+    try {
+      // Determine recipients
+      const recipients =
+        emailContent.recipients === "all"
+          ? subscribers.map((sub) => sub.email)
+          : emailContent.selectedEmails;
+
+      // In a real app, you would call your email API here
+      // This is just a simulation
+      console.log("Sending email to:", recipients);
+      console.log("Subject:", emailContent.subject);
+      console.log("Message:", emailContent.message);
+
+      // Simulate API call delay
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      toast.success(
+        `Email sent successfully to ${recipients.length} subscribers!`
+      );
+      setShowEmailModal(false);
+    } catch (error) {
+      toast.error(`Failed to send email: ${error.message}`);
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  // Toggle email selection
+  const toggleEmailSelection = (email) => {
+    setEmailContent((prev) => {
+      const newSelected = prev.selectedEmails.includes(email)
+        ? prev.selectedEmails.filter((e) => e !== email)
+        : [...prev.selectedEmails, email];
+
+      return {
+        ...prev,
+        selectedEmails: newSelected,
+        // Auto-switch to 'selected' if selecting individual emails
+        recipients: newSelected.length > 0 ? "selected" : prev.recipients,
+      };
+    });
+  };
+
   // Export subscribers to CSV
   const exportToCSV = () => {
     const headers = ["ID", "Email", "Has Account", "Subscribed Date"];
@@ -152,8 +236,14 @@ export default function Subscribers() {
             </div>
             <div className="flex space-x-3 mt-4 md:mt-0">
               <button
+                onClick={openEmailModal}
+                className="px-4 py-2 border hover:bg-[#5E2BFF] hover:text-white cursor-pointer border-[#5E2BFF] text-[#5E2BFF] rounded-lg transition"
+              >
+                Send promotional Email
+              </button>
+              <button
                 onClick={exportToCSV}
-                className="px-4 py-2 border hover:bg-[#5E2BFF] hover:text-white cursor-pointer border-[#5E2BFF] text-[#5E2BFF] rounded-lg  transition"
+                className="px-4 py-2 border hover:bg-[#5E2BFF] hover:text-white cursor-pointer border-[#5E2BFF] text-[#5E2BFF] rounded-lg transition"
               >
                 Export to CSV
               </button>
@@ -361,6 +451,185 @@ export default function Subscribers() {
                   className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
                 >
                   Remove Subscriber
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Send Email Modal */}
+      {showEmailModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">Send Promotional Email</h2>
+                <button
+                  onClick={() => setShowEmailModal(false)}
+                  className="p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100"
+                >
+                  <FiXCircle className="text-xl" />
+                </button>
+              </div>
+
+              <div className="mb-6">
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Recipients
+                  </label>
+                  <div className="flex space-x-4">
+                    <label className="inline-flex items-center">
+                      <input
+                        type="radio"
+                        className="form-radio text-[#5E2BFF]"
+                        name="recipients"
+                        checked={emailContent.recipients === "all"}
+                        onChange={() =>
+                          setEmailContent((prev) => ({
+                            ...prev,
+                            recipients: "all",
+                            selectedEmails: [],
+                          }))
+                        }
+                      />
+                      <span className="ml-2">
+                        All Subscribers ({subscribers.length})
+                      </span>
+                    </label>
+                    <label className="inline-flex items-center">
+                      <input
+                        type="radio"
+                        className="form-radio text-[#5E2BFF]"
+                        name="recipients"
+                        checked={emailContent.recipients === "selected"}
+                        onChange={() =>
+                          setEmailContent((prev) => ({
+                            ...prev,
+                            recipients: "selected",
+                          }))
+                        }
+                      />
+                      <span className="ml-2">
+                        Selected Subscribers (
+                        {emailContent.selectedEmails.length})
+                      </span>
+                    </label>
+                  </div>
+                </div>
+
+                {emailContent.recipients === "selected" && (
+                  <div className="mb-4 max-h-60 overflow-y-auto border rounded-lg p-2">
+                    <p className="text-sm text-gray-500 mb-2">
+                      Select recipients:
+                    </p>
+                    {filteredSubscribers.map((subscriber) => (
+                      <div
+                        key={subscriber.sub_id}
+                        className="flex items-center mb-2"
+                      >
+                        <input
+                          type="checkbox"
+                          id={`sub-${subscriber.sub_id}`}
+                          checked={emailContent.selectedEmails.includes(
+                            subscriber.email
+                          )}
+                          onChange={() =>
+                            toggleEmailSelection(subscriber.email)
+                          }
+                          className="form-checkbox h-4 w-4 text-[#5E2BFF] rounded"
+                        />
+                        <label
+                          htmlFor={`sub-${subscriber.sub_id}`}
+                          className="ml-2 text-sm"
+                        >
+                          {subscriber.email}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Subject
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5E2BFF] focus:border-transparent"
+                    placeholder="Enter email subject"
+                    value={emailContent.subject}
+                    onChange={(e) =>
+                      setEmailContent((prev) => ({
+                        ...prev,
+                        subject: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Message
+                  </label>
+                  <textarea
+                    className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5E2BFF] focus:border-transparent"
+                    rows={8}
+                    placeholder="Write your email content here..."
+                    value={emailContent.message}
+                    onChange={(e) =>
+                      setEmailContent((prev) => ({
+                        ...prev,
+                        message: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-3">
+                <button
+                  onClick={() => setShowEmailModal(false)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100"
+                  disabled={isSending}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSendEmail}
+                  className="px-4 py-2 bg-[#5E2BFF] text-white rounded-lg hover:bg-[#4A1FD3] flex items-center"
+                  disabled={isSending}
+                >
+                  {isSending ? (
+                    <>
+                      <svg
+                        className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <FiSend className="mr-2" />
+                      Send Email
+                    </>
+                  )}
                 </button>
               </div>
             </div>

@@ -16,7 +16,6 @@ import OrderHistory from "@/app/_components/orderHistory";
 import WishlistHistory from "@/app/_components/wishListHistory";
 
 // import SavedAddresses from "@/components/SavedAddresses";
-// import AccountSettings from "@/components/AccountSettings";
 
 export default function ProfilePage() {
   const { data: session } = useSession();
@@ -26,7 +25,6 @@ export default function ProfilePage() {
     { id: "orders", label: "My Orders", icon: <FiShoppingBag /> },
     { id: "wishlist", label: "Wishlist", icon: <FiHeart /> },
     { id: "addresses", label: "Saved Addresses", icon: <FiMapPin /> },
-    { id: "settings", label: "Account Settings", icon: <FiSettings /> },
   ];
 
   if (!session?.user) {
@@ -116,7 +114,6 @@ export default function ProfilePage() {
               {activeTab === "orders" && <OrderHistory />}
               {activeTab === "wishlist" && <WishlistHistory />}
               {activeTab === "addresses" && <p>Your address</p>}
-              {activeTab === "settings" && <p>Your Account settings</p>}
             </div>
           </div>
         </div>

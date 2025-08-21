@@ -14,6 +14,8 @@ import {
 } from "react-icons/fi";
 import supabase from "@/app/lib/supabase";
 import AdminSideBar from "@/app/_components/adminSideBar";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function Users() {
   const [users, setUsers] = useState([]);
@@ -29,6 +31,16 @@ export default function Users() {
     email: "",
     role: "",
   });
+
+  const router = useRouter();
+  const { data: session, status } = useSession();
+
+  useEffect(() => {
+    if (status === "loading") return;
+    if (!session || session.user.role !== "admin") {
+      router.push("/unauthorized");
+    }
+  }, [session, status, router]);
 
   // Fetch users from Supabase
   useEffect(() => {

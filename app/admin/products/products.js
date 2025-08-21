@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   FiPlus,
   FiEdit2,
@@ -8,96 +8,20 @@ import {
   FiChevronLeft,
   FiChevronRight,
   FiX,
+  FiCheckCircle,
+  FiClock,
 } from "react-icons/fi";
 import { FaTshirt, FaShoePrints } from "react-icons/fa";
 import AdminSideBar from "@/app/_components/adminSideBar";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import supabase from "@/app/lib/supabase";
 
 export default function Products() {
-  // Dummy product data
-  const initialProducts = [
-    {
-      product_id: "AFW001",
-      product_name: "Ankara Maxi Dress",
-      price: 59.99,
-      sizes: ["S", "M", "L", "XL"],
-      category: "Dresses",
-      stock: 45,
-      status: "Active",
-      image: "/images/ankara-dress.jpg",
-    },
-    {
-      product_id: "AFW002",
-      product_name: "Kente Print Scarf",
-      price: 24.99,
-      sizes: ["One Size"],
-      category: "Accessories",
-      stock: 38,
-      status: "Active",
-      image: "/images/kente-scarf.jpg",
-    },
-    {
-      product_id: "AFW003",
-      product_name: "Dashiki Two-Piece",
-      price: 75.5,
-      sizes: ["S", "M", "L"],
-      category: "Sets",
-      stock: 32,
-      status: "Active",
-      image: "/images/dashiki-set.jpg",
-    },
-    {
-      product_id: "AFW004",
-      product_name: "Beaded Waist Belt",
-      price: 18.99,
-      sizes: ["S", "M", "L"],
-      category: "Accessories",
-      stock: 28,
-      status: "Active",
-      image: "/images/beaded-belt.jpg",
-    },
-    {
-      product_id: "AFW005",
-      product_name: "Adire Wrap Skirt",
-      price: 42.99,
-      sizes: ["S", "M", "L"],
-      category: "Skirts",
-      stock: 0,
-      status: "Out of Stock",
-      image: "/images/adire-skirt.jpg",
-    },
-    {
-      product_id: "AFW006",
-      product_name: "African Print Headwrap",
-      price: 15.99,
-      sizes: ["One Size"],
-      category: "Accessories",
-      stock: 56,
-      status: "Active",
-      image: "/images/headwrap.jpg",
-    },
-    {
-      product_id: "AFW007",
-      product_name: "Buba and Iro Set",
-      price: 89.99,
-      sizes: ["S", "M", "L", "XL"],
-      category: "Sets",
-      stock: 22,
-      status: "Active",
-      image: "/images/buba-iro.jpg",
-    },
-    {
-      product_id: "AFW008",
-      product_name: "African Print Sandals",
-      price: 35.5,
-      sizes: ["6", "7", "8", "9"],
-      category: "Footwear",
-      stock: 18,
-      status: "Low Stock",
-      image: "/images/african-sandals.jpg",
-    },
-  ];
-
-  const [products, setProducts] = useState(initialProducts);
+  const router = useRouter();
+  const { data: session, status } = useSession();
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -108,31 +32,61 @@ export default function Products() {
 
   // Form state for new product
   const [newProduct, setNewProduct] = useState({
-    product_name: "",
+    name: "",
     price: "",
-    sizes: [],
-    category: "",
-    stock: "",
-    status: "Active",
+    size: [],
+    gender: "",
+    fabric: "",
+    status: "available", // Default status
+    isNew: false, // Default isNew status
     image: "",
   });
 
   // Form state for edit product
   const [editProduct, setEditProduct] = useState({
-    product_name: "",
+    name: "",
     price: "",
-    sizes: [],
-    category: "",
-    stock: "",
-    status: "Active",
+    size: [],
+    gender: "",
+    fabric: "",
+    status: "available",
+    isNew: false,
     image: "",
   });
+
+  useEffect(() => {
+    if (status === "loading") return;
+    if (!session || session.user.role !== "admin") {
+      router.push("/unauthorized");
+    }
+  }, [session, status, router]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from("products")
+          .select("*")
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+        setProducts(data || []);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   // Filter products based on search term
   const filteredProducts = products.filter(
     (product) =>
-      product.product_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.product_id.toLowerCase().includes(searchTerm.toLowerCase())
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.id.toString().includes(searchTerm.toLowerCase())
   );
 
   // Pagination logic
@@ -153,62 +107,118 @@ export default function Products() {
     if (formType === "add") {
       setNewProduct((prev) => ({
         ...prev,
-        sizes: checked
-          ? [...prev.sizes, value]
-          : prev.sizes.filter((size) => size !== value),
+        size: checked
+          ? [...prev.size, value]
+          : prev.size.filter((size) => size !== value),
       }));
     } else {
       setEditProduct((prev) => ({
         ...prev,
-        sizes: checked
-          ? [...prev.sizes, value]
-          : prev.sizes.filter((size) => size !== value),
+        size: checked
+          ? [...prev.size, value]
+          : prev.size.filter((size) => size !== value),
       }));
     }
   };
 
   // Add new product
-  const handleAddProduct = (e) => {
+  const handleAddProduct = async (e) => {
     e.preventDefault();
-    const newId = `AFW${String(products.length + 1).padStart(3, "0")}`;
-    const productToAdd = {
-      ...newProduct,
-      product_id: newId,
-      price: parseFloat(newProduct.price),
-      stock: parseInt(newProduct.stock),
-    };
-    setProducts([...products, productToAdd]);
-    setNewProduct({
-      product_name: "",
-      price: "",
-      sizes: [],
-      category: "",
-      stock: "",
-      status: "Active",
-      image: "",
-    });
-    setShowAddModal(false);
+    try {
+      const productToAdd = {
+        ...newProduct,
+        price: parseFloat(newProduct.price),
+        // isNew is already part of the form state
+      };
+
+      const { data, error } = await supabase
+        .from("products")
+        .insert([productToAdd])
+        .select();
+
+      if (error) throw error;
+
+      setProducts([data[0], ...products]);
+      setNewProduct({
+        name: "",
+        price: "",
+        size: [],
+        gender: "",
+        fabric: "",
+        status: "available",
+        isNew: false,
+        image: "",
+      });
+      setShowAddModal(false);
+    } catch (error) {
+      console.error("Error adding product:", error);
+    }
   };
 
   // Edit product
-  const handleEditProduct = (e) => {
+  const handleEditProduct = async (e) => {
     e.preventDefault();
-    setProducts(
-      products.map((product) =>
-        product.product_id === currentProduct.product_id ? editProduct : product
-      )
-    );
-    setShowEditModal(false);
+    try {
+      const productToUpdate = {
+        ...editProduct,
+        price: parseFloat(editProduct.price),
+      };
+
+      const { error } = await supabase
+        .from("products")
+        .update(productToUpdate)
+        .eq("id", currentProduct.id);
+
+      if (error) throw error;
+
+      setProducts(
+        products.map((product) =>
+          product.id === currentProduct.id ? productToUpdate : product
+        )
+      );
+      setShowEditModal(false);
+    } catch (error) {
+      console.error("Error updating product:", error);
+    }
   };
 
   // Delete product
-  const handleDeleteProduct = () => {
-    setProducts(
-      products.filter(
-        (product) => product.product_id !== currentProduct.product_id
-      )
-    );
-    setShowDeleteModal(false);
+  const handleDeleteProduct = async () => {
+    try {
+      const { error } = await supabase
+        .from("products")
+        .delete()
+        .eq("id", currentProduct.id);
+
+      if (error) throw error;
+
+      setProducts(
+        products.filter((product) => product.id !== currentProduct.id)
+      );
+      setShowDeleteModal(false);
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
+  };
+
+  // Update product status
+  const updateProductStatus = async (productId, newStatus) => {
+    try {
+      const { error } = await supabase
+        .from("products")
+        .update({ status: newStatus })
+        .eq("id", productId);
+
+      if (error) throw error;
+
+      setProducts(
+        products.map((product) =>
+          product.id === productId ? { ...product, status: newStatus } : product
+        )
+      );
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
   };
 
   // Open edit modal and set current product
@@ -217,7 +227,6 @@ export default function Products() {
     setEditProduct({
       ...product,
       price: product.price.toString(),
-      stock: product.stock.toString(),
     });
     setShowEditModal(true);
   };
@@ -229,18 +238,14 @@ export default function Products() {
   };
 
   // Get category icon
-  const getCategoryIcon = (category) => {
-    switch (category) {
-      case "Dresses":
-        return <FaTshirt className="text-purple-600" />;
-      case "Accessories":
-        return <FaTshirt className="text-orange-500" />;
-      case "Footwear":
-        return <FaShoePrints className="text-blue-500" />;
-      case "Sets":
-        return <FaTshirt className="text-green-500" />;
-      case "Skirts":
-        return <FaShoePrints className="text-pink-500" />;
+  const getCategoryIcon = (gender) => {
+    switch (gender) {
+      case "Male":
+        return <FaTshirt className="text-blue-500" />;
+      case "Female":
+        return <FaTshirt className="text-pink-500" />;
+      case "Unisex":
+        return <FaTshirt className="text-purple-500" />;
       default:
         return <FaTshirt className="text-gray-500" />;
     }
@@ -261,6 +266,19 @@ export default function Products() {
       reader.readAsDataURL(file);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen bg-gray-50 pt-28">
+        <div className="fixed inset-y-0 left-0 w-64 bg-[#5E2BFF] text-white shadow-lg z-10">
+          <AdminSideBar />
+        </div>
+        <div className="flex-1 ml-64 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#5E2BFF]"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen bg-gray-50 pt-28">
@@ -302,18 +320,16 @@ export default function Products() {
               </div>
               <div className="flex items-center space-x-2 w-full md:w-auto">
                 <select className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 bg-white">
-                  <option>All Categories</option>
-                  <option>Dresses</option>
-                  <option>Sets</option>
-                  <option>Skirts</option>
-                  <option>Accessories</option>
-                  <option>Footwear</option>
+                  <option>All Genders</option>
+                  <option>Male</option>
+                  <option>Female</option>
+                  <option>Unisex</option>
                 </select>
                 <select className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 bg-white">
                   <option>All Status</option>
-                  <option>Active</option>
-                  <option>Out of Stock</option>
-                  <option>Low Stock</option>
+                  <option>available</option>
+                  <option>out of stock</option>
+                  <option>pre-order</option>
                 </select>
               </div>
             </div>
@@ -325,14 +341,14 @@ export default function Products() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                 {currentProducts.map((product) => (
                   <div
-                    key={product.product_id}
+                    key={product.id}
                     className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition"
                   >
                     <div className="h-48 bg-gray-100 relative overflow-hidden">
                       {product.image ? (
                         <img
                           src={product.image}
-                          alt={product.product_name}
+                          alt={product.name}
                           className="w-full h-full object-cover"
                         />
                       ) : (
@@ -356,24 +372,27 @@ export default function Products() {
                       </div>
                       <span
                         className={`absolute top-2 left-2 px-3 py-1 rounded-full text-xs ${
-                          product.status === "Active"
+                          product.status === "available"
                             ? "bg-green-100 text-green-800"
-                            : product.status === "Out of Stock"
+                            : product.status === "out of stock"
                               ? "bg-red-100 text-red-800"
                               : "bg-yellow-100 text-yellow-800"
                         }`}
                       >
                         {product.status}
                       </span>
+                      {product.isNew && (
+                        <span className="absolute bottom-2 left-2 px-3 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
+                          New Arrival
+                        </span>
+                      )}
                     </div>
                     <div className="p-4">
                       <div className="flex justify-between items-start">
                         <div>
-                          <h3 className="font-bold text-lg">
-                            {product.product_name}
-                          </h3>
+                          <h3 className="font-bold text-lg">{product.name}</h3>
                           <p className="text-gray-500 text-sm">
-                            {product.product_id}
+                            ID: {product.id}
                           </p>
                         </div>
                         <span className="font-bold text-[#5E2BFF]">
@@ -382,13 +401,13 @@ export default function Products() {
                       </div>
                       <div className="mt-3 flex items-center justify-between">
                         <div className="flex items-center space-x-2">
-                          {getCategoryIcon(product.category)}
+                          {getCategoryIcon(product.gender)}
                           <span className="text-sm text-gray-600">
-                            {product.category}
+                            {product.gender}
                           </span>
                         </div>
                         <div className="flex space-x-1">
-                          {product.sizes.map((size) => (
+                          {product.size.map((size) => (
                             <span
                               key={size}
                               className="px-2 py-1 bg-gray-100 rounded text-xs"
@@ -400,11 +419,46 @@ export default function Products() {
                       </div>
                       <div className="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center">
                         <span className="text-sm text-gray-600">
-                          Stock: {product.stock}
+                          Fabric: {product.fabric}
                         </span>
-                        <button className="text-sm text-[#5E2BFF] hover:underline">
-                          View Details
-                        </button>
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() =>
+                              updateProductStatus(product.id, "available")
+                            }
+                            className={`text-xs px-2 py-1 rounded ${
+                              product.status === "available"
+                                ? "bg-green-100 text-green-800"
+                                : "bg-gray-100 text-gray-800 hover:bg-green-50"
+                            }`}
+                          >
+                            Available
+                          </button>
+                          <button
+                            onClick={() =>
+                              updateProductStatus(product.id, "out of stock")
+                            }
+                            className={`text-xs px-2 py-1 rounded ${
+                              product.status === "out of stock"
+                                ? "bg-red-100 text-red-800"
+                                : "bg-gray-100 text-gray-800 hover:bg-red-50"
+                            }`}
+                          >
+                            Out of Stock
+                          </button>
+                          <button
+                            onClick={() =>
+                              updateProductStatus(product.id, "pre-order")
+                            }
+                            className={`text-xs px-2 py-1 rounded ${
+                              product.status === "pre-order"
+                                ? "bg-yellow-100 text-yellow-800"
+                                : "bg-gray-100 text-gray-800 hover:bg-yellow-50"
+                            }`}
+                          >
+                            Pre-order
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -460,7 +514,7 @@ export default function Products() {
                 </div>
                 <h3 className="text-xl font-bold mb-2">No products found</h3>
                 <p className="text-gray-600 mb-6">
-                  Try adjusting your search or filter to find what you&apos;re
+                  Try adjusting your search or filter to find what you're
                   looking for.
                 </p>
                 <button
@@ -501,11 +555,11 @@ export default function Products() {
                     <input
                       type="text"
                       className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200"
-                      value={newProduct.product_name}
+                      value={newProduct.name}
                       onChange={(e) =>
                         setNewProduct({
                           ...newProduct,
-                          product_name: e.target.value,
+                          name: e.target.value,
                         })
                       }
                       required
@@ -531,39 +585,39 @@ export default function Products() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Category
+                      Gender
                     </label>
                     <select
                       className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200"
-                      value={newProduct.category}
+                      value={newProduct.gender}
                       onChange={(e) =>
                         setNewProduct({
                           ...newProduct,
-                          category: e.target.value,
+                          gender: e.target.value,
                         })
                       }
                       required
                     >
-                      <option value="">Select category</option>
-                      <option value="Dresses">Dresses</option>
-                      <option value="Sets">Sets</option>
-                      <option value="Skirts">Skirts</option>
-                      <option value="Accessories">Accessories</option>
-                      <option value="Footwear">Footwear</option>
+                      <option value="">Select gender</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Unisex">Unisex</option>
                     </select>
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Stock Quantity
+                      Fabric
                     </label>
                     <input
-                      type="number"
-                      min="0"
+                      type="text"
                       className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200"
-                      value={newProduct.stock}
+                      value={newProduct.fabric}
                       onChange={(e) =>
-                        setNewProduct({ ...newProduct, stock: e.target.value })
+                        setNewProduct({
+                          ...newProduct,
+                          fabric: e.target.value,
+                        })
                       }
                       required
                     />
@@ -577,14 +631,38 @@ export default function Products() {
                       className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200"
                       value={newProduct.status}
                       onChange={(e) =>
-                        setNewProduct({ ...newProduct, status: e.target.value })
+                        setNewProduct({
+                          ...newProduct,
+                          status: e.target.value,
+                        })
                       }
                       required
                     >
-                      <option value="Active">Active</option>
-                      <option value="Out of Stock">Out of Stock</option>
-                      <option value="Low Stock">Low Stock</option>
+                      <option value="available">Available</option>
+                      <option value="pre-order">Pre-order</option>
                     </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Mark as New Arrival
+                    </label>
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={newProduct.isNew}
+                        onChange={(e) =>
+                          setNewProduct({
+                            ...newProduct,
+                            isNew: e.target.checked,
+                          })
+                        }
+                        className="h-5 w-5 rounded border-gray-300 text-[#5E2BFF] focus:ring-[#5E2BFF]"
+                      />
+                      <span className="ml-2 text-gray-700">
+                        {newProduct.isNew ? "Yes" : "No"}
+                      </span>
+                    </div>
                   </div>
 
                   <div className="md:col-span-2">
@@ -597,7 +675,7 @@ export default function Products() {
                           <input
                             type="checkbox"
                             value={size}
-                            checked={newProduct.sizes.includes(size)}
+                            checked={newProduct.size.includes(size)}
                             onChange={(e) => handleSizeChange(e, "add")}
                             className="h-5 w-5 rounded border-gray-300 text-[#5E2BFF] focus:ring-[#5E2BFF]"
                           />
@@ -715,7 +793,7 @@ export default function Products() {
                     <input
                       type="text"
                       className="w-full px-4 py-2 border rounded-lg bg-gray-100 cursor-not-allowed"
-                      value={currentProduct.product_id}
+                      value={currentProduct.id}
                       readOnly
                     />
                   </div>
@@ -727,11 +805,11 @@ export default function Products() {
                     <input
                       type="text"
                       className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200"
-                      value={editProduct.product_name}
+                      value={editProduct.name}
                       onChange={(e) =>
                         setEditProduct({
                           ...editProduct,
-                          product_name: e.target.value,
+                          name: e.target.value,
                         })
                       }
                       required
@@ -760,40 +838,37 @@ export default function Products() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Category
+                      Gender
                     </label>
                     <select
                       className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200"
-                      value={editProduct.category}
+                      value={editProduct.gender}
                       onChange={(e) =>
                         setEditProduct({
                           ...editProduct,
-                          category: e.target.value,
+                          gender: e.target.value,
                         })
                       }
                       required
                     >
-                      <option value="Dresses">Dresses</option>
-                      <option value="Sets">Sets</option>
-                      <option value="Skirts">Skirts</option>
-                      <option value="Accessories">Accessories</option>
-                      <option value="Footwear">Footwear</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Unisex">Unisex</option>
                     </select>
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Stock Quantity
+                      Fabric
                     </label>
                     <input
-                      type="number"
-                      min="0"
+                      type="text"
                       className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200"
-                      value={editProduct.stock}
+                      value={editProduct.fabric}
                       onChange={(e) =>
                         setEditProduct({
                           ...editProduct,
-                          stock: e.target.value,
+                          fabric: e.target.value,
                         })
                       }
                       required
@@ -815,10 +890,32 @@ export default function Products() {
                       }
                       required
                     >
-                      <option value="Active">Active</option>
-                      <option value="Out of Stock">Out of Stock</option>
-                      <option value="Low Stock">Low Stock</option>
+                      <option value="available">Available</option>
+                      <option value="out of stock">Out of Stock</option>
+                      <option value="pre-order">Pre-order</option>
                     </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Mark as New Arrival
+                    </label>
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={editProduct.isNew}
+                        onChange={(e) =>
+                          setEditProduct({
+                            ...editProduct,
+                            isNew: e.target.checked,
+                          })
+                        }
+                        className="h-5 w-5 rounded border-gray-300 text-[#5E2BFF] focus:ring-[#5E2BFF]"
+                      />
+                      <span className="ml-2 text-gray-700">
+                        {editProduct.isNew ? "Yes" : "No"}
+                      </span>
+                    </div>
                   </div>
 
                   <div className="md:col-span-2">
@@ -831,7 +928,7 @@ export default function Products() {
                           <input
                             type="checkbox"
                             value={size}
-                            checked={editProduct.sizes.includes(size)}
+                            checked={editProduct.size.includes(size)}
                             onChange={(e) => handleSizeChange(e, "edit")}
                             className="h-5 w-5 rounded border-gray-300 text-[#5E2BFF] focus:ring-[#5E2BFF]"
                           />
@@ -921,48 +1018,6 @@ export default function Products() {
                   </button>
                 </div>
               </form>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Delete Confirmation Modal */}
-      {showDeleteModal && currentProduct && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl w-full max-w-md">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold">Delete Product</h2>
-                <button
-                  onClick={() => setShowDeleteModal(false)}
-                  className="p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100"
-                >
-                  <FiX className="text-xl" />
-                </button>
-              </div>
-              <div className="mb-6">
-                <p className="text-gray-700">
-                  Are you sure you want to delete{" "}
-                  <span className="font-semibold">
-                    {currentProduct.product_name}
-                  </span>
-                  ? This action cannot be undone.
-                </p>
-              </div>
-              <div className="flex justify-end space-x-3">
-                <button
-                  onClick={() => setShowDeleteModal(false)}
-                  className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleDeleteProduct}
-                  className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
-                >
-                  Delete
-                </button>
-              </div>
             </div>
           </div>
         </div>

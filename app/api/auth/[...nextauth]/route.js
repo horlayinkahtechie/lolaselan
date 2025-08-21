@@ -2,6 +2,17 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import supabase from "@/app/lib/supabase";
 
+const generateCartId = () => {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let orderId = "";
+  for (let i = 0; i < 8; i++) {
+    orderId += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return orderId;
+};
+
+const cart_id = generateCartId();
+
 export const authOptions = {
   providers: [
     GoogleProvider({
@@ -10,6 +21,7 @@ export const authOptions = {
       supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
     }),
   ],
+
   callbacks: {
     async signIn({ user }) {
       try {
@@ -18,7 +30,7 @@ export const authOptions = {
 
         const { error } = await supabase.from("users").upsert(
           {
-            user_id: user.user_id,
+            user_id: cart_id,
             email: user.email,
             name: user.name,
 

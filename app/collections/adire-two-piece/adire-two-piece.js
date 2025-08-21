@@ -1,3 +1,5 @@
+"use client";
+import { useState, useEffect } from "react";
 import AddToCart from "@/app/_components/addToCart";
 import AddToFavorite from "@/app/_components/addToFavorite";
 import Buy from "@/app/_components/buy";
@@ -10,70 +12,68 @@ import {
   FiUsers,
   FiZap,
 } from "react-icons/fi";
+import supabase from "@/app/lib/supabase";
 
 export default function AdireTwoPiece() {
-  const AdireTwoPiece = [
-    {
-      id: "ADIRETWOPIECES1",
-      name: "Adire Kimono Set",
-      category: "Dresses",
-      price: 89.99,
-      size: ["S", "M", "L", "XL", "XXL"],
-      gender: "Women",
-      fabric: "African Wax",
-      isNew: true,
-      image:
-        "https://i.pinimg.com/1200x/c3/77/1e/c3771ebb3b93a903ca4a4147a484e3c7.jpg",
-    },
-    {
-      id: "ADIRETWOPIECES2",
-      name: "Adire Crop Top & Pants",
-      category: "Tops",
-      price: 49.99,
-      size: ["S", "M", "L", "XL", "XXL"],
-      gender: "Unisex",
-      fabric: "Cotton Blend",
-      isNew: true,
-      image:
-        "https://i.pinimg.com/736x/82/ed/97/82ed97af33e03e7258b35561fadcca49.jpg",
-    },
-    {
-      id: "ADIRETWOPIECES3",
-      name: "Adire Blouse & Wrapper",
-      category: "Bottoms",
-      price: 59.99,
-      size: ["S", "M", "L", "XL", "XXL"],
-      gender: "Women",
-      fabric: "African Print",
-      isNew: true,
-      image:
-        "https://i.pinimg.com/1200x/49/21/2b/49212b6a02c10e12e6e0e986cdab94bb.jpg",
-    },
-    {
-      id: "ADIRETWOPIECES4",
-      name: "Adire Shirt & Trousers",
-      category: "Tops",
-      price: 65.99,
-      size: ["S", "M", "L", "XL", "XXL"],
-      gender: "Men",
-      fabric: "Handwoven Cotton",
-      isNew: true,
-      image:
-        "https://i.pinimg.com/736x/76/03/23/760323e284118c10191b5fc02c3c4258.jpg",
-    },
-    {
-      id: "ADIRETWOPIECES5",
-      name: "Adire Kaftan & Pants",
-      category: "Sets",
-      price: 99.99,
-      size: ["S", "M", "L", "XL", "XXL"],
-      gender: "Unisex",
-      fabric: "Traditional Cotton",
-      isNew: true,
-      image:
-        "https://i.pinimg.com/736x/64/aa/10/64aa10d24b12f9a4657235b4d2a71215.jpg",
-    },
-  ];
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchAdireTwoPieces = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from("products")
+          .select("*")
+          .ilike("id", "%ADIRETWOPIECES%")
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+        setProducts(data || []);
+      } catch (err) {
+        console.error("Error fetching Adire Two Pieces:", err);
+        setError("Failed to load Adire Two Pieces");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAdireTwoPieces();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 p-5 pt-30">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="bg-white rounded-lg shadow p-4">
+            <div className="aspect-square bg-gray-200 animate-pulse rounded"></div>
+            <div className="mt-4 space-y-3">
+              <div className="h-4 bg-gray-200 rounded w-3/4 animate-pulse"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/4 animate-pulse"></div>
+              <div className="h-3 bg-gray-200 rounded w-full animate-pulse"></div>
+              <div className="grid grid-cols-2 gap-2 mt-4">
+                <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
+                <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div className="p-5 text-center text-red-500">{error}</div>;
+  }
+
+  if (products.length === 0) {
+    return (
+      <div className="p-5 text-center text-gray-500">
+        No Adire Two Piece products found
+      </div>
+    );
+  }
 
   return (
     <>
@@ -81,23 +81,41 @@ export default function AdireTwoPiece() {
         <FiZap className="mr-2 text-black" /> Adire Two Piece
       </h2>
       <div className="grid grid-cols-1 lg:grid-cols-4 lg:pt-10 lg:pb-20 lg:p-5 pb-10 p-2 pt-5">
-        {AdireTwoPiece.map((product) => (
+        {products.map((product) => (
           <div key={product.id} className="p-2">
             <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 h-full">
               {/* Product Image */}
               <div className="relative aspect-square bg-gray-100 flex items-center justify-center">
                 <Image
-                  src={product.image}
+                  src={product.image || "/placeholder-product.jpg"}
                   fill
                   alt={product.name}
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
-                {product.isNew && (
-                  <div className="absolute top-2 left-2 bg-primary text-white bg-[#7B2D26]  text-xs font-bold px-2 py-1 rounded-full">
-                    NEW
-                  </div>
-                )}
+                {/* Status Badges */}
+                <div className="absolute top-2 left-2 flex flex-col gap-2 items-start">
+                  {product.isNew && (
+                    <div className="bg-primary text-white bg-[#7B2D26] text-xs font-bold px-2 py-1 rounded-full">
+                      NEW
+                    </div>
+                  )}
+                  {product.status === "available" && (
+                    <div className="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">
+                      AVAILABLE
+                    </div>
+                  )}
+                  {product.status === "pre-order" && (
+                    <div className="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded-full">
+                      PRE-ORDER
+                    </div>
+                  )}
+                  {product.status === "out of stock" && (
+                    <div className="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">
+                      OUT OF STOCK
+                    </div>
+                  )}
+                </div>
                 <AddToFavorite
                   id={product.id}
                   name={product.name}
@@ -124,7 +142,10 @@ export default function AdireTwoPiece() {
                 {/* Product Meta */}
                 <div className="flex flex-wrap gap-3 text-xs text-gray-500 mb-4">
                   <span className="flex items-center">
-                    <FiLayers className="mr-1" /> {product.size}
+                    <FiLayers className="mr-1" />{" "}
+                    {Array.isArray(product.size)
+                      ? product.size.join(", ")
+                      : product.size}
                   </span>
                   <span className="flex items-center">
                     <FiUsers className="mr-1" /> {product.gender}

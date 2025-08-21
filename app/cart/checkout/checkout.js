@@ -35,7 +35,8 @@ const CheckoutPage = () => {
     postCode: "",
     country: "United Kingdom",
     phoneNo: "",
-    shipping: 10,
+    shipping: 2.62,
+    shippingMethod: "standard",
   });
 
   // Form errors
@@ -196,7 +197,7 @@ const CheckoutPage = () => {
           postalCode: formData.postCode,
           country: formData.country,
           phoneNo: formData.phoneNo,
-          shippingMethod: "standard",
+          shippingMethod: formData.shippingMethod,
           shippingPrice: Math.round(numericShipping),
           paymentMethod: "Stripe",
           productPrice: Math.round(price),
