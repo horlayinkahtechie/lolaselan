@@ -8,6 +8,9 @@ export async function POST(req) {
   try {
     const body = await req.json();
 
+    // ✅ Ensure image is always an array for Supabase
+    const imagesArray = Array.isArray(body.image) ? body.image : [body.image];
+
     const orderData = {
       order_id: body.order_id,
       email: body.email,
@@ -23,11 +26,12 @@ export async function POST(req) {
       totalToBePaid: body.totalProductPrice,
       productPrice: body.productPrice,
       name: body.name,
-      image: body.image[0],
+      image: imagesArray, // ✅ Postgres text[] expects array
       quantity: body.quantity,
       status: "pending",
       paymentMethod: "stripe",
       product_id: body.product_id,
+      phoneNo: body.phoneNo,
     };
 
     const { data: order, error: dbError } = await supabase
@@ -46,7 +50,8 @@ export async function POST(req) {
             currency: "gbp",
             product_data: {
               name: body.name,
-              images: [body.image[0]],
+              // ✅ Stripe only allows an array of strings (not nested arrays)
+              images: [imagesArray[0]],
             },
             unit_amount: Math.round(Number(body.productPrice) * 100),
           },
@@ -58,13 +63,13 @@ export async function POST(req) {
             product_data: {
               name: "Shipping",
             },
-            unit_amount: Math.round(Number(body.shippingPrice) * 100), // e.g. 1999
+            unit_amount: Math.round(Number(body.shippingPrice) * 100),
           },
-          quantity: 1, // Only once
+          quantity: 1,
         },
       ],
       metadata: {
-        order_id: body.order_id,
+        order_id: String(body.order_id),
         customer_email: body.email,
         firstName: body.firstName,
         lastName: body.lastName,
@@ -74,12 +79,12 @@ export async function POST(req) {
         country: body.country,
         size: body.size,
         shippingMethod: body.shippingMethod,
-        shippingPrice: body.shippingPrice,
-        totalProductPrice: body.totalProductPrice,
-        productPrice: body.productPrice,
+        shippingPrice: String(body.shippingPrice),
+        totalProductPrice: String(body.totalProductPrice),
+        productPrice: String(body.productPrice),
         name: body.name,
-        image: body.image[0],
-        quantity: body.quantity,
+        image: imagesArray[0], // ✅ Stripe metadata only accepts strings
+        quantity: String(body.quantity),
       },
       success_url: `${process.env.NEXTAUTH_URL}/status/confirmed?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXTAUTH_URL}/status/declined`,
@@ -87,6 +92,7 @@ export async function POST(req) {
 
     return NextResponse.json({ id: session.id });
   } catch (error) {
+    console.error("Create payment error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

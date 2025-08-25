@@ -232,7 +232,7 @@ const CheckoutPage = () => {
           productPrice: price,
           totalToBePaid: (price * quantity + numericShipping).toFixed(2),
           name: item.orderName || "Unknown Product",
-          image: item.image[0] || null,
+          image: Array.isArray(item.image) ? item.image : [item.image],
           quantity: quantity,
           size: item.size || "N/A",
         };

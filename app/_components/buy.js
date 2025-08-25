@@ -37,7 +37,7 @@ export default function Buy({ product }) {
         gender: product.gender,
         fabric: product.fabric,
         isNew: product.isNew,
-        image: JSON.stringify(product.image),
+        image: product.image,
         product_description: product.product_description,
         care_instruction: product.care_instruction,
       });

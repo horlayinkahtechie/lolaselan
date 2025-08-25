@@ -33,7 +33,7 @@ export default function CheckoutPage() {
   const gender = searchParams.get("gender") || "";
   const fabric = searchParams.get("fabric") || "";
   const isNew = searchParams.get("isNew") || "";
-  const image = JSON.parse(searchParams.get("image"));
+  const image = searchParams.get("image");
   const product_description = searchParams.get("product_description") || "";
   const care_instruction = searchParams.get("care_instruction");
 
@@ -194,7 +194,7 @@ export default function CheckoutPage() {
           productPrice: price,
           totalProductPrice: total.toFixed(2),
           name: name,
-          image: image[0],
+          image: image,
           shippingPrice: formData.shipping,
           phoneNo: formData.phoneNo,
         }),
@@ -265,15 +265,12 @@ export default function CheckoutPage() {
               <div className="flex flex-col md:flex-row gap-6">
                 <div className="w-full md:w-1/2">
                   <div className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden">
-                    {image.map((img, index) => (
-                      <Image
-                        key={index}
-                        src={img}
-                        alt={`Product image ${index + 1}`}
-                        fill
-                        className="object-cover"
-                      />
-                    ))}
+                    <Image
+                      src={image}
+                      alt={`Product image`}
+                      fill
+                      className="object-cover"
+                    />
                   </div>
                 </div>
 
@@ -318,40 +315,59 @@ export default function CheckoutPage() {
                   <div>
                     <h2 className="text-xl font-semibold mb-2">Size Guide</h2>
                     <div className="overflow-x-auto">
-                      <table className="min-w-full text-sm">
+                      <table className="min-w-full text-sm border-collapse">
                         <thead>
                           <tr className="border-b">
-                            <th className="text-left py-2">Size</th>
-                            <th className="text-left py-2">Chest</th>
-                            <th className="text-left py-2">Waist</th>
-                            <th className="text-left py-2">Length</th>
+                            <th className="text-left py-2">Category</th>
+                            <th className="text-left py-2">UK Size</th>
+                            <th className="text-left py-2">Bust (Inches)</th>
+                            <th className="text-left py-2">Waist (Inches)</th>
+                            <th className="text-left py-2">Hips (Inches)</th>
+                            <th className="text-left py-2">Length (Inches)</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {["XS", "S", "M", "L", "XL"].map((size) => (
-                            <tr key={size} className="border-b">
-                              <td className="py-2">{size}</td>
-                              <td className="py-2">
-                                {size === "XS" && "34-36"}
-                                {size === "S" && "36-38"}
-                                {size === "M" && "38-40"}
-                                {size === "L" && "40-42"}
-                                {size === "XL" && "42-44"}
-                              </td>
-                              <td className="py-2">
-                                {size === "XS" && "28-30"}
-                                {size === "S" && "30-32"}
-                                {size === "M" && "32-34"}
-                                {size === "L" && "34-36"}
-                                {size === "XL" && "36-38"}
-                              </td>
-                              <td className="py-2">
-                                {size === "XS" && "26"}
-                                {size === "S" && "27"}
-                                {size === "M" && "28"}
-                                {size === "L" && "29"}
-                                {size === "XL" && "30"}
-                              </td>
+                          {[
+                            {
+                              category: "S",
+                              uk: "6-8",
+                              bust: "31.5-33",
+                              waist: "24.5-25.5",
+                              hips: "34-36",
+                              length: "26",
+                            },
+                            {
+                              category: "M",
+                              uk: "10-12",
+                              bust: "35-37",
+                              waist: "27.5-29.5",
+                              hips: "38-40",
+                              length: "28",
+                            },
+                            {
+                              category: "L",
+                              uk: "14-16",
+                              bust: "39-41",
+                              waist: "31.5-33.5",
+                              hips: "42-44",
+                              length: "29",
+                            },
+                            {
+                              category: "XL",
+                              uk: "18",
+                              bust: "43",
+                              waist: "36",
+                              hips: "46",
+                              length: "30",
+                            },
+                          ].map((row) => (
+                            <tr key={row.category} className="border-b">
+                              <td className="py-2">{row.category}</td>
+                              <td className="py-2">{row.uk}</td>
+                              <td className="py-2">{row.bust}</td>
+                              <td className="py-2">{row.waist}</td>
+                              <td className="py-2">{row.hips}</td>
+                              <td className="py-2">{row.length}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -374,16 +390,13 @@ export default function CheckoutPage() {
 
               <div className="flex items-start mb-6">
                 <div className="w-20 h-20 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden mr-4">
-                  {image.map((img, index) => (
-                    <Image
-                      key={index}
-                      src={img}
-                      alt={`Product image ${index + 1}`}
-                      width={80}
-                      height={80}
-                      className="w-full h-full object-cover"
-                    />
-                  ))}
+                  <Image
+                    src={image}
+                    alt={`Product image `}
+                    width={80}
+                    height={80}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div>
                   <h3 className="font-medium">{name}</h3>
@@ -799,7 +812,7 @@ export default function CheckoutPage() {
                     </label>
                     <p className="text-gray-500">
                       <Link
-                        href="/terms"
+                        href="/terms-of-service"
                         className="text-amber-600 hover:text-amber-700"
                         target="_blank"
                       >
@@ -842,16 +855,13 @@ export default function CheckoutPage() {
 
             <div className="flex items-start mb-6">
               <div className="w-20 h-20 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden mr-4">
-                {image.map((img, index) => (
-                  <Image
-                    key={index}
-                    src={img}
-                    alt={`Product image ${index + 1}`}
-                    width={80}
-                    height={80}
-                    className="w-full h-full object-cover"
-                  />
-                ))}
+                <Image
+                  src={image}
+                  alt={`Product image`}
+                  width={80}
+                  height={80}
+                  className="w-full h-full object-cover"
+                />
               </div>
               <div>
                 <h3 className="font-medium">{name}</h3>

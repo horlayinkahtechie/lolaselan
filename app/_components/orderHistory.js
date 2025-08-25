@@ -186,13 +186,36 @@ export default function OrderHistory() {
                 <div className="grid gap-4">
                   <div className="flex items-start gap-4">
                     <div className="relative w-16 h-16 rounded-md overflow-hidden bg-gray-100">
-                      <Image
-                        src={order.image}
-                        alt={order.name}
-                        fill
-                        className="object-cover"
-                      />
+                      {(() => {
+                        let images = [];
+
+                        // Ensure it's a real array
+                        if (Array.isArray(order.image)) {
+                          images = order.image;
+                        } else if (typeof order.image === "string") {
+                          try {
+                            images = JSON.parse(order.image); // parse JSON string
+                          } catch (e) {
+                            console.error("Invalid image format:", order.image);
+                          }
+                        }
+
+                        return images.length > 0 ? (
+                          <Image
+                            src={images[0]} // ✅ first image
+                            alt={order.name}
+                            fill
+                            sizes="true"
+                            className="object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-xs text-gray-400">
+                            No Image
+                          </div>
+                        );
+                      })()}
                     </div>
+
                     <div className="flex-1">
                       <h3 className="font-medium text-gray-900">
                         {order.name}

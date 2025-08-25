@@ -7,6 +7,7 @@ import supabase from "../lib/supabase";
 import toast from "react-hot-toast";
 import useCartStore from "../lib/cartStore";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 
 export default function AddToCart({
   id,
@@ -72,7 +73,7 @@ export default function AddToCart({
           gender,
           fabric,
           isNew,
-          image,
+          image: image,
           cart_id,
         },
       ]);
@@ -197,6 +198,13 @@ export default function AddToCart({
                       </div>
                     )}
                   </div>
+                  <Link
+                    href="/size-guidelines"
+                    target="_blank"
+                    className="underline text-[#7B2D26] mb-5"
+                  >
+                    View size guidelines
+                  </Link>
                 </div>
 
                 <div className="flex gap-3 mt-auto">
@@ -275,6 +283,13 @@ export default function AddToCart({
                     </div>
                   )}
                 </div>
+                <Link
+                  href="/size-guidelines"
+                  target="_blank"
+                  className="underline text-[#7B2D26] mb-5"
+                >
+                  View size guidelines
+                </Link>
               </div>
 
               <div className="flex gap-3">

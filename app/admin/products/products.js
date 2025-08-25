@@ -812,7 +812,7 @@ export default function Products() {
                           ))}
                         </div>
 
-                        {/* Upload area (only show if less than 4 images) */}
+                        {/* Upload area (only show if less than images) */}
 
                         <svg
                           className="mx-auto h-12 w-12 text-gray-400"

@@ -44,7 +44,7 @@ export async function POST(req) {
         productPrice: item.productPrice,
         totalToBePaid: item.totalToBePaid,
         name: item.name,
-        image: item.image[0],
+        image: item.image,
         quantity: item.quantity,
         size: item.size,
       };
@@ -61,7 +61,7 @@ export async function POST(req) {
         currency: "gbp",
         product_data: {
           name: item.name,
-          images: item.image[0] ? [item.image[0]] : [],
+          images: item.image,
         },
         unit_amount: Math.round(item.productPrice * 100),
       },

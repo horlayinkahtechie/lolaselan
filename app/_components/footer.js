@@ -37,8 +37,8 @@ export default function Footer() {
       links: [
         { name: "Contact Us", href: "/contactus" },
         { name: "Shipping Info", href: "/shipping-info" },
-        { name: "Returns & Exchanges", href: "/returns" },
-        { name: "Size Guide", href: "/size-guide" },
+        { name: "Returns & Exchanges", href: "/return-and-exchanges" },
+        { name: "Size Guide", href: "/size-guidelines" },
         { name: "FAQs", href: "/faqs" },
       ],
     },
@@ -176,11 +176,11 @@ export default function Footer() {
             </div>
             <div className="flex items-center space-x-3">
               <FiPhone />
-              <p>+44 123 456 7890</p>
+              <p>+44 7401 439 257</p>
             </div>
             <div className="flex items-center space-x-3">
               <FiMail />
-              <p>hello@lolaselan.com</p>
+              <p>contact@shoplolaselan.uk</p>
             </div>
           </div>
 

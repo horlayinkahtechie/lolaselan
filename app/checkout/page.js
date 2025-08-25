@@ -20,7 +20,7 @@ export const metadata = {
     siteName: "Lolaselan",
     images: [
       {
-        url: "/lolaselan.jpg",
+        url: "https://shoplolaselan.uk/lolaselan.jpg",
         width: 1200,
         height: 630,
         alt: "Checkout Page",
@@ -34,7 +34,7 @@ export const metadata = {
     title: "Checkout - Complete Your Order | Lolaselan",
     description:
       "Securely complete your order on Lolaselan. Review your products, provide shipping details, and pay safely online.",
-    images: ["/lolaselan.jpg"],
+    images: ["https://shoplolaselan.uk/lolaselan.jpg"],
   },
 };
 

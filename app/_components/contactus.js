@@ -103,8 +103,7 @@ export default function ContactSection() {
               </div>
               <div>
                 <h3 className="font-medium text-lg mb-1">Email Us</h3>
-                <p className="text-gray-600">hello@lolaselan.com</p>
-                <p className="text-gray-600">support@lolaselan.com</p>
+                <p className="text-gray-600">contact@shoplolaselan.uk</p>
               </div>
             </div>
 
@@ -114,7 +113,7 @@ export default function ContactSection() {
               </div>
               <div>
                 <h3 className="font-medium text-lg mb-1">Call Us</h3>
-                <p className="text-gray-600">+44 123 456 7890</p>
+                <p className="text-gray-600">+44 740 143 9257</p>
                 <p className="text-gray-600">Mon-Fri: 9am-5pm GMT</p>
               </div>
             </div>
