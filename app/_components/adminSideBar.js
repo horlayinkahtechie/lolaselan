@@ -10,6 +10,7 @@ import {
   FiMenu,
   FiX,
 } from "react-icons/fi";
+import { FiRefreshCw } from "react-icons/fi";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 
@@ -18,6 +19,16 @@ const links = [
     name: "Dashboard",
     href: "/admin/dashboard",
     icon: FiActivity,
+  },
+  {
+    name: "Orders",
+    href: "/admin/orders",
+    icon: FiPackage,
+  },
+  {
+    name: "Refunds",
+    href: "/admin/returns",
+    icon: FiRefreshCw,
   },
   {
     name: "Products",
@@ -34,11 +45,7 @@ const links = [
     href: "/admin/users",
     icon: FiUsers,
   },
-  {
-    name: "Orders",
-    href: "/admin/orders",
-    icon: FiPackage,
-  },
+
   {
     name: "Analytics",
     href: "/admin/analytics",

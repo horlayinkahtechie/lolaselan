@@ -9,9 +9,9 @@ export default function ReturnsExchanges() {
           Returns & Exchanges
         </h1>
         <p className="text-gray-600 mb-8">
-          We want you to love your purchase! If you&apos;re not completely
-          satisfied, our return and exchange policy makes it easy to shop with
-          confidence.
+          At LOLASELAN, we are committed to ensuring that you love every piece
+          you purchase. Each garment is crafted with care, and we want you to
+          feel confident and comfortable in your orders.
         </p>
 
         {/* Policy Section */}
@@ -21,9 +21,13 @@ export default function ReturnsExchanges() {
               Return Policy
             </h2>
             <ul className="list-disc pl-6 text-gray-600 space-y-2">
-              <li>Items must be returned within 7 days of delivery.</li>
+              <li>We accept returns within 14 days of delivery.</li>
               <li>
-                Products must be unused, unworn, and in original packaging.
+                Item must be unused, unworn, unwashed and in original condition,
+                with all tags and labels still attached.
+              </li>
+              <li>
+                Returns that do not meet these conditions will not be accepted.
               </li>
             </ul>
           </section>
@@ -34,17 +38,27 @@ export default function ReturnsExchanges() {
             </h2>
             <ul className="list-disc pl-6 text-gray-600 space-y-2">
               <li>
-                Exchanges are available for different sizes or colors of the
-                same product.
+                We currently offer exchanges for sizes only, subject to
+                availability.
               </li>
               <li>
-                Exchanges must be requested within 7 days of receiving your
-                order.
+                If your desired size is unavailable, a return return and refund
+                will be processed instead.
               </li>
-              <li>
-                If your desired size or color is unavailable, we&apos;ll process
-                a refund instead.
-              </li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">
+              Non-refundable Items
+            </h2>
+            <p>
+              For hygiene and sustainability reasons, the following items cannot
+              be returned or exchanged:
+            </p>
+            <ul className="list-disc pl-6 text-gray-600 space-y-2">
+              <li>Sales items or promotional purchase.</li>
+              <li>Custom or made-to-order pieces refunds</li>
             </ul>
           </section>
 
@@ -53,11 +67,33 @@ export default function ReturnsExchanges() {
               How to Request a Return/Exchange
             </h2>
             <ol className="list-decimal pl-6 text-gray-600 space-y-2">
-              <p>
-                Send a mail to <b>contact@shoplolaselan.uk</b> requesting refund
-                for a product.
-              </p>
+              <li>
+                Click the link &apos;Request a return&apos; on your order
+                confirmation email or go to your profile and click on the
+                &apos;Request refund&apos; link.
+              </li>
+              <li>
+                Select the reason your requesting a refund, then submit. Your
+                refund will be processed and you will recieve a confirmation
+                email.
+              </li>
+              <li>
+                Keep proof of postage until your return has been confirmed.
+              </li>
             </ol>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">
+              Returns Shipping and Customs
+            </h2>
+            <p>
+              You are responsible for covering the cost of return shipping.
+              Original shipping charges are non-refundable. If this is not done
+              correctly, any customs fees or import charges incurred will be
+              deducted from your refund or may result in your return being
+              refused.
+            </p>
           </section>
         </div>
 

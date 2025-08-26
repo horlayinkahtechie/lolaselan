@@ -323,7 +323,6 @@ export default function CheckoutPage() {
                             <th className="text-left py-2">Bust (Inches)</th>
                             <th className="text-left py-2">Waist (Inches)</th>
                             <th className="text-left py-2">Hips (Inches)</th>
-                            <th className="text-left py-2">Length (Inches)</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -334,7 +333,6 @@ export default function CheckoutPage() {
                               bust: "31.5-33",
                               waist: "24.5-25.5",
                               hips: "34-36",
-                              length: "26",
                             },
                             {
                               category: "M",
@@ -342,7 +340,6 @@ export default function CheckoutPage() {
                               bust: "35-37",
                               waist: "27.5-29.5",
                               hips: "38-40",
-                              length: "28",
                             },
                             {
                               category: "L",
@@ -350,7 +347,6 @@ export default function CheckoutPage() {
                               bust: "39-41",
                               waist: "31.5-33.5",
                               hips: "42-44",
-                              length: "29",
                             },
                             {
                               category: "XL",
@@ -358,7 +354,6 @@ export default function CheckoutPage() {
                               bust: "43",
                               waist: "36",
                               hips: "46",
-                              length: "30",
                             },
                           ].map((row) => (
                             <tr key={row.category} className="border-b">
@@ -367,7 +362,6 @@ export default function CheckoutPage() {
                               <td className="py-2">{row.bust}</td>
                               <td className="py-2">{row.waist}</td>
                               <td className="py-2">{row.hips}</td>
-                              <td className="py-2">{row.length}</td>
                             </tr>
                           ))}
                         </tbody>

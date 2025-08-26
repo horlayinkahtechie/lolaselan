@@ -198,18 +198,16 @@ export default function Products() {
   };
 
   // Delete product
-  const handleDeleteProduct = async () => {
+  const handleDeleteProduct = async (productId) => {
     try {
       const { error } = await supabase
         .from("products")
         .delete()
-        .eq("id", currentProduct.id);
+        .eq("id", productId);
 
       if (error) throw error;
 
-      setProducts(
-        products.filter((product) => product.id !== currentProduct.id)
-      );
+      setProducts(products.filter((product) => product.id !== productId));
       setShowDeleteModal(false);
     } catch (error) {
       console.error("Error deleting product:", error);
@@ -428,7 +426,7 @@ export default function Products() {
                           <FiEdit2 />
                         </button>
                         <button
-                          onClick={() => handleDeleteProduct()}
+                          onClick={() => handleDeleteProduct(product.id)}
                           className="p-2 bg-white bg-opacity-80 rounded-full text-gray-700 hover:text-red-500 hover:bg-opacity-100 transition"
                         >
                           <FiTrash2 />

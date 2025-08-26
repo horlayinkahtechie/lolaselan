@@ -19,35 +19,35 @@ export default function SizeGuidelines() {
           <thead>
             <tr className="bg-gray-100 text-gray-700">
               <th className="border p-3">Size</th>
-              <th className="border p-3">Chest (inches)</th>
+              <th className="border p-3">Bust (inches)</th>
               <th className="border p-3">Waist (inches)</th>
-              <th className="border p-3">Length (inches)</th>
+              <th className="border p-3">Hips (inches)</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td className="border p-3 text-center">S</td>
+              <td className="border p-3 text-center">31.5 - 33</td>
+              <td className="border p-3 text-center">24.5 - 25.5</td>
               <td className="border p-3 text-center">34 - 36</td>
-              <td className="border p-3 text-center">28 - 30</td>
-              <td className="border p-3 text-center">27</td>
             </tr>
             <tr>
               <td className="border p-3 text-center">M</td>
+              <td className="border p-3 text-center">35 - 37</td>
+              <td className="border p-3 text-center">27.5 - 29.5</td>
               <td className="border p-3 text-center">38 - 40</td>
-              <td className="border p-3 text-center">32 - 34</td>
-              <td className="border p-3 text-center">28</td>
             </tr>
             <tr>
               <td className="border p-3 text-center">L</td>
+              <td className="border p-3 text-center">39 - 41</td>
+              <td className="border p-3 text-center">31.5 - 33.5</td>
               <td className="border p-3 text-center">42 - 44</td>
-              <td className="border p-3 text-center">36 - 38</td>
-              <td className="border p-3 text-center">29</td>
             </tr>
             <tr>
               <td className="border p-3 text-center">XL</td>
-              <td className="border p-3 text-center">46 - 48</td>
-              <td className="border p-3 text-center">40 - 42</td>
-              <td className="border p-3 text-center">30</td>
+              <td className="border p-3 text-center">43</td>
+              <td className="border p-3 text-center">36</td>
+              <td className="border p-3 text-center">46</td>
             </tr>
           </tbody>
         </table>

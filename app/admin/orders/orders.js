@@ -370,15 +370,6 @@ export default function Orders() {
                     <FiCheckCircle className="mr-2" />
                     Delivered
                   </button>
-                  <button
-                    onClick={() =>
-                      updateOrderStatus(selectedOrder.order_id, "returned")
-                    }
-                    className={`px-4 py-2 rounded-lg text-left flex items-center ${selectedOrder.delivery_status === "returned" ? "bg-[#5E2BFF] text-white" : "bg-gray-100 hover:bg-gray-200"}`}
-                  >
-                    <FiCheckCircle className="mr-2" />
-                    Returned
-                  </button>
                 </div>
               </div>
 
