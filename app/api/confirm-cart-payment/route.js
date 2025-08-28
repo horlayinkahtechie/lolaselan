@@ -80,23 +80,23 @@ export async function POST(req) {
           </table>
 
           <div style="text-align:center; margin-top:30px;">
-            <a href="https://lolaselan.netlify.app/user/profile"
+            <a href="https://shoplolaselan.uk/user/profile"
               style="display:inline-block; background:#ff6f00; color:#fff; font-size:16px; font-weight:bold; padding:12px 24px; text-decoration:none; border-radius:5px;">
               View My Orders
             </a>
           </div>
 
           <p style="font-size:12px; color:#555; text-align:center; margin-top:30px;">
-            If you have any questions, reply to this email or contact us at support@shoplolaselan.uk.
+            If you have any questions, reply to this email or contact us at contact@shoplolaselan.uk.
           </p>
         </div>
       `;
 
       // ✅ Send confirmation email
       await resend.emails.send({
-        from: "LolaSelan <lolaselan@shoplolaselan.uk>",
+        from: "LolasÈlan <contact@shoplolaselan.uk>",
         to: email,
-        subject: "Your Lola Selan Order Confirmation",
+        subject: "Your LolasÈlan Order Confirmation",
         html: emailHtml,
       });
 

@@ -13,7 +13,7 @@ export default function SignInPage() {
     if (status === "authenticated") {
       const role = session?.user?.role;
       if (role === "admin") {
-        router.push("/");
+        router.push("/admin/dashboard");
       } else {
         router.push("/");
       }

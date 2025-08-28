@@ -9,7 +9,7 @@ export default function ReturnsExchanges() {
           Returns & Exchanges
         </h1>
         <p className="text-gray-600 mb-8">
-          At LOLASELAN, we are committed to ensuring that you love every piece
+          At LolasÈlan, we are committed to ensuring that you love every piece
           you purchase. Each garment is crafted with care, and we want you to
           feel confident and comfortable in your orders.
         </p>

@@ -7,7 +7,7 @@ export default function TermsOfService() {
 
       <section>
         <p>
-          Welcome to LolasElan, your trusted UK-based African fashion store. By
+          Welcome to LolasÈlan, your trusted UK-based African fashion store. By
           accessing or using our website, you agree to comply with and be bound
           by the following terms and conditions.
         </p>

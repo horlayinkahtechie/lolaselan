@@ -1,11 +1,11 @@
 import AsoOkeSkirt from "./aso-oke-skirts";
 
 export const metadata = {
-  title: "Aso Oke Skirts - Traditional & Modern Styles | Lolaselan",
+  title: "Aso Oke Skirts - Traditional & Modern Styles | LolasÈlan",
   description:
     "Discover our elegant Aso Oke skirts, blending tradition with modern fashion. Perfect for weddings, parties, and special occasions.",
   openGraph: {
-    title: "Aso Oke Skirts - Traditional & Modern Styles | Lolaselan",
+    title: "Aso Oke Skirts - Traditional & Modern Styles | LolasÈlan",
     description:
       "Elegant Aso Oke skirts for weddings, events, and stylish outings. Shop premium quality traditional fashion.",
     url: "https://shoplolaselan.uk/collections/aso-oke-skirts",

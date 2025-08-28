@@ -4,7 +4,7 @@ import FeaturedCollections from "../_components/collections";
 
 export const metadata = {
   title:
-    "African Clothing Collections | Adire, Bubu, Ankara, Aso Oke | Lolaselan",
+    "African Clothing Collections | Adire, Bubu, Ankara, Aso Oke | LolasÈlan",
   description:
     "Discover authentic African fashion collections including Adire two-piece, Bubu gowns, Ankara pants, and Aso Oke skirts. Shop premium fabrics with modern styles at YourBrand.",
   keywords: [
@@ -19,7 +19,7 @@ export const metadata = {
   ],
   openGraph: {
     title:
-      "African Clothing Collections | Adire, Bubu, Ankara, Aso Oke | Lolaselan",
+      "African Clothing Collections | Adire, Bubu, Ankara, Aso Oke | LolasÈlan",
     description:
       "Shop premium African clothing collections featuring Adire, Bubu, Ankara, and Aso Oke styles. Authentic fabrics, modern designs, and affordable prices.",
     url: "https://shoplolaselan.uk/collections",
@@ -38,7 +38,7 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title:
-      "African Clothing Collections | Adire, Bubu, Ankara, Aso Oke | Lolaselan",
+      "African Clothing Collections | Adire, Bubu, Ankara, Aso Oke | LolasÈlan",
     description:
       "Shop authentic African fashion collections | Adire two-piece, Bubu, Ankara pants, and Aso Oke skirts. Premium fabrics, unique styles, affordable prices.",
     images: ["https://shoplolaselan.uk/lolaselan.jpg"],

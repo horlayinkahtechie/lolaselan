@@ -51,7 +51,7 @@ export default function PrivacyPolicy() {
             3. Information Security
           </h2>
           <p className="text-gray-700 mt-2">
-            At <strong>LolasElan</strong>, your personal information is
+            At <strong>LolasÈlan</strong>, your personal information is
             encrypted and stored securely. Access is restricted to trusted staff
             members only.
           </p>
@@ -82,10 +82,10 @@ export default function PrivacyPolicy() {
           <p className="mt-2 text-gray-700">
             To exercise these rights, contact us at{" "}
             <a
-              href="mailto:support@lolaselan.co.uk"
+              href="mailto:contact@shoplolaselan.uk"
               className="text-blue-600 hover:underline"
             >
-              support@lolaselan.co.uk
+              contact@shoplolaselan.co.uk
             </a>
             .
           </p>
@@ -106,7 +106,7 @@ export default function PrivacyPolicy() {
           <p className="text-gray-700 mt-2">For any questions, reach out to:</p>
           <ul className="text-gray-700 list-inside list-disc mt-2">
             <li>
-              <strong>LolasElan</strong>
+              <strong>LolasÈlan</strong>
             </li>
             <li>
               Email:{" "}

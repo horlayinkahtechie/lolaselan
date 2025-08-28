@@ -1,28 +1,28 @@
 import ContactPage from "./contact";
 
 export const metadata = {
-  title: "Contact Us - Lolaselan",
+  title: "Contact Us - LolasÈlan",
   description:
-    "Get in touch with Lolaselan. Reach out for inquiries, support, or collaborations related to authentic African fashion.",
+    "Get in touch with LolasÈlan. Reach out for inquiries, support, or collaborations related to authentic African fashion.",
   keywords: [
-    "Contact Lolaselan",
+    "Contact LolasÈlan",
     "African fashion support",
     "Customer service",
     "Inquiries",
     "Collaborations",
   ],
   openGraph: {
-    title: "Contact Us - Lolaselan",
+    title: "Contact Us - LolasÈlan",
     description:
-      "Reach out to Lolaselan for inquiries, support, or collaborations. We're here to assist you with our African fashion collections.",
+      "Reach out to LolasÈlan for inquiries, support, or collaborations. We're here to assist you with our African fashion collections.",
     url: "https://shoplolaselan.uk/contact",
-    siteName: "Lolaselan",
+    siteName: "LolasÈlan",
     images: [
       {
         url: "/lolaselan.jpg",
         width: 1200,
         height: 630,
-        alt: "Contact Lolaselan",
+        alt: "Contact LolasÈlan",
       },
     ],
     locale: "en_US",
@@ -30,9 +30,9 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Contact Us - Lolaselan",
+    title: "Contact Us - LolasÈlan",
     description:
-      "Reach out to Lolaselan for inquiries, support, or collaborations. We're here to assist you with our African fashion collections.",
+      "Reach out to LolasÈlan for inquiries, support, or collaborations. We're here to assist you with our African fashion collections.",
     images: ["/lolaselan.jpg"],
   },
 };

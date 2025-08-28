@@ -1,28 +1,28 @@
 import PrivacyPolicy from "./privacyPolicy";
 
 export const metadata = {
-  title: "Privacy Policy - Lolaselan",
+  title: "Privacy Policy - LolasÈlan",
   description:
-    "Read Lolaselan's Privacy Policy to understand how we collect, use, and protect your personal information while shopping for African fashion online.",
+    "Read LolasÈlan's Privacy Policy to understand how we collect, use, and protect your personal information while shopping for African fashion online.",
   keywords: [
     "Privacy Policy",
     "Data Protection",
-    "Lolaselan Privacy",
+    "LolasÈlan Privacy",
     "African fashion store privacy",
     "Customer data safety",
   ],
   openGraph: {
-    title: "Privacy Policy - Lolaselan",
+    title: "Privacy Policy - LolasÈlan",
     description:
-      "Learn how Lolaselan protects your personal data and ensures safe transactions while you shop for our African fashion collections.",
+      "Learn how LolasÈlan protects your personal data and ensures safe transactions while you shop for our African fashion collections.",
     url: "https://shoplolaselan.uk/privacy-policy",
-    siteName: "Lolaselan",
+    siteName: "LolasÈlan",
     images: [
       {
         url: "/lolaselan.jpg",
         width: 1200,
         height: 630,
-        alt: "Privacy Policy - Lolaselan",
+        alt: "Privacy Policy - LolasÈlan",
       },
     ],
     locale: "en_US",
@@ -30,9 +30,9 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Privacy Policy - Lolaselan",
+    title: "Privacy Policy - LolasÈlan",
     description:
-      "Discover how Lolaselan ensures your privacy and protects your data while shopping our African fashion collections.",
+      "Discover how LolasÈlan ensures your privacy and protects your data while shopping our African fashion collections.",
     images: ["/lolaselan.jpg"],
   },
 };

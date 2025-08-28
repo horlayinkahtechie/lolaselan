@@ -19,7 +19,7 @@ export async function POST(request) {
         <p>We will review your request and update you within 3-5 business days.</p>
         <p>Thank you for your patience.</p>
         <br>
-        <p>Best regards,<br>Lolaselan</p>
+        <p>Best regards,<br>LolasÈlan</p>
       `;
     } else if (delivery_status === "returned") {
       subject = `Your refund for order ${order_id} has been processed`;
@@ -30,7 +30,7 @@ export async function POST(request) {
         <p>The amount will be credited back to your original payment method within 5-10 business days.</p>
         <p>Thank you for shopping with us.</p>
         <br>
-        <p>Best regards,<br>Lolaselan</p>
+        <p>Best regards,<br>LolasÈlan</p>
       `;
     } else if (delivery_status === "declined refund") {
       subject = `Your refund request for order ${order_id} has been declined`;
@@ -41,12 +41,12 @@ export async function POST(request) {
     <p>Unfortunately, your request has been declined as it does not meet our refund policy requirements.</p>
     <p>If you believe this decision was made in error, please reach out to our support team for further assistance.</p>
     <br>
-    <p>Thank you for your understanding.<br>Lolaselan</p>
+    <p>Thank you for your understanding.<br>LolasÈlan</p>
   `;
     }
 
     const { data, error } = await resend.emails.send({
-      from: "Lolaselan <noreply@shoplolaselan.uk>",
+      from: "LolasÈlan <noreply@shoplolaselan.uk>",
       to: email,
       subject: subject,
       html: htmlContent,

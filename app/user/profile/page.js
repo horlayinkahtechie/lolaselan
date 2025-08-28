@@ -13,17 +13,17 @@ export const metadata = {
     "African fashion store account",
   ],
   openGraph: {
-    title: "My Profile - Lolaselan",
+    title: "My Profile - LolasÈlan",
     description:
-      "Manage your Lolaselan account and access your order history, personal information, and preferences for a personalized shopping experience.",
+      "Manage your LolasÈlan account and access your order history, personal information, and preferences for a personalized shopping experience.",
     url: "https://shoplolaselan.uk/user/profile",
-    siteName: "Lolaselan",
+    siteName: "LolasÈlan",
     images: [
       {
         url: "/lolaselan.jpg",
         width: 1200,
         height: 630,
-        alt: "User Profile - Lolaselan",
+        alt: "User Profile - LolasÈlan",
       },
     ],
     locale: "en_US",
@@ -31,9 +31,9 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "My Profile - Lolaselan",
+    title: "My Profile - LolasÈlan",
     description:
-      "Manage your Lolaselan account, view your orders, and update your preferences for a better shopping experience.",
+      "Manage your LolasÈlan account, view your orders, and update your preferences for a better shopping experience.",
     images: ["/lolaselan.jpg"],
   },
 };

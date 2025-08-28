@@ -26,7 +26,7 @@ export default function AboutPage() {
                   Who We Are
                 </h2>
                 <p className="text-gray-700 mb-6">
-                  Founded in 2025, Lolaselan is a premium African fashion brand
+                  Founded in 2025, LolasÈlan is a premium African fashion brand
                   that bridges traditional craftsmanship with modern design.
                   We&apos;re passionate about showcasing the rich textile
                   heritage of Africa while creating wearable art for the global

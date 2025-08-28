@@ -11,7 +11,7 @@ export default function OrderDeclined() {
   return (
     <>
       <Head>
-        <title>Payment Declined | Lolaselan</title>
+        <title>Payment Declined | LolasÈlan</title>
         <meta name="description" content="Your payment was not processed" />
       </Head>
 

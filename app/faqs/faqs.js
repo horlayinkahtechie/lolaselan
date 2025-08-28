@@ -34,7 +34,7 @@ export default function FAQPage() {
     {
       question: "Can I cancel or change my order after placing it?",
       answer:
-        "We begin processing orders as soon as possible, so we're unable to guarantee changes or cancellations once your order is placed. If you need help, please contact us at contact@lolaselan.com as soon as possible, and we'll do our best to assist.",
+        "We begin processing orders as soon as possible, so we're unable to guarantee changes or cancellations once your order is placed. If you need help, please contact us at contact@shoplolaselan.uk as soon as possible, and we'll do our best to assist.",
     },
   ];
 
@@ -65,12 +65,12 @@ export default function FAQPage() {
     {
       question: "How do I return an Item?",
       answer:
-        "For return requests, contact us via email at contact@lolaselan.com within 7 days of receiving your order. Returned items must be in their original condition; unworn, unwashed, and with all tags attached. All returns will undergo a thorough inspection before a brand voucher is issued. Please note: The buyer is responsible for the return shipping cost. ",
+        "For return requests, contact us via email at contact@shoplolaselan.uk within 7 days of receiving your order. Returned items must be in their original condition; unworn, unwashed, and with all tags attached. All returns will undergo a thorough inspection before a brand voucher is issued. Please note: The buyer is responsible for the return shipping cost. ",
     },
     {
       question: "Can I exchange an item for a different color?",
       answer:
-        "Exchanges depend on availability. If you'd like to request one, please contact us via email at contact@lolaselan.com within 7 days of receiving your item. If the item is in stock, we'll help you exchange it, otherwise, we'll issue a brand voucher. ",
+        "Exchanges depend on availability. If you'd like to request one, please contact us via email at contact@shoplolaselan.uk within 7 days of receiving your item. If the item is in stock, we'll help you exchange it, otherwise, we'll issue a brand voucher. ",
     },
     {
       question: "What if I received a faulty or incorrect item?",
@@ -101,7 +101,7 @@ export default function FAQPage() {
     {
       question: "How can I contact customer service?",
       answer:
-        "Our customer service team is available 24/7 via email at support@lolaselan.com.",
+        "Our customer service team is available 24/7 via email at contact@shoplolaselan.uk",
     },
   ];
 
@@ -155,7 +155,7 @@ export default function FAQPage() {
   return (
     <div className="min-h-screen bg-gray-50 pt-27">
       <Head>
-        <title>FAQs - Lolaselan</title>
+        <title>FAQs - LolasÈlan</title>
         <meta
           name="description"
           content="Frequently asked questions about our products and services"
@@ -185,7 +185,7 @@ export default function FAQPage() {
           </h2>
           <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
             Can&apos;t find what you&apos;re looking for? Message{" "}
-            <b>support@lolaselan.com</b> team is happy to help with any
+            <b>contact@shoplolaselan.uk</b> team is happy to help with any
             questions you may have.
           </p>
           <Link

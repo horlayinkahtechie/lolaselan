@@ -1,7 +1,7 @@
 import Bubu from "./bubu";
 
 export const metadata = {
-  title: "Bubu Collection - African Fashion | Lolaselan",
+  title: "Bubu Collection - African Fashion | LolasÈlan",
   description:
     "Shop elegant Bubu outfits made with high-quality African fabrics. Perfect for all occasions, blending tradition with modern style.",
   keywords: [

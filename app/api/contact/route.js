@@ -16,7 +16,7 @@ export async function POST(req) {
 
     // Send email via Resend
     await resend.emails.send({
-      from: "Shop LolaSelan <noreply@shoplolaselan.uk>",
+      from: "Shop LolasÈlan <noreply@shoplolaselan.uk>",
       to: "contact@shoplolaselan.uk",
       subject: `New Contact Message from ${name}`,
       reply_to: email,

@@ -7,7 +7,7 @@ export default function CookiesPolicy() {
 
       <section>
         <p>
-          At LolasElan, we use cookies to enhance your shopping experience. This
+          At LolasÈlan, we use cookies to enhance your shopping experience. This
           policy explains what cookies are, how we use them, and how you can
           manage them.
         </p>

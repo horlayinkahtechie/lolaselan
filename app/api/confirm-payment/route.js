@@ -84,7 +84,7 @@ export async function POST(req) {
               </p>
               
               <div style="text-align:center; margin-top:30px;">
-                <a href="https://lolaselan.netlify.app/user/profile" 
+                <a href="https://shoplolaselan.uk/user/profile" 
                    style="display:inline-block;background:#ff6f00;color:#fff;padding:12px 24px;text-decoration:none;font-size:16px;border-radius:6px;">
                    View My Orders
                 </a>
@@ -93,7 +93,7 @@ export async function POST(req) {
             
             <!-- Footer -->
             <div style="background:#f4f4f4; padding:15px; text-align:center; font-size:12px; color:#777;">
-              <p style="margin:0;">&copy; ${new Date().getFullYear()} Lola Selan. All rights reserved.</p>
+              <p style="margin:0;">&copy; ${new Date().getFullYear()} LolasÈlan. All rights reserved.</p>
             </div>
           </div>
         </div>
@@ -101,9 +101,9 @@ export async function POST(req) {
 
       // ✅ Send confirmation email
       await resend.emails.send({
-        from: "LolaSelan <lolaselan@shoplolaselan.uk>",
+        from: "LolasÈlan <contact@shoplolaselan.uk>",
         to: email,
-        subject: "Your Lola Selan Order Confirmation",
+        subject: "Your LolasÈlan Order Confirmation",
         html: emailHtml,
       });
 

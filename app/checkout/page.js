@@ -2,22 +2,22 @@ import CheckoutPage from "./checkout";
 import { Suspense } from "react";
 
 export const metadata = {
-  title: "Checkout - Complete Your Order | Lolaselan",
+  title: "Checkout - Complete Your Order | LolasÈlan",
   description:
-    "Securely complete your order on Lolaselan. Review your products, provide shipping details, and pay safely online.",
+    "Securely complete your order on LolasÈlan. Review your products, provide shipping details, and pay safely online.",
   keywords: [
     "Checkout",
     "Online Shopping",
     "Secure Payment",
-    "Lolaselan",
+    "LolasÈlan",
     "Order Summary",
   ],
   openGraph: {
-    title: "Checkout - Complete Your Order | Lolaselan",
+    title: "Checkout - Complete Your Order | LolasÈlan",
     description:
-      "Finalize your purchase securely on Lolaselan. Easy checkout process and multiple payment options available.",
+      "Finalize your purchase securely on LolasÈlan. Easy checkout process and multiple payment options available.",
     url: "https://shoplolaselan.uk/checkout",
-    siteName: "Lolaselan",
+    siteName: "LolasÈlan",
     images: [
       {
         url: "https://shoplolaselan.uk/lolaselan.jpg",
@@ -31,9 +31,9 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Checkout - Complete Your Order | Lolaselan",
+    title: "Checkout - Complete Your Order | LolasÈlan",
     description:
-      "Securely complete your order on Lolaselan. Review your products, provide shipping details, and pay safely online.",
+      "Securely complete your order on LolasÈlan. Review your products, provide shipping details, and pay safely online.",
     images: ["https://shoplolaselan.uk/lolaselan.jpg"],
   },
 };

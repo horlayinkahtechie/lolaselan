@@ -233,7 +233,7 @@ export default function Footer() {
         {/* Copyright */}
         <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
           <p>
-            &copy; {new Date().getFullYear()} Lolaselan. All rights reserved.
+            &copy; {new Date().getFullYear()} LolasÈlan. All rights reserved.
             Designed and Developed by{" "}
             <span>
               <Link href="https://abdulsalamalao.com" className="underline">

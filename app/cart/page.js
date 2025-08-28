@@ -1,28 +1,28 @@
 import Cart from "./cart";
 
 export const metadata = {
-  title: "Shopping Cart - Lolaselan",
+  title: "Shopping Cart - LolasÈlan",
   description:
-    "View your selected items in the Lolaselan shopping cart. Easily update quantities, remove products, and proceed to secure checkout.",
+    "View your selected items in the LolasÈlan shopping cart. Easily update quantities, remove products, and proceed to secure checkout.",
   keywords: [
     "Shopping Cart",
-    "Lolaselan Cart",
+    "LolasÈlan Cart",
     "Online Shopping",
     "Checkout",
     "African Fashion",
   ],
   openGraph: {
-    title: "Shopping Cart - Lolaselan",
+    title: "Shopping Cart - LolasÈlan",
     description:
-      "Manage your selected items and prepare for checkout on Lolaselan. Convenient and secure shopping experience.",
+      "Manage your selected items and prepare for checkout on LolasÈlan. Convenient and secure shopping experience.",
     url: "https://shoplolaselan.uk/cart",
-    siteName: "Lolaselan",
+    siteName: "LolasÈlan",
     images: [
       {
         url: "/lolaselan.jpg",
         width: 1200,
         height: 630,
-        alt: "Lolaselan Shopping Cart",
+        alt: "LolasÈlan Shopping Cart",
       },
     ],
     locale: "en_US",
@@ -30,9 +30,9 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Shopping Cart - Lolaselan",
+    title: "Shopping Cart - LolasÈlan",
     description:
-      "Manage your selected items and prepare for checkout on Lolaselan. Convenient and secure shopping experience.",
+      "Manage your selected items and prepare for checkout on LolasÈlan. Convenient and secure shopping experience.",
     images: ["/lolaselan.jpg"],
   },
 };

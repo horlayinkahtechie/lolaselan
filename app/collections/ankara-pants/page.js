@@ -1,11 +1,11 @@
 import AnkaraPants from "./ankarapants";
 
 export const metadata = {
-  title: "Ankara Pants - Bold & Unique Styles | Lolaselan",
+  title: "Ankara Pants - Bold & Unique Styles | LolasÈlan",
   description:
     "Step out in style with our Ankara pants collection. Bold prints, unique designs, and high-quality tailoring.",
   openGraph: {
-    title: "Ankara Pants - Bold & Unique Styles | Lolaselan",
+    title: "Ankara Pants - Bold & Unique Styles | LolasÈlan",
     description:
       "Shop vibrant Ankara pants for fashion-forward looks. Perfect for events, casual wear, and making bold statements.",
     url: "https://shoplolaselan.uk/collections/ankarapants",

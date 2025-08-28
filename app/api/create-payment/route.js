@@ -26,7 +26,7 @@ export async function POST(req) {
       totalToBePaid: body.totalProductPrice,
       productPrice: body.productPrice,
       name: body.name,
-      image: imagesArray, // ✅ Postgres text[] expects array
+      image: imagesArray,
       quantity: body.quantity,
       status: "pending",
       paymentMethod: "stripe",

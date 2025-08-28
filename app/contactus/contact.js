@@ -53,8 +53,7 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h3 className="font-medium text-lg mb-1">Email Us</h3>
-                      <p className="text-gray-600">hello@lolaselan.com</p>
-                      <p className="text-gray-600">support@lolaselan.com</p>
+                      <p className="text-gray-600">contact@shoplolaselan.uk</p>
                     </div>
                   </div>
 

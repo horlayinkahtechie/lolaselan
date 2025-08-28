@@ -1,9 +1,9 @@
 import Index from "./_components/index";
 
 export const metadata = {
-  title: "Lolaselan | African Women Clothing Store",
+  title: "LolasÈlan | African Women Clothing Store",
   description:
-    "Discover Lolaselan – your destination for elegant African women's clothing. Shop asoebi, ankara, lace, and modern African fashion designed to celebrate beauty and culture.",
+    "Discover LolasÈlan – your destination for elegant African women's clothing. Shop asoebi, ankara, lace, and modern African fashion designed to celebrate beauty and culture.",
   keywords: [
     "African clothing store",
     "African fashion",
@@ -11,7 +11,7 @@ export const metadata = {
     "asoebi dresses",
     "ankara styles",
     "lace gowns",
-    "Lolaselan",
+    "LolasÈlan",
     "African outfits for women",
     "African fashion store",
     "African wear online",
@@ -23,35 +23,35 @@ export const metadata = {
     "Bubu",
     "Adire two piece",
   ],
-  authors: [{ name: "Lolaselan", url: "https://shoplolaselan.uk" }],
-  creator: "Lolaselan",
-  publisher: "Lolaselan",
+  authors: [{ name: "LolasÈlan", url: "https://shoplolaselan.uk" }],
+  creator: "LolasÈlan",
+  publisher: "LolasÈlan",
   metadataBase: new URL("https://shoplolaselan.uk"),
   openGraph: {
-    title: "Lolaselan | African Women Clothing Store",
+    title: "LolasÈlan | African Women Clothing Store",
     description:
-      "Shop stylish African clothing for women. Explore asoebi, ankara, bubu, adire two piece and custom African fashion at Lolaselan.",
+      "Shop stylish African clothing for women. Explore asoebi, ankara, bubu, adire two piece and custom African fashion at LolasÈlan.",
     url: "https://shoplolaselan.uk",
-    siteName: "Lolaselan",
+    siteName: "LolasÈlan",
     images: [
       {
         url: "/lolaselan.jpg",
         width: 1000,
         height: 630,
-        alt: "Lolaselan African Fashion Store",
+        alt: "LolasÈlan African Fashion Store",
       },
     ],
     locale: "en_US",
     type: "website",
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "Lolaselan | African Women Clothing Store",
-    description:
-      "Elevate your wardrobe with African fashion. Shop asoebi, bubu, adire two piece, ankara, lace and more from Lolaselan.",
-    images: ["/lolaselan.jpg"],
-    // creator: "@lolaselan", // replace with your store’s Twitter handle if available
-  },
+  // twitter: {
+  //   card: "summary_large_image",
+  //   title: "Lolaselan | African Women Clothing Store",
+  //   description:
+  //     "Elevate your wardrobe with African fashion. Shop asoebi, bubu, adire two piece, ankara, lace and more from Lolaselan.",
+  //   images: ["/lolaselan.jpg"],
+  //   // creator: "@lolaselan", // replace with your store’s Twitter handle if available
+  // },
   robots: {
     index: true,
     follow: true,

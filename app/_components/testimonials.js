@@ -9,7 +9,7 @@ export default function Testimonials() {
       role: "Loyal Customer",
     },
     {
-      quote: "I get compliments every time I wear my Lolaselan wrap!",
+      quote: "I get compliments every time I wear my LolasÈlan wrap!",
       author: "Ngozi O.",
       role: "Frequent Shopper",
     },
