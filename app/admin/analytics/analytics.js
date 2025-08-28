@@ -11,6 +11,8 @@ import {
 } from "recharts";
 import supabase from "@/app/lib/supabase";
 import AdminSidebar from "@/app/_components/adminSideBar";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function AnalyticsPage() {
   const [revenueData, setRevenueData] = useState([]);
@@ -18,6 +20,16 @@ export default function AnalyticsPage() {
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [totalOrders, setTotalOrders] = useState(0);
   const [loading, setLoading] = useState(true);
+
+  const router = useRouter();
+  const { data: session, status } = useSession();
+
+  useEffect(() => {
+    if (status === "loading") return;
+    if (!session || session.user.role !== "admin") {
+      router.push("/unauthorized");
+    }
+  }, [session, status, router]);
 
   useEffect(() => {
     fetchAnalytics();

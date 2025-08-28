@@ -16,6 +16,8 @@ import {
 import { toast } from "react-hot-toast";
 import Image from "next/image";
 import AdminSidebar from "@/app/_components/adminSideBar";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function AdminRefundsPage() {
   const [refunds, setRefunds] = useState([]);
@@ -27,11 +29,21 @@ export default function AdminRefundsPage() {
   // Pagination state
   const [page, setPage] = useState(1);
   const [totalRefunds, setTotalRefunds] = useState(0);
-  const limit = 5; // Refunds per page
+  const limit = 5;
 
   useEffect(() => {
     fetchRefunds();
   }, [page]);
+
+  const router = useRouter();
+  const { data: session, status } = useSession();
+
+  useEffect(() => {
+    if (status === "loading") return;
+    if (!session || session.user.role !== "admin") {
+      router.push("/unauthorized");
+    }
+  }, [session, status, router]);
 
   const fetchRefunds = async () => {
     setLoading(true);

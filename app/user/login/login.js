@@ -1,5 +1,4 @@
 "use client";
-
 import { signIn, useSession } from "next-auth/react";
 import { FcGoogle } from "react-icons/fc";
 import { useEffect } from "react";

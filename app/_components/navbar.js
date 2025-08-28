@@ -1,11 +1,11 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Cinzel_Decorative } from "next/font/google";
 import { FiMail } from "react-icons/fi";
 import NewsletterModal from "./subscriptionModal";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import CartCount from "./cartCount";
 
 const cinzelDecorative = Cinzel_Decorative({
