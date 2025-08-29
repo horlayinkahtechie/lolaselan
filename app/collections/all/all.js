@@ -196,7 +196,7 @@ export default function AllProducts() {
                         gender={product.gender}
                         fabric={product.fabric}
                         isNew={product.isNew}
-                        image={product.image[0]}
+                        image={product.image}
                       />
                     </div>
 
@@ -255,7 +255,7 @@ export default function AllProducts() {
                               gender={product.gender}
                               fabric={product.fabric}
                               isNew={product.isNew}
-                              image={product.image[0]}
+                              image={product.image}
                             />
                             <Buy product={product} />
                           </>

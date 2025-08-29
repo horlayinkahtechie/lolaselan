@@ -116,6 +116,7 @@ export default function AdireTwoPiece() {
                     </div>
                   )}
                 </div>
+
                 <AddToFavorite
                   id={product.id}
                   name={product.name}
@@ -125,7 +126,7 @@ export default function AdireTwoPiece() {
                   gender={product.gender}
                   fabric={product.fabric}
                   isNew={product.isNew}
-                  image={product.image[0]}
+                  image={product.image}
                 />
               </div>
 
@@ -182,7 +183,7 @@ export default function AdireTwoPiece() {
                         gender={product.gender}
                         fabric={product.fabric}
                         isNew={product.isNew}
-                        image={product.image[0]}
+                        image={product.image}
                       />
                       <Buy product={product} />
                     </>
