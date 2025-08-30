@@ -47,7 +47,7 @@ export default function FAQPage() {
     {
       question: "How long does shipping take?",
       answer:
-        "Standard shipping: 2-4 working days on orders processed before 12pm GMT <br> Next Day shipping: Typically take 1-2 working days on orders processed before 12pm GMT, depending on the destination and customs processing times. <br> USA & Canada: 5-7 working days on orders processed before 12pm GMT ",
+        "Standard shipping: 2-4 working days on orders processed before 12pm GMT. Next Day shipping typically take 1-2 working days on orders processed before 12pm GMT, depending on the destination and customs processing times. USA & Canada: 5-7 working days on orders processed before 12pm GMT ",
     },
     {
       question: "How do I track my order?",
@@ -60,17 +60,17 @@ export default function FAQPage() {
     {
       question: "Do you offer refunds?",
       answer:
-        "We do not offer cash refunds. However, if you're not completely satisfied with your purchase, we're happy to issue a brand voucher (store credit) for future use.",
+        "Yes, we do offer refunds given that the refund is initiated within 14 days.",
     },
     {
       question: "How do I return an Item?",
       answer:
-        "For return requests, contact us via email at contact@shoplolaselan.uk within 7 days of receiving your order. Returned items must be in their original condition; unworn, unwashed, and with all tags attached. All returns will undergo a thorough inspection before a brand voucher is issued. Please note: The buyer is responsible for the return shipping cost. ",
+        "For return requests, contact us via email at contact@shoplolaselan.uk within 14 days of receiving your order. Returned items must be in their original condition; unworn, unwashed, and with all tags attached. All returns will undergo a thorough inspection before a brand voucher is issued. Please note: The buyer is responsible for the return shipping cost. ",
     },
     {
       question: "Can I exchange an item for a different color?",
       answer:
-        "Exchanges depend on availability. If you'd like to request one, please contact us via email at contact@shoplolaselan.uk within 7 days of receiving your item. If the item is in stock, we'll help you exchange it, otherwise, we'll issue a brand voucher. ",
+        "Exchanges depend on availability. If you'd like to request one, please contact us via email at contact@shoplolaselan.uk within 14 days of receiving your item. If the item is in stock, we'll help you exchange it, otherwise, we'll issue a brand voucher. ",
     },
     {
       question: "What if I received a faulty or incorrect item?",

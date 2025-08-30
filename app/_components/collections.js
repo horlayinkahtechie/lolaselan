@@ -10,20 +10,20 @@ export default function FeaturedCollections() {
     {
       title: "Ankara pants",
       image:
-        "https://i.pinimg.com/1200x/a2/48/73/a248732874518524f902016a42b8d219.jpg",
+        "https://i.pinimg.com/736x/a1/98/6c/a1986c697e8ad173c4591df9dac2deae.jpg",
       link: "/collections/ankara-pants",
     },
     {
       title: "Adire two piece",
       image:
-        "https://i.pinimg.com/1200x/c4/c9/7e/c4c97e79a86100fa678ee208f9914a8c.jpg",
+        "https://i.pinimg.com/1200x/1f/79/68/1f79682c09b6e53f8869a24d1f7ec710.jpg",
       link: "/collections/adire-two-piece",
     },
 
     {
       title: "Bubu",
       image:
-        "https://i.pinimg.com/1200x/be/ba/78/beba78d0d610c4d9f7c47574ac78826f.jpg",
+        "https://i.pinimg.com/1200x/8b/7d/70/8b7d701835f4a5b1bd3d883a1ac1b520.jpg",
       link: "/collections/bubu",
     },
     {

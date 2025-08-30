@@ -104,16 +104,6 @@ export default function AboutPage() {
                   role: "Developer",
                   image: "/team-amina.jpg",
                 },
-                {
-                  name: "Kwame Asante",
-                  role: "Production Manager",
-                  image: "/team-kwame.jpg",
-                },
-                {
-                  name: "Zara Ndiaye",
-                  role: "Customer Experience",
-                  image: "/team-zara.jpg",
-                },
               ].map((member, index) => (
                 <div key={index} className="text-center">
                   <div className="bg-gray-100 h-64 rounded-full mx-auto mb-4 flex items-center justify-center">
