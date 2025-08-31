@@ -143,6 +143,12 @@ export default function CheckoutPage() {
     }
   };
 
+  useEffect(() => {
+    if (showCheckoutForm) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [showCheckoutForm]);
+
   // Handle shipping method change
   const handleShippingChange = (method) => {
     const selectedOption = shippingOptions.find((opt) => opt.id === method);
@@ -428,7 +434,10 @@ export default function CheckoutPage() {
             {/* ✅ Fixed button only on mobile */}
             <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 z-50">
               <button
-                onClick={() => setShowCheckoutForm(true)}
+                onClick={() => {
+                  setShowCheckoutForm(true);
+                  window.scrollTo({ top: 0, behavior: "smooth" }); // 👈 Add this
+                }}
                 className="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center"
               >
                 <FiShoppingBag className="mr-2" />

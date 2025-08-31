@@ -58,6 +58,10 @@ const CheckoutPage = () => {
     shippingMethod: shippingOptions[0].id,
   });
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Form errors
   const [formErrors, setFormErrors] = useState({});
 
