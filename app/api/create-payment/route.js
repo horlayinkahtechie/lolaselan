@@ -41,7 +41,7 @@ export async function POST(req) {
     if (dbError) throw dbError;
 
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card", "klarna", "afterpay_clearpay"],
+      payment_method_types: ["card", "paypal", "klarna", "afterpay_clearpay"],
       mode: "payment",
       customer_email: body.email,
       line_items: [

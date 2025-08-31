@@ -82,7 +82,7 @@ export async function POST(req) {
 
     // Create Stripe checkout session with multiple payment options
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card", "klarna", "afterpay_clearpay"],
+      payment_method_types: ["card", "paypal", "klarna", "afterpay_clearpay"],
       mode: "payment",
       line_items: stripeLineItems,
       customer_email: body.email,
