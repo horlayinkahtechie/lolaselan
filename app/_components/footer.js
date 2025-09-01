@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useState } from "react";
 import supabase from "../lib/supabase";
 import toast from "react-hot-toast";
+import { FaTiktok } from "react-icons/fa";
 
 export default function Footer() {
   const footerLinks = [
@@ -170,10 +171,6 @@ export default function Footer() {
           {/* Contact Info */}
           <div className="space-y-4">
             <h4 className="text-lg font-semibold">Contact Us</h4>
-            <div className="flex items-start space-x-3">
-              <FiMapPin className="mt-1 flex-shrink-0" />
-              <p>123 Fashion Avenue, London, UK</p>
-            </div>
             <div className="flex items-center space-x-3">
               <FiPhone />
               <p>+44 7401 439 257</p>
@@ -194,13 +191,12 @@ export default function Footer() {
                   name: "Instagram",
                   link: "https://www.instagram.com/lolaselan?igsh=MXRpamw3bHFnMmY5eA%3D%3D&utm_source=qr",
                 },
-                { icon: FiFacebook, name: "Facebook" },
+
                 {
-                  icon: FiTwitter,
+                  icon: FaTiktok,
                   name: "TikTok",
                   link: "https://www.tiktok.com/@lolaselan?_t=ZN-8yxc22lltuA&_r=1",
                 },
-                { icon: FiYoutube, name: "YouTube" },
               ].map((social) => (
                 <a
                   key={social.name}

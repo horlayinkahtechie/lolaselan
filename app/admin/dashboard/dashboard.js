@@ -14,7 +14,6 @@ import {
   FiClock,
   FiCheckCircle,
 } from "react-icons/fi";
-import { FaTshirt } from "react-icons/fa";
 import supabase from "@/app/lib/supabase";
 import AdminSideBar from "@/app/_components/adminSideBar";
 import { useSession } from "next-auth/react";

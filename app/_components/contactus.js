@@ -15,6 +15,7 @@ import { FiYoutube } from "react-icons/fi";
 
 import { useState } from "react";
 import Link from "next/link";
+import { FaTiktok } from "react-icons/fa";
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
@@ -118,17 +119,6 @@ export default function ContactSection() {
               </div>
             </div>
 
-            <div className="flex items-start space-x-4">
-              <div className="bg-primary/10 p-3 rounded-full text-primary">
-                <FiMapPin className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="font-medium text-lg mb-1">Visit Us</h3>
-                <p className="text-gray-600">123 Fashion Avenue</p>
-                <p className="text-gray-600">London, UK</p>
-              </div>
-            </div>
-
             <div className="pt-4">
               <h3 className="font-medium text-lg mb-4">Follow Us</h3>
               <div className="flex space-x-4">
@@ -145,21 +135,7 @@ export default function ContactSection() {
                   className="bg-white p-3 rounded-full shadow-sm hover:bg-primary/10 hover:text-primary transition-colors"
                   aria-label={`Follow on X`}
                 >
-                  <FiTwitter className="h-6 w-6" />
-                </a>
-                <a
-                  href="#"
-                  className="bg-white p-3 rounded-full shadow-sm hover:bg-primary/10 hover:text-primary transition-colors"
-                  aria-label={`Follow on YouTube`}
-                >
-                  <FiYoutube className="h-6 w-6" />
-                </a>
-                <a
-                  href="#"
-                  className="bg-white p-3 rounded-full shadow-sm hover:bg-primary/10 hover:text-primary transition-colors"
-                  aria-label={`Follow on Facebook`}
-                >
-                  <FiFacebook className="h-6 w-6" />
+                  <FaTiktok className="h-6 w-6" />
                 </a>
               </div>
             </div>
