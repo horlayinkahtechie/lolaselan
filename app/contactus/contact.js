@@ -1,28 +1,7 @@
 "use client";
-import { useState } from "react";
-import { FiMail, FiPhone, FiMapPin, FiSend } from "react-icons/fi";
 import ContactSection from "../_components/contactus";
 
 export default function ContactPage() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
-  });
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle form submission
-    console.log("Form submitted:", formData);
-  };
-
   return (
     <>
       {/* Hero Section */}

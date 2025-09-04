@@ -146,20 +146,24 @@ export default function Subscribers() {
 
     setIsSending(true);
     try {
-      // Determine recipients
       const recipients =
         emailContent.recipients === "all"
           ? subscribers.map((sub) => sub.email)
           : emailContent.selectedEmails;
 
-      // In a real app, you would call your email API here
-      // This is just a simulation
-      console.log("Sending email to:", recipients);
-      console.log("Subject:", emailContent.subject);
-      console.log("Message:", emailContent.message);
+      const res = await fetch("/api/send-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          subject: emailContent.subject,
+          message: emailContent.message,
+          recipients,
+        }),
+      });
 
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const result = await res.json();
+
+      if (!res.ok) throw new Error(result.error || "Failed to send email");
 
       toast.success(
         `Email sent successfully to ${recipients.length} subscribers!`
