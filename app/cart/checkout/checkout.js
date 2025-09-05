@@ -32,14 +32,14 @@ const CheckoutPage = () => {
     {
       id: "standard",
       name: "Standard Delivery",
-      price: 2.62,
+      price: 3.99,
       description: "2-4 working days",
       icon: <FiTruck className="text-amber-600" />,
     },
     {
       id: "next-day",
       name: "Next Day Delivery",
-      price: 3.2,
+      price: 4.99,
       description: "Next working day",
       icon: <FiTruck className="text-amber-600" />,
     },

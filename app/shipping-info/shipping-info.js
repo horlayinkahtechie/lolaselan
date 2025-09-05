@@ -50,13 +50,13 @@ export default function ShippingInfo() {
             <tr>
               <td className="py-2 px-4">Standard</td>
               <td className="py-2 px-4">2-4 Working Days</td>
-              <td className="py-2 px-4">£2.62</td>
+              <td className="py-2 px-4">£3.99</td>
             </tr>
 
             <tr>
               <td className="py-2 px-4">Next-Day</td>
-              <td className="py-2 px-4">Same Day</td>
-              <td className="py-2 px-4">£3.20</td>
+              <td className="py-2 px-4">Next Working Day</td>
+              <td className="py-2 px-4">£4.99</td>
             </tr>
           </tbody>
         </table>

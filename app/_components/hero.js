@@ -22,9 +22,24 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="relative h-screen max-h-[900px] min-h-[600px] w-full bg-gradient-to-br from-[#7B2D26] via-[#9C3E2D] to-[#C0552C] overflow-hidden flex items-center justify-center">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden">
+    <section className="relative h-screen max-h-[900px] min-h-[600px] w-full overflow-hidden flex items-center justify-center">
+      {/* Background Video */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover"
+      >
+        <source src="/lolaselan's hero.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+
+      {/* Dark overlay for better text contrast */}
+      <div className="absolute inset-0 bg-black/40"></div>
+
+      {/* Optional floating circles (kept from your design) */}
+      <div className="absolute inset-0 overflow-hidden z-0">
         <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-[#9C3E2D] opacity-20 animate-float"></div>
         <div className="absolute -left-40 bottom-0 w-96 h-96 rounded-full bg-[#7B2D26] opacity-15 animate-float animation-delay-2000"></div>
       </div>
