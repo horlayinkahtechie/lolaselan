@@ -32,8 +32,8 @@ export default function AdireTwoPiece() {
         if (error) throw error;
         setProducts(data || []);
       } catch (err) {
-        console.error("Error fetching Ankara pants:", err);
-        setError("Failed to load Ankara pants");
+        console.error("Error fetching pants:", err);
+        setError("Failed to load pants");
       } finally {
         setLoading(false);
       }
@@ -70,11 +70,12 @@ export default function AdireTwoPiece() {
   return (
     <>
       <h2 className="lg:text-3xl text-2xl font-playfair font-bold flex items-center lg:pt-50 lg:p-5 pt-35 p-2">
-        <FiZap className="mr-2 text-black" /> Ankara pants
+        <FiZap className="mr-2 text-black" />
+        Pants
       </h2>
       {products.length === 0 ? (
         <div className="p-5 text-center text-gray-500">
-          No Ankara pants products found. Please check back later.
+          No Pants products found. Please check back later.
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-4 lg:pt-10 lg:pb-20 lg:p-5 pb-10 p-2 pt-5">
