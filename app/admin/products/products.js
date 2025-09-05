@@ -153,7 +153,7 @@ export default function Products() {
         gender: "",
         fabric: "",
         status: "available",
-        isNew: false,
+        isNew: true,
         image: [],
         product_description: "",
         care_instruction: "",

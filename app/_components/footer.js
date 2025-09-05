@@ -23,7 +23,7 @@ export default function Footer() {
         { name: "Collections", href: "/collections/collections" },
         { name: "Adire two pieces", href: "/collections/adire-two-piece" },
         { name: "Aso Oke", href: "/collections/aso-oke-skirts" },
-        { name: "Bottoms", href: "/collections/ankara-pants" },
+        { name: "Pants", href: "/collections/pants" },
       ],
     },
     {

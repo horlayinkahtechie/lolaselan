@@ -8,22 +8,19 @@ export default function FeaturedCollections() {
   const scrollContainerRef = useRef(null);
   const collections = [
     {
-      title: "Ankara pants",
-      image:
-        "https://i.pinimg.com/736x/a1/98/6c/a1986c697e8ad173c4591df9dac2deae.jpg",
-      link: "/collections/ankara-pants",
+      title: "Pants",
+      image: "/pants.jpg",
+      link: "/collections/pants",
     },
     {
       title: "Adire two piece",
-      image:
-        "https://i.pinimg.com/1200x/1f/79/68/1f79682c09b6e53f8869a24d1f7ec710.jpg",
+      image: "/adire-two-piece.jpg",
       link: "/collections/adire-two-piece",
     },
 
     {
       title: "Bubu",
-      image:
-        "https://i.pinimg.com/1200x/8b/7d/70/8b7d701835f4a5b1bd3d883a1ac1b520.jpg",
+      image: "/bubu.jpg",
       link: "/collections/bubu",
     },
     {

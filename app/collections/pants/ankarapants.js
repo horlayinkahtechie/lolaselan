@@ -26,7 +26,7 @@ export default function AdireTwoPiece() {
         const { data, error } = await supabase
           .from("products")
           .select("*")
-          .ilike("id", "%ANKARAPANTS%")
+          .ilike("id", "%PANT%")
           .order("created_at", { ascending: false });
 
         if (error) throw error;
