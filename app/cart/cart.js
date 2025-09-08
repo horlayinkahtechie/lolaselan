@@ -259,7 +259,7 @@ export default function CartPage() {
         </h2>
         <p className="text-gray-600 mb-6">Please log in to view your cart</p>
         <Link
-          href="/auth/signin"
+          href="/user/login"
           className="px-6 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors"
         >
           Sign In

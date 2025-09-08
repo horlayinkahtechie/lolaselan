@@ -35,7 +35,7 @@ export default function ProfilePage() {
             Please log in to view your profile.
           </p>
           <Link
-            href="/auth/signin"
+            href="/user/login"
             className="px-6 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors inline-flex items-center"
           >
             Sign In

@@ -295,7 +295,7 @@ const CheckoutPage = () => {
             Please sign in to proceed with your checkout
           </p>
           <Link
-            href="/auth/signin"
+            href="/user/login"
             className="inline-flex items-center px-6 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors"
           >
             Sign In
