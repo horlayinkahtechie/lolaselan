@@ -321,55 +321,45 @@ export default function CheckoutPage() {
                   <div>
                     <h2 className="text-xl font-semibold mb-2">Size Guide</h2>
                     <div className="overflow-x-auto">
-                      <table className="min-w-full text-sm border-collapse">
+                      <table className="min-w-full text-sm border-collapse text-center">
                         <thead>
                           <tr className="border-b">
                             <th className="text-left py-2">Category</th>
-                            <th className="text-left py-2">UK Size</th>
-                            <th className="text-left py-2">Bust (Inches)</th>
-                            <th className="text-left py-2">Waist (Inches)</th>
-                            <th className="text-left py-2">Hips (Inches)</th>
+                            <th className="py-2">Small (S)</th>
+                            <th className="py-2">Medium (M)</th>
+                            <th className="py-2">Large (L)</th>
+                            <th className="py-2">Extra Large (XL)</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {[
-                            {
-                              category: "S",
-                              uk: "6-8",
-                              bust: "31.5-33",
-                              waist: "24.5-25.5",
-                              hips: "34-36",
-                            },
-                            {
-                              category: "M",
-                              uk: "10-12",
-                              bust: "35-37",
-                              waist: "27.5-29.5",
-                              hips: "38-40",
-                            },
-                            {
-                              category: "L",
-                              uk: "14-16",
-                              bust: "39-41",
-                              waist: "31.5-33.5",
-                              hips: "42-44",
-                            },
-                            {
-                              category: "XL",
-                              uk: "18",
-                              bust: "43",
-                              waist: "36",
-                              hips: "46",
-                            },
-                          ].map((row) => (
-                            <tr key={row.category} className="border-b">
-                              <td className="py-2">{row.category}</td>
-                              <td className="py-2">{row.uk}</td>
-                              <td className="py-2">{row.bust}</td>
-                              <td className="py-2">{row.waist}</td>
-                              <td className="py-2">{row.hips}</td>
-                            </tr>
-                          ))}
+                          <tr className="border-b">
+                            <td className="text-left py-2">UK Size</td>
+                            <td className="py-2">6-8</td>
+                            <td className="py-2">10-12</td>
+                            <td className="py-2">14-16</td>
+                            <td className="py-2">18</td>
+                          </tr>
+                          <tr className="border-b">
+                            <td className="text-left py-2">Bust (Inches)</td>
+                            <td className="py-2">31.5-33</td>
+                            <td className="py-2">35-37</td>
+                            <td className="py-2">39-41</td>
+                            <td className="py-2">43</td>
+                          </tr>
+                          <tr className="border-b">
+                            <td className="text-left py-2">Waist (Inches)</td>
+                            <td className="py-2">24.5-25.5</td>
+                            <td className="py-2">27.5-29.5</td>
+                            <td className="py-2">31.5-33.5</td>
+                            <td className="py-2">36</td>
+                          </tr>
+                          <tr>
+                            <td className="text-left py-2">Hips (Inches)</td>
+                            <td className="py-2">34-36</td>
+                            <td className="py-2">38-40</td>
+                            <td className="py-2">42-44</td>
+                            <td className="py-2">46</td>
+                          </tr>
                         </tbody>
                       </table>
                     </div>
