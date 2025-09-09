@@ -44,23 +44,6 @@ export default function OrderDeclined() {
 
                 {/* CTA Buttons */}
                 <div className="flex flex-col sm:flex-row gap-4 w-full max-w-sm">
-                  <Link href="/checkout" className="flex-1">
-                    <button className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-300 flex items-center justify-center">
-                      Try Payment Again
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 ml-2"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </button>
-                  </Link>
                   <Link href="/collections/all" className="flex-1">
                     <button className="w-full bg-white hover:bg-gray-50 text-gray-800 font-medium py-3 px-6 rounded-lg border border-gray-300 transition-all duration-300 flex items-center justify-center">
                       <FaShoppingBag className="mr-2 text-amber-600" />
@@ -75,13 +58,13 @@ export default function OrderDeclined() {
             <div className="bg-gray-50 px-8 py-6 border-t border-gray-200">
               <p className="text-center text-sm text-gray-500">
                 Need help?{" "}
-                <a
-                  href="#"
+                <Link
+                  href="/contactus"
                   className="text-red-600 hover:text-red-700 font-medium"
                 >
                   Contact support
-                </a>{" "}
-                or call (123) 456-7890
+                </Link>{" "}
+                or call +44 7401 439 257
               </p>
             </div>
           </div>

@@ -73,7 +73,7 @@ export default function PaymentSuccessPage() {
                       </svg>
                     </button>
                   </Link>
-                  <Link href="/profile/orders" className="flex-1">
+                  <Link href="/user/profile" className="flex-1">
                     <button className="w-full bg-white hover:bg-gray-50 text-gray-800 font-medium py-3 px-6 rounded-lg border border-gray-300 transition-all duration-300">
                       View Order Details
                     </button>
@@ -85,13 +85,13 @@ export default function PaymentSuccessPage() {
             <div className="bg-gray-50 px-8 py-6 border-t border-gray-200">
               <p className="text-center text-sm text-gray-500">
                 Need help?{" "}
-                <a
-                  href="#"
+                <Link
+                  href="/contactus"
                   className="text-amber-600 hover:text-amber-700 font-medium"
                 >
                   Contact support
-                </a>{" "}
-                or call (123) 456-7890
+                </Link>{" "}
+                or call +44 7401 439 257
               </p>
             </div>
           </div>
@@ -120,8 +120,6 @@ export default function PaymentSuccessPage() {
                   Delivery on the way{" "}
                 </h3>{" "}
                 <p className="mt-1 text-gray-600">
-                  Your order will arrive by{" "}
-                  <span className="font-medium">To be calculated</span>.
                   We&apos;ll send tracking information when your items
                   ship.{" "}
                 </p>{" "}

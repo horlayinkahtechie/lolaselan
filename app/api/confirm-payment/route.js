@@ -57,7 +57,7 @@ export async function POST(req) {
             
             <!-- Header -->
             <div style="background:#ff6f00; padding:20px; text-align:center;">
-              <h1 style="margin:0; color:#fff;">Lola Selan</h1>
+              <h1 style="margin:0; color:#fff;">LolasÈlan</h1>
             </div>
             
             <!-- Body -->
