@@ -30,16 +30,6 @@ export default function Buy({ product }) {
       const params = new URLSearchParams({
         order_id: generateOrderId(),
         id: product.id,
-        name: product.name,
-        category: product.category,
-        price: product.price,
-        size: JSON.stringify(product.size),
-        gender: product.gender,
-        fabric: product.fabric,
-        isNew: product.isNew,
-        image: product.image,
-        product_description: product.product_description,
-        care_instruction: product.care_instruction,
       });
 
       router.push(`/checkout?${params.toString()}`);

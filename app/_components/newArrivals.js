@@ -179,6 +179,7 @@ export default function NewArrivals() {
                       src={product.image[0]}
                       fill
                       alt="Product image"
+                      quality={60}
                       priority
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

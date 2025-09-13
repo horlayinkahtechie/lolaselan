@@ -18,6 +18,7 @@ import { useSession } from "next-auth/react";
 import supabase from "@/app/lib/supabase";
 import Image from "next/image";
 import toast from "react-hot-toast";
+import imageCompression from "browser-image-compression";
 
 export default function Products() {
   const router = useRouter();
@@ -267,7 +268,15 @@ export default function Products() {
   const handleImageUpload = async (e, formType) => {
     const files = Array.from(e.target.files);
 
-    if (files.length > 3) {
+    // Allow only images
+    const validTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
+    const invalidFile = files.find((file) => !validTypes.includes(file.type));
+    if (invalidFile) {
+      toast.error("Only JPG, JPEG, PNG, and WEBP images are allowed");
+      return;
+    }
+
+    if (files.length > 4) {
       toast.error("You can upload a maximum of 4 images");
       return;
     }
@@ -276,15 +285,27 @@ export default function Products() {
       const uploadedUrls = [];
 
       for (const file of files) {
-        const fileExt = file.name.split(".").pop();
-        const fileName = `${Date.now()}-${Math.random()}.${fileExt}`;
-        const { data, error } = await supabase.storage
+        // ✅ Compress & convert to WebP
+        const compressedFile = await imageCompression(file, {
+          maxSizeMB: 1, // target max 1MB
+          maxWidthOrHeight: 1200, // resize to max 1200px
+          fileType: "image/webp", // force conversion
+        });
+
+        // ✅ Always use .webp extension
+        const fileName = `${Date.now()}-${Math.random()
+          .toString(36)
+          .slice(2)}.webp`;
+
+        // ✅ Upload with correct MIME type
+        const { error: uploadError } = await supabase.storage
           .from("product-bucket")
-          .upload(fileName, file);
+          .upload(fileName, compressedFile, {
+            contentType: "image/webp",
+          });
 
-        if (error) throw error;
+        if (uploadError) throw uploadError;
 
-        // Get public URL
         const { data: publicUrl } = supabase.storage
           .from("product-bucket")
           .getPublicUrl(fileName);
@@ -292,19 +313,18 @@ export default function Products() {
         uploadedUrls.push(publicUrl.publicUrl);
       }
 
+      const updateImages = (prev, urls) => ({
+        ...prev,
+        image: [...prev.image, ...urls].slice(0, 4),
+      });
+
       if (formType === "add") {
-        const newImages = [...newProduct.image, ...uploadedUrls].slice(0, 4);
-        setNewProduct((prev) => ({
-          ...prev,
-          image: newImages,
-        }));
+        setNewProduct((prev) => updateImages(prev, uploadedUrls));
       } else {
-        const newImages = [...editProduct.image, ...uploadedUrls].slice(0, 4);
-        setEditProduct((prev) => ({
-          ...prev,
-          image: newImages,
-        }));
+        setEditProduct((prev) => updateImages(prev, uploadedUrls));
       }
+
+      toast.success("Images uploaded & optimized successfully");
     } catch (err) {
       console.error(err);
       toast.error("Image upload failed");
@@ -639,9 +659,8 @@ export default function Products() {
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Product Description
                     </label>
-                    <input
-                      type="text"
-                      className="w-full px-4 py-2 border h-28 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200"
+                    <textarea
+                      className="w-full px-4 py-2 border h-28 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 resize-none overflow-y-auto"
                       value={newProduct.product_description}
                       onChange={(e) =>
                         setNewProduct({
@@ -652,13 +671,13 @@ export default function Products() {
                       required
                     />
                   </div>
+
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Care instruction
+                      Care Instruction
                     </label>
-                    <input
-                      type="text"
-                      className="w-full px-4 py-2 border h-28 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200"
+                    <textarea
+                      className="w-full px-4 py-2 border h-28 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 resize-none overflow-y-auto"
                       value={newProduct.care_instruction}
                       onChange={(e) =>
                         setNewProduct({
@@ -669,6 +688,7 @@ export default function Products() {
                       required
                     />
                   </div>
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Price ($)

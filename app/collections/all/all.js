@@ -21,9 +21,9 @@ import supabase from "@/app/lib/supabase";
 export default function AllProducts() {
   const scrollContainerRef = useRef(null);
   const [products, setProducts] = useState({
-    adireTwoPiece: [],
+    twoPiece: [],
     pants: [],
-    asoOkeskirt: [],
+    dresses: [],
     bubu: [],
   });
   const [loading, setLoading] = useState(true);
@@ -36,15 +36,15 @@ export default function AllProducts() {
 
         // Fetch all product categories in parallel
         const [
-          { data: adireTwoPiece },
+          { data: twoPiece },
           { data: pants },
-          { data: asoOkeskirt },
+          { data: dresses },
           { data: bubu },
         ] = await Promise.all([
           supabase
             .from("products")
             .select("*")
-            .ilike("id", "%ADIRETWOPIECES%")
+            .ilike("id", "%TWOPIECES%")
             .order("created_at", { ascending: false }),
 
           supabase
@@ -55,7 +55,7 @@ export default function AllProducts() {
           supabase
             .from("products")
             .select("*")
-            .ilike("id", "%ASOOKESKIRT%")
+            .ilike("id", "%DRESSES%")
             .order("created_at", { ascending: false }),
           supabase
             .from("products")
@@ -65,9 +65,9 @@ export default function AllProducts() {
         ]);
 
         setProducts({
-          adireTwoPiece: adireTwoPiece || [],
+          twoPiece: twoPiece || [],
           pants: pants || [],
-          asoOkeskirt: asoOkeskirt || [],
+          dresses: dresses || [],
           bubu: bubu || [],
         });
       } catch (err) {
@@ -290,17 +290,9 @@ export default function AllProducts() {
 
   return (
     <>
-      {renderProductSection(
-        "Adire Two Piece",
-        products.adireTwoPiece,
-        "adire-two-piece"
-      )}
+      {renderProductSection("Two Piece", products.twoPiece, "two-piece")}
       {renderProductSection("Pants", products.pants, "pants")}
-      {renderProductSection(
-        "Aso Oke Skirts",
-        products.asoOkeskirt,
-        "aso-oke-skirts"
-      )}
+      {renderProductSection("Dresses", products.asoOkeskirt, "dresses")}
       {renderProductSection("Bubu", products.bubu, "bubu")}
     </>
   );

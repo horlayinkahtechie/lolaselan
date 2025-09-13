@@ -13,9 +13,9 @@ export default function FeaturedCollections() {
       link: "/collections/pants",
     },
     {
-      title: "Adire two piece",
+      title: "Two piece",
       image: "/adire-two-piece.jpg",
-      link: "/collections/adire-two-piece",
+      link: "/collections/two-piece",
     },
 
     {
@@ -24,10 +24,10 @@ export default function FeaturedCollections() {
       link: "/collections/bubu",
     },
     {
-      title: "Aso oke skirt",
+      title: "Dresses",
       image:
         "https://i.pinimg.com/736x/a7/2f/71/a72f714d7fe36fafac72a61ee1c769f1.jpg",
-      link: "/collections/aso-oke-skirts",
+      link: "/collections/dresses",
     },
   ];
 

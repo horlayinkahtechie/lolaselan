@@ -16,6 +16,13 @@ import Link from "next/link";
 import { loadStripe } from "@stripe/stripe-js";
 import toast from "react-hot-toast";
 import SizeGuide from "../_components/sizeguide";
+import { createClient } from "@supabase/supabase-js";
+
+// Initialize Supabase
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);
 
 export default function CheckoutPage() {
   const { data: session } = useSession();
@@ -24,19 +31,28 @@ export default function CheckoutPage() {
   );
   const searchParams = useSearchParams();
 
-  // Product data from URL params
+  // Product data
   const order_id = searchParams.get("order_id") || "";
   const id = searchParams.get("id") || "";
-  const name = searchParams.get("name") || "";
-  const category = searchParams.get("category") || "";
-  const price = searchParams.get("price") || "";
-  const size = searchParams.get("size") || "";
-  const gender = searchParams.get("gender") || "";
-  const fabric = searchParams.get("fabric") || "";
-  const isNew = searchParams.get("isNew") || "";
-  const image = searchParams.get("image");
-  const product_description = searchParams.get("product_description") || "";
-  const care_instruction = searchParams.get("care_instruction");
+  const [product, setProduct] = useState(null);
+
+  useEffect(() => {
+    const fetchProductDetails = async () => {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (error) {
+        console.error("Error fetching product:", error.message);
+      } else {
+        setProduct(data);
+      }
+    };
+
+    if (id) fetchProductDetails();
+  }, [id]);
 
   const [showCheckoutForm, setShowCheckoutForm] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
@@ -76,10 +92,9 @@ export default function CheckoutPage() {
     quantity: 1,
   });
 
-  // Form errors
   const [formErrors, setFormErrors] = useState({});
 
-  // Validate form
+  // ✅ Validate form
   const validateDeliveryForm = () => {
     const errors = {};
     let isValid = true;
@@ -131,7 +146,7 @@ export default function CheckoutPage() {
     return isValid;
   };
 
-  // Handle input changes
+  // ✅ Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -150,7 +165,7 @@ export default function CheckoutPage() {
     }
   }, [showCheckoutForm]);
 
-  // Handle shipping method change
+  // ✅ Handle shipping method
   const handleShippingChange = (method) => {
     const selectedOption = shippingOptions.find((opt) => opt.id === method);
     setFormData((prev) => ({
@@ -160,7 +175,7 @@ export default function CheckoutPage() {
     }));
   };
 
-  // Handle buy now
+  // ✅ Handle buy now
   const handleBuyNow = async () => {
     if (!session || !session.user?.email) {
       toast.error("Please sign in to place an order");
@@ -189,21 +204,11 @@ export default function CheckoutPage() {
           product_id: id,
           order_id: order_id,
           email: session.user.email,
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          address: formData.address,
-          city: formData.city,
-          postalCode: formData.postCode,
-          country: formData.country,
-          size: formData.selectedSize,
-          quantity: formData.quantity,
-          shippingMethod: formData.shippingMethod,
-          productPrice: price,
+          ...formData,
+          productPrice: product.price,
           totalProductPrice: total.toFixed(2),
-          name: name,
-          image: image,
-          shippingPrice: formData.shipping,
-          phoneNo: formData.phoneNo,
+          name: product.name,
+          image: product.image,
         }),
       });
 
@@ -222,19 +227,6 @@ export default function CheckoutPage() {
       setLoading(false);
     }
   };
-
-  // Calculate totals
-  const numericPrice = parseFloat(price) || 0;
-  const numericQuantity = parseInt(formData.quantity) || 1;
-  const numericShipping = parseFloat(formData.shipping) || 0;
-  const subtotal = numericPrice * numericQuantity;
-  const fixedSubTotal = subtotal.toFixed(2);
-  const total = subtotal + numericShipping;
-  const fixedTotal = total.toFixed(2);
-
-  // Available sizes and quantities
-  const sizes = size.split(",").map((s) => s.trim());
-  const quantities = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -259,33 +251,55 @@ export default function CheckoutPage() {
     );
   }
 
+  if (!product) {
+    return <p className="p-6 text-gray-500">Loading product...</p>;
+  }
+
+  // ✅ Totals
+  const numericPrice = parseFloat(product.price) || 0;
+  const numericQuantity = parseInt(formData.quantity) || 1;
+  const numericShipping = parseFloat(formData.shipping) || 0;
+  const subtotal = numericPrice * numericQuantity;
+  const fixedSubTotal = subtotal.toFixed(2);
+  const total = subtotal + numericShipping;
+  const fixedTotal = total.toFixed(2);
+
+  // ✅ Sizes
+  const sizes = Array.isArray(product.size)
+    ? product.size
+    : (product.size || "").split(",").map((s) => s.trim());
+
+  const quantities = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
   if (!showCheckoutForm) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-40">
         {/* Product Preview Section */}
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Product Details */}
-          <div className="lg:w-2/3">
-            <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
-              <h1 className="text-2xl font-bold mb-4">{name}</h1>
+          <div className="lg:w-2/3 space-y-8">
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <h1 className="text-2xl font-bold mb-4">{product.name}</h1>
 
               <div className="flex flex-col md:flex-row gap-6">
+                {/* Product Image */}
                 <div className="w-full md:w-1/2">
                   <div className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden">
                     <Image
-                      src={image}
-                      alt={`Product image`}
+                      src={product.image[0]}
+                      alt={`Product image of ${product.name}`}
                       fill
                       className="object-cover"
                     />
                   </div>
                 </div>
 
+                {/* Product Info */}
                 <div className="w-full md:w-1/2 space-y-6">
                   <div>
                     <h2 className="text-xl font-semibold mb-2">Description</h2>
                     <p className="text-gray-700 whitespace-pre-line">
-                      {product_description}
+                      {product.product_description}
                     </p>
                   </div>
                   <div>
@@ -293,24 +307,23 @@ export default function CheckoutPage() {
                       Care instruction
                     </h2>
                     <p className="text-gray-700 whitespace-pre-line">
-                      {care_instruction}
+                      {product.care_instruction}
                     </p>
                   </div>
-
                   <div>
                     <h2 className="text-xl font-semibold mb-2">Details</h2>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <p className="text-sm text-gray-500">Category</p>
-                        <p className="font-medium">{category}</p>
+                        <p className="font-medium">{product.category}</p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-500">Fabric</p>
-                        <p className="font-medium">{fabric}</p>
+                        <p className="font-medium">{product.fabric}</p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-500">Gender</p>
-                        <p className="font-medium">{gender}</p>
+                        <p className="font-medium">{product.gender}</p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-500">Condition</p>
@@ -328,7 +341,6 @@ export default function CheckoutPage() {
           </div>
 
           {/* Order Summary */}
-
           <div className="lg:w-1/3">
             <div className="bg-white rounded-xl shadow-sm p-6 sticky top-8 pb-24 lg:pb-6">
               <h2 className="text-xl font-semibold mb-6 flex items-center">
@@ -339,19 +351,19 @@ export default function CheckoutPage() {
               <div className="flex items-start mb-6">
                 <div className="w-20 h-20 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden mr-4">
                   <Image
-                    src={image}
-                    alt={`Product image `}
+                    src={product.image[0]}
+                    alt={`Order product ${product.name}`}
                     width={80}
                     height={80}
                     className="w-full h-full object-cover"
                   />
                 </div>
                 <div>
-                  <h3 className="font-medium">{name}</h3>
+                  <h3 className="font-medium">{product.name}</h3>
                   <p className="text-amber-600 font-semibold">
-                    £{numericPrice}
+                    £{product.price}
                   </p>
-                  {isNew === "true" && (
+                  {product.isNew === "true" && (
                     <span className="inline-block mt-1 px-2 py-0.5 bg-amber-100 text-amber-800 text-xs rounded-full">
                       New Arrival
                     </span>
@@ -359,10 +371,11 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
+              {/* Totals */}
               <div className="border-t border-gray-200 pt-4 space-y-3">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Subtotal</span>
-                  <span className="font-medium">£{fixedSubTotal}</span>
+                  <span className="font-medium">£{product.price}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Shipping</span>
@@ -373,7 +386,7 @@ export default function CheckoutPage() {
                 <div className="flex justify-between pt-2 border-t border-gray-200 mt-2">
                   <span className="font-bold">Estimated Total</span>
                   <span className="font-bold text-lg text-amber-600">
-                    £{fixedSubTotal}
+                    £{product.price}
                   </span>
                 </div>
               </div>
@@ -384,7 +397,7 @@ export default function CheckoutPage() {
               <button
                 onClick={() => {
                   setShowCheckoutForm(true);
-                  window.scrollTo({ top: 0, behavior: "smooth" }); // 👈 Add this
+                  window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
                 className="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center"
               >
@@ -807,7 +820,7 @@ export default function CheckoutPage() {
             <div className="flex items-start mb-6">
               <div className="w-20 h-20 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden mr-4">
                 <Image
-                  src={image}
+                  src={product.image[0]}
                   alt={`Product image`}
                   width={80}
                   height={80}
@@ -815,9 +828,9 @@ export default function CheckoutPage() {
                 />
               </div>
               <div>
-                <h3 className="font-medium">{name}</h3>
+                <h3 className="font-medium">{product.name}</h3>
                 <p className="text-amber-600 font-semibold">£{numericPrice}</p>
-                {isNew === "true" && (
+                {product.isNew === "true" && (
                   <span className="inline-block mt-1 px-2 py-0.5 bg-amber-100 text-amber-800 text-xs rounded-full">
                     New Arrival
                   </span>
@@ -847,7 +860,7 @@ export default function CheckoutPage() {
             </div>
 
             <div className="pt-4 text-xs text-gray-500">
-              <p>Free returns within 7 days</p>
+              <p>Free returns within 14 days</p>
               <p>
                 Estimated delivery:{" "}
                 {formData.shippingMethod === "next-day"
