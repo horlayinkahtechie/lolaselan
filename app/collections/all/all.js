@@ -292,7 +292,7 @@ export default function AllProducts() {
     <>
       {renderProductSection("Two Piece", products.twoPiece, "two-piece")}
       {renderProductSection("Pants", products.pants, "pants")}
-      {renderProductSection("Dresses", products.asoOkeskirt, "dresses")}
+      {renderProductSection("Dresses", products.dresses, "dresses")}
       {renderProductSection("Bubu", products.bubu, "bubu")}
     </>
   );
