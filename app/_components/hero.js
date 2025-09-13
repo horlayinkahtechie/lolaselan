@@ -53,7 +53,7 @@ export default function HeroSection() {
           </h1>
           <div className="flex flex-col sm:flex-row gap-4 mt-9">
             <Link
-              href="collections/all"
+              href="/collections/all"
               className="px-8 py-3 bg-[#FFB38A] hover:bg-[#FF9E6D] text-[#5C2018] rounded-full font-medium transition-all hover:scale-105 shadow-lg"
             >
               Shop Collection
