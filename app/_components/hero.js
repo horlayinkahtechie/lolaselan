@@ -35,10 +35,8 @@ export default function HeroSection() {
         Your browser does not support the video tag.
       </video>
 
-      {/* Dark overlay for better text contrast */}
       <div className="absolute inset-0 bg-black/40"></div>
 
-      {/* Optional floating circles (kept from your design) */}
       <div className="absolute inset-0 overflow-hidden z-0">
         <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-[#9C3E2D] opacity-20 animate-float"></div>
         <div className="absolute -left-40 bottom-0 w-96 h-96 rounded-full bg-[#7B2D26] opacity-15 animate-float animation-delay-2000"></div>
