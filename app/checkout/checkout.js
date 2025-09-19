@@ -25,7 +25,7 @@ const supabase = createClient(
 );
 
 export default function CheckoutPage() {
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
   const stripePromise = loadStripe(
     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
   );
@@ -90,6 +90,7 @@ export default function CheckoutPage() {
     shippingMethod: shippingOptions[0].id,
     selectedSize: "",
     quantity: 1,
+    email: "",
   });
 
   const [formErrors, setFormErrors] = useState({});
@@ -101,6 +102,10 @@ export default function CheckoutPage() {
 
     if (!formData.firstName.trim()) {
       errors.firstName = "First name is required";
+      isValid = false;
+    }
+    if (!formData.email.trim()) {
+      errors.email = "Email is required";
       isValid = false;
     }
 
@@ -177,10 +182,10 @@ export default function CheckoutPage() {
 
   // ✅ Handle buy now
   const handleBuyNow = async () => {
-    if (!session || !session.user?.email) {
-      toast.error("Please sign in to place an order");
-      return;
-    }
+    // if (!session || !session.user?.email) {
+    //   toast.error("Please sign in to place an order");
+    //   return;
+    // }
 
     if (!agreeToTerms) {
       toast.error("Please agree to the terms and conditions");
@@ -203,7 +208,6 @@ export default function CheckoutPage() {
         body: JSON.stringify({
           product_id: id,
           order_id: order_id,
-          email: session.user.email,
           ...formData,
           productPrice: product.price,
           totalProductPrice: total.toFixed(2),
@@ -232,24 +236,24 @@ export default function CheckoutPage() {
     window.scrollTo(0, 0);
   }, []);
 
-  if (!session) {
-    return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center text-center p-6 pt-40 pb-40">
-        <div className="max-w-md mx-auto">
-          <h2 className="text-xl font-bold mb-4">Sign In Required</h2>
-          <p className="text-gray-600 mb-6">
-            Please sign in to proceed with your checkout
-          </p>
-          <Link
-            href="/user/login"
-            className="inline-flex items-center px-6 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors"
-          >
-            Sign In
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  // if (!session) {
+  //   return (
+  //     <div className="min-h-[60vh] flex flex-col items-center justify-center text-center p-6 pt-40 pb-40">
+  //       <div className="max-w-md mx-auto">
+  //         <h2 className="text-xl font-bold mb-4">Sign In Required</h2>
+  //         <p className="text-gray-600 mb-6">
+  //           Please sign in to proceed with your checkout
+  //         </p>
+  //         <Link
+  //           href="/user/login"
+  //           className="inline-flex items-center px-6 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors"
+  //         >
+  //           Sign In
+  //         </Link>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   if (!product) {
     return <p className="p-6 text-gray-500">Loading product...</p>;
@@ -509,6 +513,27 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
+ <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Email *
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.emial}
+                      onChange={handleInputChange}
+                      className={`w-full px-3 py-2 border rounded-lg focus:ring-amber-500 focus:border-amber-500 ${
+                        formErrors.email ? "border-red-500" : ""
+                      }`}
+                      required
+                    />
+                    {formErrors.email && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center">
+                        <FiAlertCircle className="mr-1" /> {formErrors.email}
+                      </p>
+                    )}
+                </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Address *
@@ -529,7 +554,7 @@ export default function CheckoutPage() {
                     </p>
                   )}
                 </div>
-
+</div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
