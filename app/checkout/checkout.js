@@ -521,7 +521,7 @@ export default function CheckoutPage() {
                     <input
                       type="email"
                       name="email"
-                      value={formData.emial}
+                      value={formData.email}
                       onChange={handleInputChange}
                       className={`w-full px-3 py-2 border rounded-lg focus:ring-amber-500 focus:border-amber-500 ${
                         formErrors.email ? "border-red-500" : ""
