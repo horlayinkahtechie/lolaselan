@@ -7,6 +7,10 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 export async function POST(req) {
   try {
     const body = await req.json();
+    console.log("PRICE CHECK:", {
+  productPrice: body.productPrice,
+  shippingPrice: body.shipping,
+});
 
     // ✅ Ensure image is always an array for Supabase
     const imagesArray = Array.isArray(body.image) ? body.image : [body.image];
@@ -22,7 +26,7 @@ export async function POST(req) {
       country: body.country,
       size: body.size,
       shippingMethod: body.shippingMethod,
-      shippingPrice: body.shippingPrice,
+      shippingPrice: body.shipping,
       totalToBePaid: body.totalProductPrice,
       productPrice: body.productPrice,
       name: body.name,
@@ -63,7 +67,7 @@ export async function POST(req) {
             product_data: {
               name: "Shipping",
             },
-            unit_amount: Math.round(Number(body.shippingPrice) * 100),
+            unit_amount: Math.round(Number(body.shipping) * 100),
           },
           quantity: 1,
         },
@@ -79,7 +83,7 @@ export async function POST(req) {
         country: body.country,
         size: body.size,
         shippingMethod: body.shippingMethod,
-        shippingPrice: String(body.shippingPrice),
+        shippingPrice: String(body.shipping),
         totalProductPrice: String(body.totalProductPrice),
         productPrice: String(body.productPrice),
         name: body.name,
