@@ -30,48 +30,50 @@ export default function OrderHistory() {
   const limit = 5; // 🔹 orders per page
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      if (!session?.user?.email) {
-        setLoading(false);
-        return;
-      }
+  const fetchOrders = async () => {
+    if (!session?.user?.email) {
+      setLoading(false);
+      return;
+    }
 
-      setLoading(true);
+    setLoading(true);
 
-      try {
-        // ✅ Get total count
-        const { count, error: countError } = await supabase
-          .from("orders")
-          .select("*", { count: "exact", head: true })
-          .eq("email", session.user.email);
+    try {
+      // ✅ Get total count of paid orders
+      const { count, error: countError } = await supabase
+        .from("orders")
+        .select("*", { count: "exact", head: true })
+        .eq("email", session.user.email)
+        .eq("status", "paid");  // <-- filter for paid
 
-        if (countError) throw countError;
-        setTotalOrders(count || 0);
+      if (countError) throw countError;
+      setTotalOrders(count || 0);
 
-        // ✅ Paginated fetch
-        const from = (page - 1) * limit;
-        const to = from + limit - 1;
+      // ✅ Paginated fetch
+      const from = (page - 1) * limit;
+      const to = from + limit - 1;
 
-        const { data, error } = await supabase
-          .from("orders")
-          .select("*")
-          .eq("email", session.user.email)
-          .order("created_at", { ascending: false })
-          .range(from, to);
+      const { data, error } = await supabase
+        .from("orders")
+        .select("*")
+        .eq("email", session.user.email)
+        .eq("status", "paid")  // <-- filter for paid
+        .order("created_at", { ascending: false })
+        .range(from, to);
 
-        if (error) throw error;
+      if (error) throw error;
 
-        setOrders(data || []);
-      } catch (error) {
-        console.error("Error fetching orders:", error);
-        toast.error("Failed to load orders");
-      } finally {
-        setLoading(false);
-      }
-    };
+      setOrders(data || []);
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      toast.error("Failed to load orders");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchOrders();
-  }, [session, page]);
+  fetchOrders();
+}, [session, page]);
 
   const totalPages = Math.ceil(totalOrders / limit);
 
