@@ -23,6 +23,7 @@ export default function OrderHistory() {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [refundReason, setRefundReason] = useState("");
   const [isSubmittingRefund, setIsSubmittingRefund] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Pagination state
   const [page, setPage] = useState(1);
@@ -30,50 +31,66 @@ export default function OrderHistory() {
   const limit = 5; // 🔹 orders per page
 
   useEffect(() => {
-  const fetchOrders = async () => {
-    if (!session?.user?.email) {
-      setLoading(false);
-      return;
-    }
+    // Check if user is authenticated
+    setIsAuthenticated(!!session?.user?.email);
+  }, [session]);
 
-    setLoading(true);
+  useEffect(() => {
+    const fetchOrders = async () => {
+      setLoading(true);
 
-    try {
-      // ✅ Get total count of paid orders
-      const { count, error: countError } = await supabase
-        .from("orders")
-        .select("*", { count: "exact", head: true })
-        .eq("email", session.user.email)
-        .eq("status", "paid");  // <-- filter for paid
+      try {
+        if (isAuthenticated && session?.user?.email) {
+      
+          const { count, error: countError } = await supabase
+            .from("orders")
+            .select("*", { count: "exact", head: true })
+            .eq("email", session.user.email)
+            .eq("status", "paid"); 
 
-      if (countError) throw countError;
-      setTotalOrders(count || 0);
+          if (countError) throw countError;
+          setTotalOrders(count || 0);
 
-      // ✅ Paginated fetch
-      const from = (page - 1) * limit;
-      const to = from + limit - 1;
+          
+          const from = (page - 1) * limit;
+          const to = from + limit - 1;
 
-      const { data, error } = await supabase
-        .from("orders")
-        .select("*")
-        .eq("email", session.user.email)
-        .eq("status", "paid")  // <-- filter for paid
-        .order("created_at", { ascending: false })
-        .range(from, to);
+          const { data, error } = await supabase
+            .from("orders")
+            .select("*")
+            .eq("email", session.user.email)
+            .eq("status", "paid")  
+            .order("created_at", { ascending: false })
+            .range(from, to);
 
-      if (error) throw error;
+          if (error) throw error;
 
-      setOrders(data || []);
-    } catch (error) {
-      console.error("Error fetching orders:", error);
-      toast.error("Failed to load orders");
-    } finally {
-      setLoading(false);
-    }
-  };
+          setOrders(data || []);
+        } else {
+          // ✅ Fetch from localStorage for unauthenticated users
+          const storedOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+          setTotalOrders(storedOrders.length);
+          console.log(storedOrders)
+          
+          // Apply pagination
+          const from = (page - 1) * limit;
+          const to = from + limit;
+          const paginatedOrders = storedOrders
+            .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+            .slice(from, to);
+          
+          setOrders(paginatedOrders);
+        }
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+        toast.error("Failed to load orders");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  fetchOrders();
-}, [session, page]);
+    fetchOrders();
+  }, [session, page, isAuthenticated]);
 
   const totalPages = Math.ceil(totalOrders / limit);
 
@@ -116,25 +133,46 @@ export default function OrderHistory() {
     setIsSubmittingRefund(true);
 
     try {
-      // Update order status in database - set delivery_status to "processing refund"
-      const { error } = await supabase
-        .from("orders")
-        .update({
-          refund_requested: true,
-          refund_reason: refundReason,
-          refund_requested_at: new Date().toISOString(),
-          delivery_status: "processing refund", // Update delivery status
-        })
-        .eq("order_id", selectedOrder.order_id);
+      if (isAuthenticated) {
+        // Update order status in database for authenticated users
+        const { error } = await supabase
+          .from("orders")
+          .update({
+            refund_requested: true,
+            refund_reason: refundReason,
+            refund_requested_at: new Date().toISOString(),
+            delivery_status: "processing refund", // Update delivery status
+          })
+          .eq("order_id", selectedOrder.order_id);
 
-      if (error) throw error;
+        if (error) throw error;
 
-      // Send email notification using Resend
-      await sendRefundEmail(
-        selectedOrder.email,
-        selectedOrder.order_id,
-        "processing refund"
-      );
+        // Send email notification using Resend
+        await sendRefundEmail(
+          selectedOrder.email,
+          selectedOrder.order_id,
+          "processing refund"
+        );
+      } else {
+        // Update order status in localStorage for unauthenticated users
+        const storedOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+        const updatedOrders = storedOrders.map(order => 
+          order.order_id === selectedOrder.order_id
+            ? {
+                ...order,
+                refund_requested: true,
+                refund_reason: refundReason,
+                refund_requested_at: new Date().toISOString(),
+                delivery_status: "processing refund",
+              }
+            : order
+        );
+        
+        localStorage.setItem('orders', JSON.stringify(updatedOrders));
+        
+        // For unauthenticated users, we can't send emails since we don't have their email
+        toast.success("Refund request submitted! Please contact support with your order details.");
+      }
 
       // Update local state
       setOrders(
@@ -265,6 +303,15 @@ export default function OrderHistory() {
         <p className="text-gray-600 mt-1">
           {totalOrders} {totalOrders === 1 ? "order" : "orders"} placed
         </p>
+        {!isAuthenticated && (
+          <p className="text-sm text-amber-600 mt-2">
+            Viewing orders from this browser.{" "}
+            <Link href="/user/login" className="underline">
+              Sign in
+            </Link>{" "}
+            to see all your orders.
+          </p>
+        )}
       </div>
 
       {orders.length === 0 ? (

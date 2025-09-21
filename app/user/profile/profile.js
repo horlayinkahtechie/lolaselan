@@ -26,28 +26,28 @@ export default function ProfilePage() {
     { id: "wishlist", label: "Wishlist", icon: <FiHeart /> },
   ];
 
-  if (!session?.user) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
-        <div className="max-w-md mx-auto bg-white p-8 rounded-xl shadow-sm">
-          <h2 className="text-2xl font-bold mb-4">Sign In Required</h2>
-          <p className="text-gray-600 mb-6">
-            Please log in to view your profile.
-          </p>
-          <Link
-            href="/user/login"
-            className="px-6 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors inline-flex items-center"
-          >
-            Sign In
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  // if (!session?.user) {
+  //   return (
+  //     <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
+  //       <div className="max-w-md mx-auto bg-white p-8 rounded-xl shadow-sm">
+  //         <h2 className="text-2xl font-bold mb-4">Sign In Required</h2>
+  //         <p className="text-gray-600 mb-6">
+  //           Please log in to view your profile.
+  //         </p>
+  //         <Link
+  //           href="/user/login"
+  //           className="px-6 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors inline-flex items-center"
+  //         >
+  //           Sign In
+  //         </Link>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="min-h-screen bg-gray-50 pt-25">
-      {/* Profile Header */}
+      {/* Profile Header
       <div className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
@@ -80,7 +80,7 @@ export default function ProfilePage() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
