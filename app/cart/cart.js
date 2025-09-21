@@ -1,6 +1,5 @@
 "use client";
 
-import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import supabase from "../lib/supabase";
 import Image from "next/image";
@@ -18,12 +17,29 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function CartPage() {
-  const { data: session, status } = useSession();
-  const route = useRouter();
+  const router = useRouter();
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedItem, setSelectedItem] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Check authentication status
+  useEffect(() => {
+    // Check if user is authenticated (you'll need to implement this based on your auth system)
+    const checkAuth = async () => {
+      try {
+        // This is a placeholder - replace with your actual auth check
+        const { data: { session } } = await supabase.auth.getSession();
+        setIsAuthenticated(!!session);
+      } catch (error) {
+        console.error("Auth check error:", error);
+        setIsAuthenticated(false);
+      }
+    };
+    
+    checkAuth();
+  }, []);
 
   const total = cartItems
     .reduce(
@@ -32,66 +48,114 @@ export default function CartPage() {
     )
     .toFixed(2);
 
-  // Fetch cart items
-  // Fetch cart items with complete product data
+  // Fetch cart items from appropriate source
   useEffect(() => {
     const fetchCartItems = async () => {
-      if (!session?.user?.email) {
-        route.push("user/login");
-        return;
-      }
-
+      setLoading(true);
+      
       try {
-        // First get cart items
-        const { data: cartData, error: cartError } = await supabase
-          .from("cart")
-          .select("*")
-          .eq("email", session.user.email);
+        if (isAuthenticated) {
+          // Fetch from database for authenticated users
+          const { data: session } = await supabase.auth.getSession();
+          
+          if (!session?.user?.email) {
+            setCartItems([]);
+            setLoading(false);
+            return;
+          }
 
-        if (cartError) {
-          throw cartError;
+          const { data: cartData, error: cartError } = await supabase
+            .from("cart")
+            .select("*")
+            .eq("email", session.user.email);
+
+          if (cartError) {
+            throw cartError;
+          }
+
+          if (!cartData || cartData.length === 0) {
+            setCartItems([]);
+            setLoading(false);
+            return;
+          }
+
+          // Get product IDs from cart items
+          const productIds = cartData
+            .map((item) => item.product_id)
+            .filter(Boolean);
+
+          if (productIds.length === 0) {
+            setCartItems([]);
+            setLoading(false);
+            return;
+          }
+
+          // Fetch complete product data
+          const { data: productData, error: productError } = await supabase
+            .from("products")
+            .select("*")
+            .in("id", productIds);
+
+          if (productError) {
+            throw productError;
+          }
+
+          // Merge cart items with product data
+          const mergedItems = cartData.map((cartItem) => {
+            const product = productData.find((p) => p.id === cartItem.product_id);
+            return {
+              ...cartItem,
+              ...product,
+              quantity: cartItem.quantity || 1,
+              images: product?.images || [product?.image].filter(Boolean) || [],
+            };
+          });
+
+          setCartItems(mergedItems);
+        } else {
+          // Fetch from localStorage for unauthenticated users
+          const storedCart = JSON.parse(localStorage.getItem('cart') || '[]');
+          
+          if (storedCart.length === 0) {
+            setCartItems([]);
+            setLoading(false);
+            return;
+          }
+
+          // Get product IDs from cart items
+          const productIds = storedCart
+            .map((item) => item.product_id)
+            .filter(Boolean);
+
+          if (productIds.length === 0) {
+            setCartItems([]);
+            setLoading(false);
+            return;
+          }
+
+          // Fetch complete product data
+          const { data: productData, error: productError } = await supabase
+            .from("products")
+            .select("*")
+            .in("id", productIds);
+
+          if (productError) {
+            throw productError;
+          }
+
+          // Merge cart items with product data
+          const mergedItems = storedCart.map((cartItem) => {
+            const product = productData.find((p) => p.id === cartItem.product_id);
+            return {
+              ...cartItem,
+              ...product,
+              quantity: cartItem.quantity || 1,
+              images: product?.images || [product?.image].filter(Boolean) || [],
+            };
+          });
+
+          setCartItems(mergedItems);
         }
-
-        if (!cartData || cartData.length === 0) {
-          setCartItems([]);
-          setLoading(false);
-          return;
-        }
-
-        // Get product IDs from cart items
-        const productIds = cartData
-          .map((item) => item.product_id)
-          .filter(Boolean);
-
-        if (productIds.length === 0) {
-          setCartItems([]);
-          setLoading(false);
-          return;
-        }
-
-        // Fetch complete product data
-        const { data: productData, error: productError } = await supabase
-          .from("products")
-          .select("*")
-          .in("id", productIds);
-
-        if (productError) {
-          throw productError;
-        }
-
-        // Merge cart items with product data
-        const mergedItems = cartData.map((cartItem) => {
-          const product = productData.find((p) => p.id === cartItem.product_id);
-          return {
-            ...cartItem,
-            ...product, // This will overwrite cart fields with product fields
-            quantity: cartItem.quantity || 1,
-
-            images: product?.images || [product?.image].filter(Boolean) || [],
-          };
-        });
-
-        setCartItems(mergedItems);
       } catch (error) {
         console.error("Fetch error:", error);
         toast.error("Failed to load cart.");
@@ -100,13 +164,11 @@ export default function CartPage() {
       }
     };
 
-    if (session?.user?.email) {
-      fetchCartItems();
-    }
-  }, [session, route]);
+    fetchCartItems();
+  }, [isAuthenticated]);
 
   const checkOut = () => {
-    route.push("/cart/checkout", {
+    router.push("/cart/checkout", {
       state: { source: "cart" },
     });
   };
@@ -117,12 +179,22 @@ export default function CartPage() {
     const toastId = toast.loading("Updating quantity...");
 
     try {
-      const { error } = await supabase
-        .from("cart")
-        .update({ quantity: newQuantity })
-        .eq("cart_id", cart_id);
+      if (isAuthenticated) {
+        // Update in database for authenticated users
+        const { error } = await supabase
+          .from("cart")
+          .update({ quantity: newQuantity })
+          .eq("cart_id", cart_id);
 
-      if (error) throw error;
+        if (error) throw error;
+      } else {
+        // Update in localStorage for unauthenticated users
+        const storedCart = JSON.parse(localStorage.getItem('cart') || '[]');
+        const updatedCart = storedCart.map(item => 
+          item.cart_id === cart_id ? { ...item, quantity: newQuantity } : item
+        );
+        localStorage.setItem('cart', JSON.stringify(updatedCart));
+      }
 
       setCartItems((prev) =>
         prev.map((item) =>
@@ -139,19 +211,31 @@ export default function CartPage() {
 
   const handleRemove = async (cart_id) => {
     const toastId = toast.loading("Removing item...");
-    const { error } = await supabase
-      .from("cart")
-      .delete()
-      .eq("cart_id", cart_id);
+    
+    try {
+      if (isAuthenticated) {
+        // Remove from database for authenticated users
+        const { error } = await supabase
+          .from("cart")
+          .delete()
+          .eq("cart_id", cart_id);
 
-    if (error) {
-      toast.error("Failed to remove item.", { id: toastId });
-    } else {
+        if (error) throw error;
+      } else {
+        // Remove from localStorage for unauthenticated users
+        const storedCart = JSON.parse(localStorage.getItem('cart') || '[]');
+        const updatedCart = storedCart.filter(item => item.cart_id !== cart_id);
+        localStorage.setItem('cart', JSON.stringify(updatedCart));
+      }
+
       toast.success("Item removed from cart.", { id: toastId });
       setCartItems((prev) => prev.filter((item) => item.cart_id !== cart_id));
       if (selectedItem?.cart_id === cart_id) {
         setSelectedItem(null);
       }
+    } catch (error) {
+      toast.error("Failed to remove item.", { id: toastId });
+      console.error("Remove error:", error);
     }
   };
 
@@ -172,23 +256,23 @@ export default function CartPage() {
   const openProductModal = (item) => {
     setSelectedItem(item);
     setCurrentImageIndex(0);
-    document.body.style.overflow = "hidden"; // Prevent scrolling when modal is open
+    document.body.style.overflow = "hidden";
   };
 
   const closeProductModal = () => {
     setSelectedItem(null);
-    document.body.style.overflow = "auto"; // Re-enable scrolling
+    document.body.style.overflow = "auto";
   };
 
   const nextImage = () => {
     setCurrentImageIndex((prev) =>
-      prev === selectedItem.image.length - 1 ? 0 : prev + 1
+      prev === selectedItem.images.length - 1 ? 0 : prev + 1
     );
   };
 
   const prevImage = () => {
     setCurrentImageIndex((prev) =>
-      prev === 0 ? selectedItem.image.length - 1 : prev - 1
+      prev === 0 ? selectedItem.images.length - 1 : prev - 1
     );
   };
 
@@ -233,7 +317,7 @@ export default function CartPage() {
     </div>
   );
 
-  if (status === "loading" || loading) {
+  if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-40">
         <div className="flex flex-col lg:flex-row gap-8">
@@ -246,24 +330,6 @@ export default function CartPage() {
             <SummarySkeleton />
           </div>
         </div>
-      </div>
-    );
-  }
-
-  if (!session?.user) {
-    return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center text-center p-6">
-        <FiShoppingBag className="text-4xl text-gray-400 mb-4" />
-        <h2 className="text-xl font-medium mb-2">
-          Your shopping cart is empty
-        </h2>
-        <p className="text-gray-600 mb-6">Please log in to view your cart</p>
-        <Link
-          href="/user/login"
-          className="px-6 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors"
-        >
-          Sign In
-        </Link>
       </div>
     );
   }
@@ -287,14 +353,14 @@ export default function CartPage() {
                 <div className="relative">
                   <div className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden">
                     <Image
-                      src={selectedItem.image[currentImageIndex]}
+                      src={selectedItem.images[currentImageIndex]}
                       alt={selectedItem.orderName}
                       fill
                       className="object-cover"
                     />
                   </div>
 
-                  {selectedItem.image.length > 1 && (
+                  {selectedItem.images.length > 1 && (
                     <>
                       <button
                         onClick={prevImage}
@@ -312,7 +378,7 @@ export default function CartPage() {
                   )}
 
                   <div className="flex mt-4 space-x-2 overflow-x-auto py-2">
-                    {selectedItem.image.map((img, index) => (
+                    {selectedItem.images.map((img, index) => (
                       <button
                         key={index}
                         onClick={() => setCurrentImageIndex(index)}
@@ -452,7 +518,7 @@ export default function CartPage() {
             <div>
               {cartItems.map((item) => (
                 <div
-                  key={item.id}
+                  key={item.cart_id}
                   className="p-4 flex flex-col sm:flex-row gap-4 bg-white rounded-xl shadow-sm mt-4 cursor-pointer hover:shadow-md transition-shadow"
                   onClick={() => openProductModal(item)}
                 >

@@ -15,19 +15,24 @@ function debounce(func, timeout = 300) {
 }
 
 export default function CartCount() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [cartCount, setCartCount] = useState(0);
 
   const fetchCartCount = useCallback(async () => {
-    if (!session?.user?.email) return;
+    if (session?.user?.email) {
+      // Fetch from database for authenticated users
+      const { count, error } = await supabase
+        .from("cart")
+        .select("*", { count: "exact", head: true })
+        .eq("email", session.user.email);
 
-    const { count, error } = await supabase
-      .from("cart")
-      .select("*", { count: "exact", head: true })
-      .eq("email", session.user.email);
-
-    if (!error && count !== null) {
-      setCartCount(count);
+      if (!error && count !== null) {
+        setCartCount(count);
+      }
+    } else {
+      // Fetch from localStorage for unauthenticated users
+      const storedCart = JSON.parse(localStorage.getItem('cart') || '[]');
+      setCartCount(storedCart.length);
     }
   }, [session]);
 
@@ -41,9 +46,24 @@ export default function CartCount() {
 
     window.addEventListener("cartUpdated", debouncedHandler);
 
+    // Also listen for storage events (for changes from other tabs)
+    const handleStorageChange = (e) => {
+      if (e.key === 'cart') {
+        fetchCartCount();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
     return () => {
       window.removeEventListener("cartUpdated", debouncedHandler);
+      window.removeEventListener('storage', handleStorageChange);
     };
+  }, [session, fetchCartCount]);
+
+  // Also update count when authentication status changes
+  useEffect(() => {
+    fetchCartCount();
   }, [session, fetchCartCount]);
 
   return (
@@ -67,7 +87,7 @@ export default function CartCount() {
 
       {cartCount > 0 && (
         <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
-          {cartCount}
+          {cartCount > 99 ? '99+' : cartCount}
         </span>
       )}
     </Link>

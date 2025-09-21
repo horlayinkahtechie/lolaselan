@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import supabase from "@/app/lib/supabase";
-import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import {
   FiArrowLeft,
@@ -22,10 +21,11 @@ const CheckoutPage = () => {
 
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { data: session } = useSession();
   const [activeStep, setActiveStep] = useState(1);
   const [subscribeNewsletter, setSubscribeNewsletter] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
 
   // Shipping options
   const shippingOptions = [
@@ -60,6 +60,22 @@ const CheckoutPage = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    
+    // Check authentication status
+    const checkAuth = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        setIsAuthenticated(!!session);
+        if (session?.user?.email) {
+          setUserEmail(session.user.email);
+        }
+      } catch (error) {
+        console.error("Auth check error:", error);
+        setIsAuthenticated(false);
+      }
+    };
+    
+    checkAuth();
   }, []);
 
   // Form errors
@@ -112,24 +128,37 @@ const CheckoutPage = () => {
     return isValid;
   }, [formData]);
 
-  // Fetch cart items
+  // Fetch cart items from appropriate source
   useEffect(() => {
     const fetchCartItems = async () => {
-      if (!session?.user?.email) {
-        toast.error("Please sign in to checkout");
-        return;
-      }
-
       setLoading(true);
+      
       try {
-        const { data, error } = await supabase
-          .from("cart")
-          .select("*")
-          .eq("email", session.user.email);
+        if (isAuthenticated) {
+          // Fetch from database for authenticated users
+          const { data: session } = await supabase.auth.getSession();
+          
+          if (!session?.user?.email) {
+            setCartItems([]);
+            setLoading(false);
+            return;
+          }
 
-        if (error) throw error;
+          const { data: cartData, error: cartError } = await supabase
+            .from("cart")
+            .select("*")
+            .eq("email", session.user.email);
 
-        setCartItems(data || []);
+          if (cartError) {
+            throw cartError;
+          }
+
+          setCartItems(cartData || []);
+        } else {
+          // Fetch from localStorage for unauthenticated users
+          const storedCart = JSON.parse(localStorage.getItem('cart') || '[]');
+          setCartItems(storedCart);
+        }
       } catch (error) {
         console.error("Error fetching cart:", error.message);
         toast.error("Failed to load your cart");
@@ -139,7 +168,7 @@ const CheckoutPage = () => {
     };
 
     fetchCartItems();
-  }, [session]);
+  }, [isAuthenticated]);
 
   // Calculate totals with proper type checking
   const subtotal = cartItems.reduce((sum, item) => {
@@ -193,11 +222,6 @@ const CheckoutPage = () => {
   };
 
   const handleSubmit = async () => {
-    if (!session?.user?.email) {
-      toast.error("Please sign in to checkout");
-      return;
-    }
-
     if (!agreeTerms) {
       toast.error("Please agree to the terms and conditions");
       return;
@@ -210,7 +234,10 @@ const CheckoutPage = () => {
 
     setLoading(true);
     try {
-      // Create order records for database
+      // Get email for order - use authenticated user's email or form email
+      const orderEmail = isAuthenticated ? userEmail : formData.email;
+
+      // Create order records
       const orderRecords = cartItems.map((item) => {
         const price =
           typeof item.price === "string"
@@ -220,8 +247,8 @@ const CheckoutPage = () => {
         const numericShipping = Number(shipping);
 
         return {
-          order_id: item.cart_id,
-          email: session.user.email,
+          order_id: item.cart_id || `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          email: orderEmail,
           status: "pending",
           firstName: formData.firstName,
           lastName: formData.lastName,
@@ -235,7 +262,7 @@ const CheckoutPage = () => {
           paymentMethod: "Stripe",
           productPrice: price,
           totalToBePaid: (price * quantity + numericShipping).toFixed(2),
-          name: item.orderName || "Unknown Product",
+          name: item.orderName || item.name || "Unknown Product",
           image: Array.isArray(item.image) ? item.image : [item.image],
           quantity: quantity,
           size: item.size || "N/A",
@@ -250,7 +277,7 @@ const CheckoutPage = () => {
         },
         body: JSON.stringify({
           items: orderRecords,
-          email: session.user.email,
+          email: orderEmail,
           shippingPrice: Number(shipping),
         }),
       });
@@ -260,6 +287,11 @@ const CheckoutPage = () => {
       if (data.error) {
         throw new Error(data.error);
       }
+
+      // Clear cart after successful payment initiation
+      if (!isAuthenticated) {
+          localStorage.removeItem('cart');
+      } 
 
       // Redirect to checkout
       const stripe = await stripePromise;
@@ -281,26 +313,6 @@ const CheckoutPage = () => {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-amber-500"></div>
-      </div>
-    );
-  }
-
-  // No session state
-  if (!session) {
-    return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center text-center p-6 pt-40 pb-40">
-        <div className="max-w-md mx-auto">
-          <h2 className="text-xl font-bold mb-4">Sign In Required</h2>
-          <p className="text-gray-600 mb-6">
-            Please sign in to proceed with your checkout
-          </p>
-          <Link
-            href="/user/login"
-            className="inline-flex items-center px-6 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors"
-          >
-            Sign In
-          </Link>
-        </div>
       </div>
     );
   }
@@ -370,6 +382,30 @@ const CheckoutPage = () => {
             <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
               <h3 className="text-lg font-bold mb-6">Delivery Information</h3>
               <form className="space-y-4">
+                {/* Email field for unauthenticated users */}
+                {!isAuthenticated && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Email Address *
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email || ""}
+                      onChange={handleInputChange}
+                      className={`w-full px-3 py-2 border rounded-lg focus:ring-amber-500 focus:border-amber-500 ${
+                        formErrors.email ? "border-red-500" : ""
+                      }`}
+                      required
+                    />
+                    {formErrors.email && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center">
+                        <FiAlertCircle className="mr-1" /> {formErrors.email}
+                      </p>
+                    )}
+                  </div>
+                )}
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -387,8 +423,7 @@ const CheckoutPage = () => {
                     />
                     {formErrors.firstName && (
                       <p className="mt-1 text-sm text-red-600 flex items-center">
-                        <FiAlertCircle className="mr-1" />{" "}
-                        {formErrors.firstName}
+                        <FiAlertCircle className="mr-1" /> {formErrors.firstName}
                       </p>
                     )}
                   </div>
@@ -677,18 +712,18 @@ const CheckoutPage = () => {
                 const quantity = Number(item.quantity) || 1;
 
                 return (
-                  <div key={item.id} className="flex items-start gap-4">
+                  <div key={item.cart_id || item.id} className="flex items-start gap-4">
                     <div className="relative w-16 h-16 rounded-md overflow-hidden bg-gray-100">
                       <Image
                         src={item.image[0]}
-                        alt={item.orderName}
+                        alt={item.orderName || item.name}
                         fill
                         className="object-cover"
                       />
                     </div>
                     <div className="flex-1">
                       <h4 className="font-medium text-gray-900">
-                        {item.orderName}
+                        {item.orderName || item.name}
                       </h4>
                       <p className="text-sm text-gray-500">
                         {item.size && `Size: ${item.size}`}
@@ -731,3 +766,4 @@ const CheckoutPage = () => {
 };
 
 export default CheckoutPage;
+
