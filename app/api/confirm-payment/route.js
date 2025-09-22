@@ -161,7 +161,7 @@ export async function POST(req) {
       // ✅ Send admin notification email
       await resend.emails.send({
         from: "LolasÈlan Orders <contact@shoplolaselan.uk>",
-        to: "contact@shoplolaselan.uk",
+        to: "lolaselan@gmail.com",
         subject: `New Order from ${customerName}`,
         html: adminEmailHtml,
       });
