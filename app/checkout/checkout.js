@@ -259,7 +259,7 @@ export default function CheckoutPage() {
     return <p className="p-6 text-gray-500">Loading product...</p>;
   }
 
-  // ✅ Totals
+  // Totals
   const numericPrice = parseFloat(product.price) || 0;
   const numericQuantity = parseInt(formData.quantity) || 1;
   const numericShipping = parseFloat(formData.shipping) || 0;
@@ -268,7 +268,7 @@ export default function CheckoutPage() {
   const total = subtotal + numericShipping;
   const fixedTotal = total.toFixed(2);
 
-  // ✅ Sizes
+  // Sizes
   const sizes = Array.isArray(product.size)
     ? product.size
     : (product.size || "").split(",").map((s) => s.trim());

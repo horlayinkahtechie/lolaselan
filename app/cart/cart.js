@@ -15,6 +15,7 @@ import {
 import { HiOutlineEmojiSad } from "react-icons/hi";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function CartPage() {
   const router = useRouter();
@@ -24,13 +25,13 @@ export default function CartPage() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  const {data: session} = useSession();
   // Check authentication status
   useEffect(() => {
     // Check if user is authenticated (you'll need to implement this based on your auth system)
     const checkAuth = async () => {
       try {
         // This is a placeholder - replace with your actual auth check
-        const { data: { session } } = await supabase.auth.getSession();
         setIsAuthenticated(!!session);
       } catch (error) {
         console.error("Auth check error:", error);
@@ -55,8 +56,7 @@ export default function CartPage() {
       
       try {
         if (isAuthenticated) {
-          // Fetch from database for authenticated users
-          const { data: session } = await supabase.auth.getSession();
+      
           
           if (!session?.user?.email) {
             setCartItems([]);
