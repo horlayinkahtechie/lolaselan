@@ -13,6 +13,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { loadStripe } from "@stripe/stripe-js";
+import { useSession } from "next-auth/react";
 
 const CheckoutPage = () => {
   const stripePromise = loadStripe(
@@ -26,6 +27,8 @@ const CheckoutPage = () => {
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userEmail, setUserEmail] = useState("");
+
+  const {data: session} = useSession();
 
   // Shipping options
   const shippingOptions = [
@@ -64,7 +67,7 @@ const CheckoutPage = () => {
     // Check authentication status
     const checkAuth = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        
         setIsAuthenticated(!!session);
         if (session?.user?.email) {
           setUserEmail(session.user.email);
@@ -135,8 +138,6 @@ const CheckoutPage = () => {
       
       try {
         if (isAuthenticated) {
-          // Fetch from database for authenticated users
-          const { data: session } = await supabase.auth.getSession();
           
           if (!session?.user?.email) {
             setCartItems([]);

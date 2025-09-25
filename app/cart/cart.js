@@ -26,7 +26,7 @@ export default function CartPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const {data: session} = useSession();
-  // Check authentication status
+  
   useEffect(() => {
     // Check if user is authenticated (you'll need to implement this based on your auth system)
     const checkAuth = async () => {
