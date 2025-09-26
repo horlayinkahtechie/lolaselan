@@ -83,7 +83,7 @@ export default function CheckoutPage() {
     lastName: "",
     address: "",
     city: "",
-    postCode: "",
+    postalCode: "",
     country: "",
     phoneNo: "",
     shipping: shippingOptions[0].price,
@@ -124,8 +124,8 @@ export default function CheckoutPage() {
       isValid = false;
     }
 
-    if (!formData.postCode.trim()) {
-      errors.postCode = "Post code is required";
+    if (!formData.postalCode.trim()) {
+      errors.postalCode = "Post code is required";
       isValid = false;
     }
 
@@ -582,17 +582,17 @@ export default function CheckoutPage() {
                     </label>
                     <input
                       type="text"
-                      name="postCode"
-                      value={formData.postCode}
+                      name="postalCode"
+                      value={formData.postalCode}
                       onChange={handleInputChange}
                       className={`w-full px-3 py-2 border rounded-lg focus:ring-amber-500 focus:border-amber-500 ${
-                        formErrors.postCode ? "border-red-500" : ""
+                        formErrors.postalCode ? "border-red-500" : ""
                       }`}
                       required
                     />
-                    {formErrors.postCode && (
+                    {formErrors.postalCode && (
                       <p className="mt-1 text-sm text-red-600 flex items-center">
-                        <FiAlertCircle className="mr-1" /> {formErrors.postCode}
+                        <FiAlertCircle className="mr-1" /> {formErrors.postalCode}
                       </p>
                     )}
                   </div>

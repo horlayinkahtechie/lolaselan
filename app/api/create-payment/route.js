@@ -24,7 +24,7 @@ export async function POST(req) {
       city: body.city,
       postalCode: body.postalCode,
       country: body.country,
-      size: body.size,
+      size: body.selectedSize,
       shippingMethod: body.shippingMethod,
       shippingPrice: body.shipping,
       totalToBePaid: body.totalProductPrice,

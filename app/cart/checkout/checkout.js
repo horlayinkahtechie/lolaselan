@@ -267,6 +267,7 @@ const CheckoutPage = () => {
           image: Array.isArray(item.image) ? item.image : [item.image],
           quantity: quantity,
           size: item.size || "N/A",
+          product_id: item.product_id,
         };
       });
 
