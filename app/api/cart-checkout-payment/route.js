@@ -47,6 +47,7 @@ export async function POST(req) {
         image: item.image,
         quantity: item.quantity,
         size: item.size,
+        product_id: item.product_id
       };
 
       const { error: dbError } = await supabase

@@ -29,6 +29,7 @@ const CheckoutPage = () => {
   const [userEmail, setUserEmail] = useState("");
 
   const {data: session} = useSession();
+  console.log(cartItems)
 
   // Shipping options
   const shippingOptions = [
