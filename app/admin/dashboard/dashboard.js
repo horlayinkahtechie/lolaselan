@@ -41,247 +41,256 @@ export default function Dashboard() {
   }, [session, status, router]);
 
   useEffect(() => {
-    const fetchAllData = async () => {
-      try {
-        setLoading(true);
+  const fetchAllData = async () => {
+    try {
+      setLoading(true);
 
-        const now = new Date();
-        const currentMonthOrder = now.getMonth();
-        const currentYearOrder = now.getFullYear();
+      const now = new Date();
+      const currentMonthOrder = now.getMonth();
+      const currentYearOrder = now.getFullYear();
 
-        // Calculate previous month (handle year change if needed)
-        const prevMonthOrders =
-          currentMonthOrder === 0 ? 11 : currentMonthOrder - 1;
-        const prevYearOrders =
-          currentMonthOrder === 0 ? currentYearOrder - 1 : currentYearOrder;
+      // Calculate previous month (handle year change if needed)
+      const prevMonthOrders =
+        currentMonthOrder === 0 ? 11 : currentMonthOrder - 1;
+      const prevYearOrders =
+        currentMonthOrder === 0 ? currentYearOrder - 1 : currentYearOrder;
 
-        const [
-          { data: orders, error: ordersError },
-          { data: allProducts, error: allProductsError },
-          { data: allUsers, error: allUsersError },
-          { data: currentMonthOrders, error: currentMonthOrdersError },
-          { data: previousMonthOrders, error: previousMonthOrdersError },
-          { data: currentMonthUsers, error: currentMonthUsersError },
-          { data: previousMonthUsers, error: previousMonthUsersError },
-          { data: currentMonthRevenue, error: currentMonthRevenueError },
-          { data: previousMonthRevenue, error: previousMonthRevenueError },
-          { data: allOrders, error: allOrdersError },
-        ] = await Promise.all([
-          supabase
-            .from("orders")
-            .select("*")
-            .order("created_at", { ascending: false }),
-          supabase
-            .from("products")
-            .select("*")
-            .order("created_at", { ascending: false }),
-          supabase.from("users").select("*"),
-          supabase
-            .from("orders")
-            .select("*")
-            .gte(
-              "created_at",
-              new Date(currentYearOrder, currentMonthOrder, 1).toISOString()
-            )
-            .lt(
-              "created_at",
-              new Date(currentYearOrder, currentMonthOrder + 1, 1).toISOString()
-            ),
-          supabase
-            .from("orders")
-            .select("*")
-            .gte(
-              "created_at",
-              new Date(prevYearOrders, prevMonthOrders, 1).toISOString()
-            )
-            .lt(
-              "created_at",
-              new Date(prevYearOrders, prevMonthOrders + 1, 1).toISOString()
-            ),
-          supabase
-            .from("users")
-            .select("*")
-            .gte(
-              "created_at",
-              new Date(currentYearOrder, currentMonthOrder, 1).toISOString()
-            )
-            .lt(
-              "created_at",
-              new Date(currentYearOrder, currentMonthOrder + 1, 1).toISOString()
-            ),
-          supabase
-            .from("users")
-            .select("*")
-            .gte(
-              "created_at",
-              new Date(prevYearOrders, prevMonthOrders, 1).toISOString()
-            )
-            .lt(
-              "created_at",
-              new Date(prevYearOrders, prevMonthOrders + 1, 1).toISOString()
-            ),
-          supabase
-            .from("orders")
-            .select("productPrice")
-            .gte(
-              "created_at",
-              new Date(currentYearOrder, currentMonthOrder, 1).toISOString()
-            )
-            .lt(
-              "created_at",
-              new Date(currentYearOrder, currentMonthOrder + 1, 1).toISOString()
-            ),
-          supabase
-            .from("orders")
-            .select("productPrice")
-            .gte(
-              "created_at",
-              new Date(prevYearOrders, prevMonthOrders, 1).toISOString()
-            )
-            .lt(
-              "created_at",
-              new Date(prevYearOrders, prevMonthOrders + 1, 1).toISOString()
-            ),
-          supabase.from("orders").select("productPrice"),
-        ]);
-
-        if (
-          ordersError ||
-          allProductsError ||
-          allUsersError ||
-          currentMonthOrdersError ||
-          previousMonthOrdersError ||
-          currentMonthUsersError ||
-          previousMonthUsersError ||
-          currentMonthRevenueError ||
-          previousMonthRevenueError ||
-          allOrdersError
-        ) {
-          throw new Error(
-            ordersError?.message ||
-              allProductsError?.message ||
-              allUsersError?.message ||
-              currentMonthOrdersError?.message ||
-              previousMonthOrdersError?.message ||
-              currentMonthUsersError?.message ||
-              previousMonthUsersError?.message ||
-              currentMonthRevenueError?.message ||
-              previousMonthRevenueError?.message ||
-              allOrdersError?.message
-          );
-        }
-
-        setOrdersData(orders || []);
-        setTotalProducts(allProducts || []);
-        setTotalUsersData(allUsers || []);
-
-        // Calculate total revenue
-        const revenueTotal =
-          allOrders?.reduce(
-            (sum, order) => sum + Number(order.productPrice || 0),
-            0
-          ) || 0;
-        setTotalRevenue(revenueTotal);
-
-        // Calculate orders change
-        const currentOrderCount = currentMonthOrders?.length || 0;
-        const prevOrderCount = previousMonthOrders?.length || 0;
-        const OrderDifference = currentOrderCount - prevOrderCount;
-
-        let changeText = "";
-        if (OrderDifference > 0) {
-          changeText = `+${OrderDifference} this month`;
-        } else if (OrderDifference < 0) {
-          changeText = `${OrderDifference} this month`;
-        } else {
-          changeText = "No change";
-        }
-
-        setOrdersChange(changeText);
-
-        // Calculate users change
-        const currentUserCount = currentMonthUsers?.length || 0;
-        const prevUserCount = previousMonthUsers?.length || 0;
-        const UserDifference = currentUserCount - prevUserCount;
-
-        let userChangeText = "";
-        if (UserDifference > 0) {
-          userChangeText = `+${UserDifference} this month`;
-        } else if (UserDifference < 0) {
-          userChangeText = `${UserDifference} this month`;
-        } else {
-          userChangeText = "No change";
-        }
-
-        setUsersChange(userChangeText);
-
-        // Calculate revenue changes
-        const currentMonthRevenueTotal =
-          currentMonthRevenue?.reduce(
-            (sum, order) => sum + Number(order.productPrice || 0),
-            0
-          ) || 0;
-
-        const previousMonthRevenueTotal =
-          previousMonthRevenue?.reduce(
-            (sum, order) => sum + Number(order.productPrice || 0),
-            0
-          ) || 0;
-
-        let revenueChangeText = "No change";
-        if (previousMonthRevenueTotal > 0) {
-          const percentageChange =
-            ((currentMonthRevenueTotal - previousMonthRevenueTotal) /
-              previousMonthRevenueTotal) *
-            100;
-
-          if (percentageChange > 0) {
-            revenueChangeText = `+${percentageChange.toFixed(
-              1
-            )}% from last month`;
-          } else if (percentageChange < 0) {
-            revenueChangeText = `${percentageChange.toFixed(
-              1
-            )}% from last month`;
-          }
-        } else if (currentMonthRevenueTotal > 0) {
-          revenueChangeText = "+100% (new revenue)";
-        }
-
-        setRevenueChange(revenueChangeText);
-      } catch (err) {
-        console.error("Fetch error:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAllData();
-  }, []);
-
-  useEffect(() => {
-    const fetchRecentOrders = async () => {
-      try {
-        setLoading(true);
-        const { data: orders, error } = await supabase
+      const [
+        { data: orders, error: ordersError },
+        { data: allProducts, error: allProductsError },
+        { data: allUsers, error: allUsersError },
+        { data: currentMonthOrders, error: currentMonthOrdersError },
+        { data: previousMonthOrders, error: previousMonthOrdersError },
+        { data: currentMonthUsers, error: currentMonthUsersError },
+        { data: previousMonthUsers, error: previousMonthUsersError },
+        { data: currentMonthRevenue, error: currentMonthRevenueError },
+        { data: previousMonthRevenue, error: previousMonthRevenueError },
+        { data: allOrders, error: allOrdersError },
+      ] = await Promise.all([
+        supabase
           .from("orders")
           .select("*")
-          .order("created_at", { ascending: false })
-          .limit(3);
+          .eq("status", "paid") // Only paid orders for recent orders list
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("products")
+          .select("*")
+          .order("created_at", { ascending: false }),
+        supabase.from("users").select("*"),
+        supabase
+          .from("orders")
+          .select("*")
+          .eq("status", "paid") // Only paid orders for current month
+          .gte(
+            "created_at",
+            new Date(currentYearOrder, currentMonthOrder, 1).toISOString()
+          )
+          .lt(
+            "created_at",
+            new Date(currentYearOrder, currentMonthOrder + 1, 1).toISOString()
+          ),
+        supabase
+          .from("orders")
+          .select("*")
+          .eq("status", "paid") // Only paid orders for previous month
+          .gte(
+            "created_at",
+            new Date(prevYearOrders, prevMonthOrders, 1).toISOString()
+          )
+          .lt(
+            "created_at",
+            new Date(prevYearOrders, prevMonthOrders + 1, 1).toISOString()
+          ),
+        supabase
+          .from("users")
+          .select("*")
+          .gte(
+            "created_at",
+            new Date(currentYearOrder, currentMonthOrder, 1).toISOString()
+          )
+          .lt(
+            "created_at",
+            new Date(currentYearOrder, currentMonthOrder + 1, 1).toISOString()
+          ),
+        supabase
+          .from("users")
+          .select("*")
+          .gte(
+            "created_at",
+            new Date(prevYearOrders, prevMonthOrders, 1).toISOString()
+          )
+          .lt(
+            "created_at",
+            new Date(prevYearOrders, prevMonthOrders + 1, 1).toISOString()
+          ),
+        supabase
+          .from("orders")
+          .select("productPrice")
+          .eq("status", "paid") // Only paid orders for current month revenue
+          .gte(
+            "created_at",
+            new Date(currentYearOrder, currentMonthOrder, 1).toISOString()
+          )
+          .lt(
+            "created_at",
+            new Date(currentYearOrder, currentMonthOrder + 1, 1).toISOString()
+          ),
+        supabase
+          .from("orders")
+          .select("productPrice")
+          .eq("status", "paid") // Only paid orders for previous month revenue
+          .gte(
+            "created_at",
+            new Date(prevYearOrders, prevMonthOrders, 1).toISOString()
+          )
+          .lt(
+            "created_at",
+            new Date(prevYearOrders, prevMonthOrders + 1, 1).toISOString()
+          ),
+        supabase
+          .from("orders")
+          .select("productPrice")
+          .eq("status", "paid"), // Only paid orders for total revenue
+      ]);
 
-        if (!error) {
-          setRecentOrders(orders);
-        } else {
-          setRecentOrders([]);
-        }
-      } catch (err) {
-        console.error("Something went wrong", err);
-      } finally {
-        setLoading(false);
+      if (
+        ordersError ||
+        allProductsError ||
+        allUsersError ||
+        currentMonthOrdersError ||
+        previousMonthOrdersError ||
+        currentMonthUsersError ||
+        previousMonthUsersError ||
+        currentMonthRevenueError ||
+        previousMonthRevenueError ||
+        allOrdersError
+      ) {
+        throw new Error(
+          ordersError?.message ||
+            allProductsError?.message ||
+            allUsersError?.message ||
+            currentMonthOrdersError?.message ||
+            previousMonthOrdersError?.message ||
+            currentMonthUsersError?.message ||
+            previousMonthUsersError?.message ||
+            currentMonthRevenueError?.message ||
+            previousMonthRevenueError?.message ||
+            allOrdersError?.message
+        );
       }
-    };
-    fetchRecentOrders();
-  }, []);
+
+      setOrdersData(orders || []);
+      setTotalProducts(allProducts || []);
+      setTotalUsersData(allUsers || []);
+
+      // Calculate total revenue (only from paid orders)
+      const revenueTotal =
+        allOrders?.reduce(
+          (sum, order) => sum + Number(order.productPrice || 0),
+          0
+        ) || 0;
+      setTotalRevenue(revenueTotal);
+
+      // Calculate orders change (only paid orders)
+      const currentOrderCount = currentMonthOrders?.length || 0;
+      const prevOrderCount = previousMonthOrders?.length || 0;
+      const OrderDifference = currentOrderCount - prevOrderCount;
+
+      let changeText = "";
+      if (OrderDifference > 0) {
+        changeText = `+${OrderDifference} this month`;
+      } else if (OrderDifference < 0) {
+        changeText = `${OrderDifference} this month`;
+      } else {
+        changeText = "No change";
+      }
+
+      setOrdersChange(changeText);
+
+      // Calculate users change
+      const currentUserCount = currentMonthUsers?.length || 0;
+      const prevUserCount = previousMonthUsers?.length || 0;
+      const UserDifference = currentUserCount - prevUserCount;
+
+      let userChangeText = "";
+      if (UserDifference > 0) {
+        userChangeText = `+${UserDifference} this month`;
+      } else if (UserDifference < 0) {
+        userChangeText = `${UserDifference} this month`;
+      } else {
+        userChangeText = "No change";
+      }
+
+      setUsersChange(userChangeText);
+
+      // Calculate revenue changes (only from paid orders)
+      const currentMonthRevenueTotal =
+        currentMonthRevenue?.reduce(
+          (sum, order) => sum + Number(order.productPrice || 0),
+          0
+        ) || 0;
+
+      const previousMonthRevenueTotal =
+        previousMonthRevenue?.reduce(
+          (sum, order) => sum + Number(order.productPrice || 0),
+          0
+        ) || 0;
+
+      let revenueChangeText = "No change";
+      if (previousMonthRevenueTotal > 0) {
+        const percentageChange =
+          ((currentMonthRevenueTotal - previousMonthRevenueTotal) /
+            previousMonthRevenueTotal) *
+          100;
+
+        if (percentageChange > 0) {
+          revenueChangeText = `+${percentageChange.toFixed(
+            1
+          )}% from last month`;
+        } else if (percentageChange < 0) {
+          revenueChangeText = `${percentageChange.toFixed(
+            1
+          )}% from last month`;
+        }
+      } else if (currentMonthRevenueTotal > 0) {
+        revenueChangeText = "+100% (new revenue)";
+      }
+
+      setRevenueChange(revenueChangeText);
+    } catch (err) {
+      console.error("Fetch error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchAllData();
+}, []);
+
+ useEffect(() => {
+  const fetchRecentOrders = async () => {
+    try {
+      setLoading(true);
+      const { data: orders, error } = await supabase
+        .from("orders")
+        .select("*")
+        .eq("status", "paid")
+        .order("created_at", { ascending: false })
+        .limit(3);
+
+      if (!error) {
+        setRecentOrders(orders);
+      } else {
+        setRecentOrders([]);
+      }
+    } catch (err) {
+      console.error("Something went wrong", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetchRecentOrders();
+}, []);
 
   return (
     <>
