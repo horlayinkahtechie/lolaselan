@@ -45,7 +45,6 @@ export default function FeaturedCollections() {
           Our Signature Collections
         </h2>
 
-        {/* Scrollable Container for All Devices */}
         <div className="relative">
           {/* Navigation Arrows */}
           <button
