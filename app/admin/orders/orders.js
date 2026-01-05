@@ -8,6 +8,7 @@ import {
   FiCheckCircle,
   FiClock,
   FiMoreVertical,
+  FiPackage,
 } from "react-icons/fi";
 import AdminSideBar from "@/app/_components/adminSideBar";
 import supabase from "@/app/lib/supabase";
@@ -192,128 +193,202 @@ export default function Orders() {
 
           {/* Orders Table */}
           <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50">
-                  <tr className="text-left text-gray-500 text-sm">
-                    <th className="px-6 py-3">Order ID</th>
-                    <th className="px-6 py-3">Email</th>
-                    <th className="px-6 py-3">Customer Name</th>
-                    <th className="px-6 py-3">Date</th>
-                    <th className="px-6 py-3">Items</th>
-                    <th className="px-6 py-3">Amount</th>
-                    <th className="px-6 py-3">Payment</th>
-                    <th className="px-6 py-3">Delivery Status</th>
-                    <th className="px-6 py-3">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {currentOrders.length > 0 ? (
-                    currentOrders.map((order) => {
-                      const statusInfo = getStatusInfo(order.delivery_status);
-                      return (
-                        <tr key={order.order_id} className="hover:bg-gray-50">
-                          <td className="px-6 py-4 font-medium">
-                            {order.order_id}
-                          </td>
-                          <td className="px-6 py-4">{order.email}</td>
-                          <td className="px-6 py-4">
-                            {order.firstName} {order.lastName}
-                          </td>
-                          <td className="px-6 py-4">
-                            {new Date(order.created_at).toLocaleDateString()}
-                          </td>
-                          <td className="px-6 py-4">{order.quantity}</td>
-                          <td className="px-6 py-4">
-                            ${(order.productPrice * order.quantity).toFixed(2)}
-                          </td>
-                          <td className="px-6 py-4">
-                            <span
-                              className={`px-3 py-1 rounded-full text-xs ${
-                                order.status === "paid"
-                                  ? "bg-green-100 text-green-800"
-                                  : "bg-yellow-100 text-yellow-800"
-                              }`}
-                            >
-                              {order.status}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4">
-                            <span
-                              className={`px-3 py-1 rounded-full text-xs flex items-center ${statusInfo.color}`}
-                            >
-                              {statusInfo.icon}
-                              {order.delivery_status}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="relative">
-                              <button
-                                onClick={() => openStatusModal(order)}
-                                className="p-2 text-gray-500 hover:text-[#5E2BFF] rounded-lg hover:bg-purple-100"
-                              >
-                                <FiMoreVertical />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })
+  <div className="overflow-x-auto">
+    <table className="w-full">
+      <thead className="bg-gray-50">
+        <tr className="text-left text-gray-500 text-sm">
+          <th className="px-6 py-3">Order ID</th>
+          <th className="px-6 py-3">Customer Name</th>
+          <th className="px-6 py-3">Email</th>
+          <th className="px-6 py-3">Phone</th>
+          <th className="px-6 py-3">Product</th>
+          <th className="px-6 py-3">Size</th>
+          <th className="px-6 py-3">Qty</th>
+          <th className="px-6 py-3">Price</th>
+          <th className="px-6 py-3">Shipping</th>
+          <th className="px-6 py-3">Total</th>
+          <th className="px-6 py-3">Shipping Method</th>
+          <th className="px-6 py-3">Payment Method</th>
+          <th className="px-6 py-3">Address</th>
+          <th className="px-6 py-3">City</th>
+          <th className="px-6 py-3">Postal Code</th>
+          <th className="px-6 py-3">Country</th>
+          <th className="px-6 py-3">Date</th>
+          <th className="px-6 py-3">Payment Status</th>
+          <th className="px-6 py-3">Delivery Status</th>
+          <th className="px-6 py-3">Refund Status</th>
+          <th className="px-6 py-3">Actions</th>
+        </tr>
+      </thead>
+      <tbody className="divide-y divide-gray-100">
+        {currentOrders.length > 0 ? (
+          currentOrders.map((order) => {
+            const statusInfo = getStatusInfo(order.delivery_status);
+            const totalAmount = (order.productPrice * order.quantity) + (order.shippingPrice || 0);
+            const refundRequested = order.refund_requested || false;
+            
+            return (
+              <tr key={order.order_id} className="hover:bg-gray-50">
+                <td className="px-6 py-4 font-medium text-sm">
+                  {order.order_id}
+                </td>
+                <td className="px-6 py-4 text-sm">
+                  {order.firstName} {order.lastName}
+                </td>
+                <td className="px-6 py-4 text-sm">{order.email}</td>
+                <td className="px-6 py-4 text-sm">{order.phoneNo || 'N/A'}</td>
+                <td className="px-6 py-4 text-sm">
+                  <div className="flex flex-col">
+                    <span className="font-medium">{order.name || `Product ${order.product_id}`}</span>
+                    <span className="text-xs text-gray-500">ID: {order.product_id}</span>
+                  </div>
+                </td>
+                <td className="px-6 py-4 text-sm">{order.size || 'N/A'}</td>
+                <td className="px-6 py-4 text-sm">{order.quantity}</td>
+                <td className="px-6 py-4 text-sm">
+                  ${order.productPrice?.toFixed(2) || '0.00'}
+                </td>
+                <td className="px-6 py-4 text-sm">
+                  ${order.shippingPrice?.toFixed(2) || '0.00'}
+                </td>
+                <td className="px-6 py-4 text-sm font-medium">
+                  ${totalAmount.toFixed(2)}
+                </td>
+                <td className="px-6 py-4 text-sm">
+                  <span className="px-2 py-1 bg-blue-50 text-blue-700 rounded text-xs">
+                    {order.shippingMethod || 'Standard'}
+                  </span>
+                </td>
+                <td className="px-6 py-4 text-sm">
+                  <span className="px-2 py-1 bg-gray-50 text-gray-700 rounded text-xs">
+                    {order.paymentMethod || order.status === 'paid' ? 'Card' : 'Pending'}
+                  </span>
+                </td>
+                <td className="px-6 py-4 text-sm max-w-[150px] truncate" title={order.address}>
+                  {order.address || 'N/A'}
+                </td>
+                <td className="px-6 py-4 text-sm">{order.city || 'N/A'}</td>
+                <td className="px-6 py-4 text-sm">{order.postalCode || 'N/A'}</td>
+                <td className="px-6 py-4 text-sm">{order.country || 'N/A'}</td>
+                <td className="px-6 py-4 text-sm">
+                  {new Date(order.created_at).toLocaleDateString()}
+                </td>
+                <td className="px-6 py-4">
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs ${
+                      order.status === "paid"
+                        ? "bg-green-100 text-green-800"
+                        : order.status === "pending"
+                        ? "bg-yellow-100 text-yellow-800"
+                        : "bg-red-100 text-red-800"
+                    }`}
+                  >
+                    {order.status}
+                  </span>
+                </td>
+                <td className="px-6 py-4">
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs flex items-center ${statusInfo.color}`}
+                  >
+                    {statusInfo.icon}
+                    {order.delivery_status}
+                  </span>
+                </td>
+                <td className="px-6 py-4">
+                  {refundRequested ? (
+                    <div className="flex flex-col space-y-1">
+                      <span className="px-2 py-1 bg-red-100 text-red-800 rounded text-xs">
+                        Refund Requested
+                      </span>
+                      {order.refund_requested_at && (
+                        <span className="text-xs text-gray-500">
+                          {new Date(order.refund_requested_at).toLocaleDateString()}
+                        </span>
+                      )}
+                      {order.refund_processed_at && (
+                        <span className="text-xs text-green-600">
+                          Processed: {new Date(order.refund_processed_at).toLocaleDateString()}
+                        </span>
+                      )}
+                    </div>
                   ) : (
-                    <tr>
-                      <td
-                        colSpan="8"
-                        className="px-6 py-4 text-center text-gray-500"
-                      >
-                        No orders found
-                      </td>
-                    </tr>
+                    <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs">
+                      No Refund
+                    </span>
                   )}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Pagination */}
-            {filteredOrders.length > ordersPerPage && (
-              <div className="flex items-center justify-between px-6 py-4 border-t">
-                <button
-                  onClick={() =>
-                    paginate(currentPage > 1 ? currentPage - 1 : 1)
-                  }
-                  disabled={currentPage === 1}
-                  className={`flex items-center space-x-1 px-3 py-1 rounded-lg ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-gray-700 hover:bg-gray-100"}`}
-                >
-                  <FiChevronLeft />
-                  <span>Previous</span>
-                </button>
-                <div className="flex space-x-1">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                    (number) => (
-                      <button
-                        key={number}
-                        onClick={() => paginate(number)}
-                        className={`w-8 h-8 rounded-full ${currentPage === number ? "bg-[#5E2BFF] text-white" : "text-gray-700 hover:bg-gray-100"}`}
-                      >
-                        {number}
-                      </button>
-                    )
-                  )}
-                </div>
-                <button
-                  onClick={() =>
-                    paginate(
-                      currentPage < totalPages ? currentPage + 1 : totalPages
-                    )
-                  }
-                  disabled={currentPage === totalPages}
-                  className={`flex items-center space-x-1 px-3 py-1 rounded-lg ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-gray-700 hover:bg-gray-100"}`}
-                >
-                  <span>Next</span>
-                  <FiChevronRight />
-                </button>
+                </td>
+                <td className="px-6 py-4">
+                  <div className="relative">
+                    <button
+                      onClick={() => openStatusModal(order)}
+                      className="p-2 text-gray-500 hover:text-[#5E2BFF] rounded-lg hover:bg-purple-100"
+                    >
+                      <FiMoreVertical />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            );
+          })
+        ) : (
+          <tr>
+            <td
+              colSpan="21"
+              className="px-6 py-8 text-center text-gray-500"
+            >
+              <div className="flex flex-col items-center justify-center">
+                <FiPackage className="w-12 h-12 text-gray-300 mb-2" />
+                <p className="text-lg font-medium">No orders found</p>
+                <p className="text-sm">Try adjusting your filters</p>
               </div>
-            )}
-          </div>
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  </div>
+
+  {/* Pagination */}
+  {filteredOrders.length > ordersPerPage && (
+    <div className="flex items-center justify-between px-6 py-4 border-t">
+      <button
+        onClick={() =>
+          paginate(currentPage > 1 ? currentPage - 1 : 1)
+        }
+        disabled={currentPage === 1}
+        className={`flex items-center space-x-1 px-3 py-1 rounded-lg ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-gray-700 hover:bg-gray-100"}`}
+      >
+        <FiChevronLeft />
+        <span>Previous</span>
+      </button>
+      <div className="flex space-x-1">
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+          (number) => (
+            <button
+              key={number}
+              onClick={() => paginate(number)}
+              className={`w-8 h-8 rounded-full ${currentPage === number ? "bg-[#5E2BFF] text-white" : "text-gray-700 hover:bg-gray-100"}`}
+            >
+              {number}
+            </button>
+          )
+        )}
+      </div>
+      <button
+        onClick={() =>
+          paginate(
+            currentPage < totalPages ? currentPage + 1 : totalPages
+          )
+        }
+        disabled={currentPage === totalPages}
+        className={`flex items-center space-x-1 px-3 py-1 rounded-lg ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-gray-700 hover:bg-gray-100"}`}
+      >
+        <span>Next</span>
+        <FiChevronRight />
+      </button>
+    </div>
+  )}
+</div>
         </div>
       </div>
 
